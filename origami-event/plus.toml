@@ -1,0 +1,28 @@
+require = []
+
+[subprojects.origami-core]
+path = "../origami-core"
+
+[project]
+name = "origami-event"
+version = "0.1.0"
+description = ""
+author = ""
+email = ""
+url = ""
+license = ""
+
+[compiler]
+cxx = "g++"
+standard = "c++17"
+flags = []
+includes = ["include"]
+defines = []
+warnings = []
+debug = true
+
+[linker]
+type = "static-lib"
+flags = []
+libdirs = []
+libs = []

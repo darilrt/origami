@@ -27,6 +27,18 @@ libs = []
 [subprojects.origami-math]
 path = "origami-math"
 
+[subprojects.origami-core]
+path = "origami-core"
+
+[subprojects.origami-window]
+path = "origami-window"
+
+[subprojects.origami-event]
+path = "origami-event"
+
+[subprojects.origami-graphics]
+path = "origami-graphics"
+
 [deps.sokol]
 git = "https://github.com/floooh/sokol"
 includes = [ "./",]

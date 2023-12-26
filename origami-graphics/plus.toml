@@ -1,0 +1,35 @@
+require = ["sokol"]
+
+[subprojects]
+origami-core = { path = "../origami-core" }
+origami-event = { path = "../origami-event" }
+origami-window = { path = "../origami-window" }
+origami-math = { path = "../origami-math" }
+
+[project]
+name = "origami-graphics"
+version = "0.1.0"
+description = ""
+author = ""
+email = ""
+url = ""
+license = ""
+
+[compiler]
+cxx = "g++"
+standard = "c++17"
+flags = []
+includes = ["include"]
+defines = ["SOKOL_GLCORE33", "SOKOL_IMPL"]
+warnings = []
+debug = true
+
+[linker]
+type = "static-lib"
+flags = []
+libdirs = []
+libs = []
+
+[deps.sokol]
+git = "https://github.com/floooh/sokol"
+includes = ["./"]
