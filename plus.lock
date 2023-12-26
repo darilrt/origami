@@ -3,7 +3,7 @@ sdl2 = 1703545619.8233266
 sokol = 1703545621.6603262
 
 [files."C:/Users/kkck/Documents/c++/origami/src/main.cpp"]
-stamp = 1703561661.2646835
+stamp = 1703562216.3582938
 object = "C:/Users/kkck/Documents/c++/origami/obj/main.o"
 
 [subproject.origami-math]

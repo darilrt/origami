@@ -29,3 +29,6 @@
 
 # Vendor
 vendor/
+
+# plus
+plus.lock
