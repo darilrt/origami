@@ -1,0 +1,32 @@
+require = [ "sdl2", "sokol",]
+
+[project]
+name = "origami"
+version = "0.1.0"
+description = ""
+author = ""
+email = ""
+url = ""
+license = ""
+
+[compiler]
+cxx = "g++"
+standard = "c++17"
+flags = []
+includes = [ "include",]
+defines = [ "SDL_MAIN_HANDLED", "SOKOL_GLCORE33", "SOKOL_IMPL",]
+warnings = []
+debug = true
+
+[linker]
+type = "console-app"
+flags = []
+libdirs = []
+libs = []
+
+[subprojects.origami-math]
+path = "origami-math"
+
+[deps.sokol]
+git = "https://github.com/floooh/sokol"
+includes = [ "./",]

@@ -1,0 +1,13 @@
+{
+    "files.associations": {
+        "*.excalidraw": "json",
+        "*.excalidrawlib": "json",
+        "*.cic": "rust",
+        "*.zs": "rust",
+        "xstring": "cpp",
+        "xutility": "cpp",
+        "system_error": "cpp",
+        "type_traits": "cpp",
+        "xtr1common": "cpp"
+    }
+}
