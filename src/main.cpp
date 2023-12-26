@@ -36,11 +36,15 @@ int main()
     state.action.colors[0].load_action = SG_LOADACTION_CLEAR;
     state.action.colors[0].clear_value = {0.1f, 0.1f, 0.1f, 1.0f};
 
-    float quad_vertices[] = {
-        // positions            // colors
-        0.0f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 1.0f,
-        0.5f, -0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 1.0f,
-        -0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f};
+    struct
+    {
+        Vec3 position;
+        Vec4 color;
+    } quad_vertices[] = {
+        {Vec3{0.0f, 0.5f, 0.0f}, Vec4{1.0f, 0.0f, 0.0f, 1.0f}},
+        {Vec3{0.5f, -0.5f, 0.0f}, Vec4{0.0f, 1.0f, 0.0f, 1.0f}},
+        {Vec3{-0.5f, -0.5f, 0.0f}, Vec4{0.0f, 0.0f, 1.0f, 1.0f}},
+    };
 
     uint16_t quad_indices[] = {0, 1, 2};
 

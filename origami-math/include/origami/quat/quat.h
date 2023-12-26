@@ -3,6 +3,7 @@
 #include <cmath>
 
 #include <origami/mat/mat4.h>
+#include <origami/vec/vec3.h>
 #include <origami/vec/vec4.h>
 
 class Quat
@@ -185,7 +186,8 @@ public:
 
     Vec3 operator*(const Vec3 &v)
     {
-        return Vec3((*this * Vec4(v, 1.0f)));
+        Vec4 result = *this * Vec4(v.x, v.y, v.z, 1.0f);
+        return Vec3(result.x, result.y, result.z);
     }
 
     Quat &operator+=(const Quat &other)

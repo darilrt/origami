@@ -1,77 +1,53 @@
 #pragma once
 
+#include <cmath>
+
 #include <origami/vec/vec2.h>
 #include <origami/vec/vec3.h>
 
 class Vec4
 {
 public:
-    union
-    {
-        struct
-        {
-            float x, y, z, w;
-        };
-        struct
-        {
-            float r, g, b, a;
-        };
-    };
+    float x, y, z, w;
 
     Vec4(float value)
     {
-        data[0] = value;
-        data[1] = value;
-        data[2] = value;
-        data[3] = value;
+        x = value;
+        y = value;
+        z = value;
+        w = value;
     }
 
-    Vec4(float x, float y, float z, float w)
+    Vec4(float _x, float _y, float _z, float _w)
     {
-        data[0] = x;
-        data[1] = y;
-        data[2] = z;
-        data[3] = w;
+        x = _x;
+        y = _y;
+        z = _z;
+        w = _w;
     }
 
     Vec4()
     {
-        data[0] = 0;
-        data[1] = 0;
-        data[2] = 0;
-        data[3] = 0;
-    }
-
-    Vec4(const Vec2 &v, float z, float w)
-    {
-        data[0] = v.x;
-        data[1] = v.y;
-        data[2] = z;
-        data[3] = w;
-    }
-
-    Vec4(const Vec2 &v, const Vec2 &w)
-    {
-        data[0] = v.x;
-        data[1] = v.y;
-        data[2] = w.x;
-        data[3] = w.y;
+        x = 0;
+        y = 0;
+        z = 0;
+        w = 0;
     }
 
     Vec4(const Vec3 &v, float w)
     {
-        data[0] = v.x;
-        data[1] = v.y;
-        data[2] = v.z;
-        data[3] = w;
+        x = v.x;
+        y = v.y;
+        z = v.z;
+        w = w;
     }
 
     Vec4(const Vec4 &v)
     {
-        data[0] = v.x;
-        data[1] = v.y;
-        data[2] = v.z;
-        data[3] = v.w;
+        x = v.x;
+        y = v.y;
+        z = v.z;
+        w = v.w;
     }
 
     float dot(const Vec4 &other) const
@@ -92,16 +68,6 @@ public:
     Vec4 normalize() const
     {
         return *this / length();
-    }
-
-    float &operator[](int index)
-    {
-        return data[index];
-    }
-
-    const float &operator[](int index) const
-    {
-        return data[index];
     }
 
     Vec4 operator+(const Vec4 &other) const

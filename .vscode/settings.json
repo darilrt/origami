@@ -8,6 +8,8 @@
         "xutility": "cpp",
         "system_error": "cpp",
         "type_traits": "cpp",
-        "xtr1common": "cpp"
+        "xtr1common": "cpp",
+        "cmath": "cpp",
+        "cassert": "cpp"
     }
 }

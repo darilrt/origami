@@ -1,64 +1,38 @@
 #pragma once
 
-#include <origami/vec/vec2.h>
+#include <cmath>
 
 class Vec3
 {
 public:
-    float data[3];
-
-    union
-    {
-        struct
-        {
-            float x, y, z;
-        };
-        struct
-        {
-            float r, g, b;
-        };
-    };
+    float x, y, z;
 
     Vec3(float value)
     {
-        data[0] = value;
-        data[1] = value;
-        data[2] = value;
+        x = value;
+        y = value;
+        z = value;
     }
 
-    Vec3(float x, float y, float z)
+    Vec3(float _x, float _y, float _z)
     {
-        data[0] = x;
-        data[1] = y;
-        data[2] = z;
+        x = _x;
+        y = _y;
+        z = _z;
     }
 
     Vec3()
     {
-        data[0] = 0;
-        data[1] = 0;
-        data[2] = 0;
-    }
-
-    Vec3(const Vec2 &v, float z)
-    {
-        data[0] = v.x;
-        data[1] = v.y;
-        data[2] = z;
-    }
-
-    Vec3(const Vec2 &v)
-    {
-        data[0] = v.x;
-        data[1] = v.y;
-        data[2] = 0;
+        x = 0;
+        y = 0;
+        z = 0;
     }
 
     Vec3(const Vec3 &v)
     {
-        data[0] = v.x;
-        data[1] = v.y;
-        data[2] = v.z;
+        x = v.x;
+        y = v.y;
+        z = v.z;
     }
 
     float dot(const Vec3 &other) const
@@ -86,16 +60,6 @@ public:
         return Vec3(y * other.z - z * other.y,
                     z * other.x - x * other.z,
                     x * other.y - y * other.x);
-    }
-
-    float &operator[](int index)
-    {
-        return data[index];
-    }
-
-    const float &operator[](int index) const
-    {
-        return data[index];
     }
 
     Vec3 operator+(const Vec3 &other) const

@@ -1,13 +1,9 @@
 #pragma once
 
 #include <xmmintrin.h>
-#include <origami/mat/mat.h>
 #include <origami/vec/vec.h>
 
-typedef Mat<float, 4, 4> Mat4;
-
-template <>
-class Mat<float, 4, 4>
+class Mat4
 {
 public:
     float data[16];
@@ -38,7 +34,7 @@ public:
         };
     };
 
-    Mat(float value)
+    Mat4(float value)
     {
         for (int i = 0; i < 16; i++)
         {
@@ -46,10 +42,10 @@ public:
         }
     }
 
-    Mat(float m00, float m01, float m02, float m03,
-        float m10, float m11, float m12, float m13,
-        float m20, float m21, float m22, float m23,
-        float m30, float m31, float m32, float m33)
+    Mat4(float m00, float m01, float m02, float m03,
+         float m10, float m11, float m12, float m13,
+         float m20, float m21, float m22, float m23,
+         float m30, float m31, float m32, float m33)
     {
         data[0] = m00;
         data[1] = m01;
@@ -69,7 +65,7 @@ public:
         data[15] = m33;
     }
 
-    Mat(const Mat4 &other)
+    Mat4(const Mat4 &other)
     {
         for (int i = 0; i < 16; i++)
         {
@@ -101,7 +97,7 @@ public:
                     0.0f, 0.0f, 0.0f, 1.0f);
     }
 
-    static Mat4 translate(const Vec<float, 3> &v)
+    static Mat4 translate(const Vec3 &v)
     {
         return Mat4(1.0f, 0.0f, 0.0f, v.x,
                     0.0f, 1.0f, 0.0f, v.y,
@@ -109,7 +105,7 @@ public:
                     0.0f, 0.0f, 0.0f, 1.0f);
     }
 
-    static Mat4 scale(const Vec<float, 3> &v)
+    static Mat4 scale(const Vec3 &v)
     {
         return Mat4(v.x, 0.0f, 0.0f, 0.0f,
                     0.0f, v.y, 0.0f, 0.0f,
@@ -117,7 +113,7 @@ public:
                     0.0f, 0.0f, 0.0f, 1.0f);
     }
 
-    static Mat4 rotate(float angle, const Vec<float, 3> &v)
+    static Mat4 rotate(float angle, const Vec3 &v)
     {
         float c = cos(angle);
         float s = sin(angle);
@@ -131,40 +127,9 @@ public:
                     0.0f, 0.0f, 0.0f, 1.0f);
     }
 
-    static Mat4 ortho(float left, float right, float bottom, float top, float near, float far)
-    {
-        return Mat4(2.0f / (right - left), 0.0f, 0.0f, -(right + left) / (right - left),
-                    0.0f, 2.0f / (top - bottom), 0.0f, -(top + bottom) / (top - bottom),
-                    0.0f, 0.0f, -2.0f / (far - near), -(far + near) / (far - near),
-                    0.0f, 0.0f, 0.0f, 1.0f);
-    }
+    static Mat4 ortho(float left, float right, float bottom, float top, float near, float far);
 
-    static Mat4 perspective(float fov, float aspect, float near, float far)
-    {
-        float f = 1.0f / tan(fov / 2.0f);
-
-        return Mat4(f / aspect, 0.0f, 0.0f, 0.0f,
-                    0.0f, f, 0.0f, 0.0f,
-                    0.0f, 0.0f, (far + near) / (near - far), (2.0f * far * near) / (near - far),
-                    0.0f, 0.0f, -1.0f, 0.0f);
-    }
-
-    static Mat4 look_at(const Vec<float, 3> &eye, const Vec<float, 3> &center, const Vec<float, 3> &up)
-    {
-        Vec<float, 3> f = (center - eye).normalize();
-        Vec<float, 3> s = f.cross(up).normalize();
-        Vec<float, 3> u = s.cross(f);
-
-        return Mat4(s.x, u.x, -f.x, 0.0f,
-                    s.y, u.y, -f.y, 0.0f,
-                    s.z, u.z, -f.z, 0.0f,
-                    -s.dot(eye), -u.dot(eye), f.dot(eye), 1.0f);
-    }
-
-    static Mat4 look_at(const Vec<float, 3> &eye, const Vec<float, 3> &center)
-    {
-        return look_at(eye, center, Vec<float, 3>(0.0f, 1.0f, 0.0f));
-    }
+    static Mat4 perspective(float fov, float aspect, float near, float far);
 
     Mat4 &operator=(const Mat4 &other)
     {
