@@ -5,7 +5,7 @@
 class Asset
 {
 public:
-    static void load(const std::string &path) = 0;
+    virtual void load(const std::string &path) = 0;
 };
 
 class AssetManager : public Resource

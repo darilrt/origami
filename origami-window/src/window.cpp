@@ -42,6 +42,7 @@ void Window::run(EngineState &state)
     Uint64 LAST = 0;
     float delta_time = 0;
 
+    es.emit<PreStart>();
     es.emit<Start>();
     while (is_running)
     {

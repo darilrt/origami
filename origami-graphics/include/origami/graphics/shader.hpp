@@ -5,7 +5,11 @@
 
 class Shader
 {
+    friend class GraphicEntity;
+
 public:
+    Shader();
+
     Shader(const std::string &vertex, const std::string &fragment);
 
 private:

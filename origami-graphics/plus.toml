@@ -20,7 +20,7 @@ cxx = "g++"
 standard = "c++17"
 flags = []
 includes = ["include"]
-defines = ["SOKOL_GLCORE33", "SOKOL_IMPL"]
+defines = ["SOKOL_GLCORE33"]
 warnings = []
 debug = true
 

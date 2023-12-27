@@ -4,7 +4,7 @@
 #include <origami/core.hpp>
 #include <origami/window.hpp>
 #include <origami/event.hpp>
-#include <origami/gl.hpp>
+#include <origami/graphics.hpp>
 #include <origami/assets.hpp>
 
 class Game : public Resource
@@ -25,10 +25,49 @@ public:
         auto &window = state.get_resource<Window>();
         window.set_size({1280, 720});
         window.set_title("Origami");
+        window.set_vsync(true);
 
-        auto &assets = state.get_resource<AssetManager>();
+        auto &graphics = state.get_resource<GraphicsSystem>();
 
-        assets.load<File>("./assets/shaders/triangle.glsl");
+        auto shader = Shader();
+        auto material = std::make_shared<Material>(shader);
+        auto mesh = Mesh({
+                             {0.0f, 0.5f, 0.0f},
+                             {-0.5f, -0.5f, 0.0f},
+                             {0.5f, -0.5f, 0.0f},
+                         },
+                         {
+                             {0.0f, 0.0f, 1.0f},
+                             {0.0f, 0.0f, 1.0f},
+                             {0.0f, 0.0f, 1.0f},
+                         },
+                         {
+                             {0.0f, 0.0f},
+                             {0.0f, 1.0f},
+                             {1.0f, 1.0f},
+                         },
+                         {
+                             0,
+                             1,
+                             2,
+                         });
+
+        auto &entity = graphics.create_entity();
+        entity.set_material(material);
+        entity.set_mesh(std::make_shared<Mesh>(mesh));
+
+        // auto texture = Texture::from_file("assets/texture.png");
+        // auto shader = Shader::from_file("assets/shader.glsl");
+        // auto mesh = Mesh::from_file("assets/mesh.obj");
+
+        // auto material = Material::create(shader);
+        // material->set_texture("u_texture", texture);
+
+        // auto entity = Entity::create();
+        // entity->set_mesh(mesh);
+        // entity->set_material(material);
+
+        // graphics.add_entity(entity);
     }
 
     void update(EngineState &state, Update &time)

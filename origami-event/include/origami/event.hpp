@@ -46,6 +46,7 @@ private:
     std::unordered_map<typeid_t, std::vector<EventHandler>> event_handlers;
 };
 
+Event(PreStart);
 Event(Start);
 Event(PreUpdate);
 Event(Update { float delta_time; });
