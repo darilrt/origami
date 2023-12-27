@@ -6,6 +6,8 @@
 #include "type_id.hpp"
 #include "resources.hpp"
 
+struct InitializedResources; // Event
+
 class EngineState
 {
 public:

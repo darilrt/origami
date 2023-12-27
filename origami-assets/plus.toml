@@ -1,7 +1,10 @@
 require = []
 
+[subprojects]
+origami-core = { path = "../origami-core" }
+
 [project]
-name = "origami-core"
+name = "origami-assets"
 version = "0.1.0"
 description = ""
 author = ""

@@ -24,11 +24,7 @@ flags = []
 libdirs = []
 libs = []
 
-[subprojects.origami-core]
-path = "../origami-core"
-
-[subprojects.origami-event]
-path = "../origami-event"
-
-[subprojects.origami-math]
-path = "../origami-math"
+[subprojects]
+origami-core = { path = "../origami-core" }
+origami-event = { path = "../origami-event" }
+origami-math = { path = "../origami-math" }
