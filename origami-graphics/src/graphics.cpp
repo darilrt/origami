@@ -1,4 +1,3 @@
-
 #include <origami/event.hpp>
 #include <origami/window.hpp>
 #include <sokol_gfx.h>
@@ -33,6 +32,8 @@ void GraphicsSystem::init(EngineState &state)
     auto &window = state.get_resource<Window>();
     auto &es = state.get_resource<EventSystem>();
 
+    viewport = {0, 0, window.get_size().x, window.get_size().y};
+
     es.regist<PreStart>([](EngineState &state, void *_)
                         {
         sg_desc desc = {
@@ -41,30 +42,7 @@ void GraphicsSystem::init(EngineState &state)
         sg_setup(&desc); });
 
     es.regist<Render>([&](EngineState &state, void *_)
-                      {
-        sg_begin_default_pass(gs_state->clear_pass, window.get_size().x, window.get_size().y);
-
-        for (auto &entity : entities)
-        {
-            if (entity->visible)
-            {
-                std::shared_ptr<Mesh> mesh = entity->get_mesh();
-                std::shared_ptr<Material> material = entity->get_material();
-                auto transform = entity->get_transform();
-
-                // material->set_uniform("u_transform", transform);
-                // material->set_uniform("u_view", Mat4::identity());
-                // material->set_uniform("u_projection", Mat4::identity());
-                material->bind();
-
-                // mesh->bind();
-                // sg_apply_draw_state(material->get_draw_state());
-                // sg_draw(0, mesh->get_vertex_count(), 1);
-            }
-        }
-
-        sg_end_pass();
-        sg_commit(); });
+                      { _render(window.get_size()); });
 
     es.regist<Stop>([](EngineState &state, void *_)
                     { sg_shutdown(); });
@@ -77,6 +55,39 @@ void GraphicsSystem::set_clear_color(Vec4 color)
 
 GraphicEntity &GraphicsSystem::create_entity()
 {
-    entities.push_back(std::make_unique<GraphicEntity>());
-    return *entities.back().get();
+    entities.push_back(GraphicEntity());
+    return entities.back();
+}
+
+void GraphicsSystem::_render(Vec2 window_size)
+{
+    sg_apply_viewport(viewport.x, viewport.y, viewport.z, viewport.w, true);
+    sg_begin_default_pass(&gs_state->clear_pass, (int)window_size.x, (int)window_size.y);
+
+    for (auto &entity : entities)
+    {
+        if (!entity.is_visible)
+            continue;
+
+        sg_bindings bindings = {0};
+        bindings.vertex_buffers[0] = entity.mesh->vertex_buffer;
+        bindings.index_buffer = entity.mesh->index_buffer;
+
+        sg_apply_pipeline(entity.material->shader->pipeline);
+        sg_apply_bindings(&bindings);
+
+        entity.material->set_std_uniforms(view, projection, Mat4::identity());
+        sg_range vs_params = entity.material->get_vs();
+        if (vs_params.size > 0)
+            sg_apply_uniforms(SG_SHADERSTAGE_VS, 0, vs_params);
+
+        sg_range fs_params = entity.material->get_fs();
+        if (fs_params.size > 0)
+            sg_apply_uniforms(SG_SHADERSTAGE_FS, 0, fs_params);
+
+        sg_draw(0, entity.mesh->get_index_count(), 1);
+    }
+
+    sg_end_pass();
+    sg_commit();
 }

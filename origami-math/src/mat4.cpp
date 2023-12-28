@@ -3,14 +3,14 @@
 
 Mat4 Mat4::ortho(float left, float right, float bottom, float top, float near, float far)
 {
-    Mat4 result(1.0f);
+    Mat4 result = Mat4::identity();
 
-    result.m00 = 2.0f / (right - left);
-    result.m11 = 2.0f / (top - bottom);
-    result.m22 = -2.0f / (far - near);
-    result.m30 = -(right + left) / (right - left);
-    result.m31 = -(top + bottom) / (top - bottom);
-    result.m32 = -(far + near) / (far - near);
+    result.data[0] = 2.0f / (right - left);
+    result.data[5] = 2.0f / (top - bottom);
+    result.data[10] = -2.0f / (far - near);
+    result.data[12] = -(right + left) / (right - left);
+    result.data[13] = -(top + bottom) / (top - bottom);
+    result.data[14] = -(far + near) / (far - near);
 
     return result;
 }

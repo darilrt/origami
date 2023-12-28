@@ -7,6 +7,47 @@
 #include <origami/graphics.hpp>
 #include <origami/assets.hpp>
 
+class SimpleMaterial : public Material
+{
+public:
+    struct
+    {
+        STD_UNIFORM_HEADER_VS
+        Vec3 color;
+    } uniforms;
+
+    SimpleMaterial()
+    {
+        shader = Shader::from_file(
+            "assets/shaders/default",
+            sizeof(uniforms),
+            {
+                {"view", SG_UNIFORMTYPE_MAT4},
+                {"projection", SG_UNIFORMTYPE_MAT4},
+                {"model", SG_UNIFORMTYPE_MAT4},
+                {"color", SG_UNIFORMTYPE_FLOAT3},
+            },
+            0, {});
+    }
+
+    sg_range get_vs() override
+    {
+        return {&uniforms, sizeof(uniforms)};
+    }
+
+    sg_range get_fs() override
+    {
+        return {nullptr, 0};
+    }
+
+    void set_std_uniforms(const Mat4 &view, const Mat4 &projection, const Mat4 &model) override
+    {
+        uniforms.view = view;
+        uniforms.projection = projection;
+        uniforms.model = model;
+    }
+};
+
 class Game : public Resource
 {
 public:
@@ -29,50 +70,19 @@ public:
 
         auto &graphics = state.get_resource<GraphicsSystem>();
 
-        auto shader = Shader();
-        auto material = std::make_shared<Material>(shader);
-        auto mesh = Mesh({
-                             {0.0f, 0.5f, 0.0f},
-                             {-0.5f, -0.5f, 0.0f},
-                             {0.5f, -0.5f, 0.0f},
-                         },
-                         {
-                             {0.0f, 0.0f, 1.0f},
-                             {0.0f, 0.0f, 1.0f},
-                             {0.0f, 0.0f, 1.0f},
-                         },
-                         {
-                             {0.0f, 0.0f},
-                             {0.0f, 1.0f},
-                             {1.0f, 1.0f},
-                         },
-                         {
-                             0,
-                             1,
-                             2,
-                         });
+        int half_width_x = window.get_size().x / 2 / 50;
+        int half_width_y = window.get_size().y / 2 / 50;
+        graphics.set_view(Mat4::identity());
+        graphics.set_projection(Mat4::ortho(-half_width_x, half_width_x, -half_width_y, half_width_y, -1.0f, 1.0f));
 
         auto &entity = graphics.create_entity();
-        entity.set_material(material);
-        entity.set_mesh(std::make_shared<Mesh>(mesh));
-
-        // auto texture = Texture::from_file("assets/texture.png");
-        // auto shader = Shader::from_file("assets/shader.glsl");
-        // auto mesh = Mesh::from_file("assets/mesh.obj");
-
-        // auto material = Material::create(shader);
-        // material->set_texture("u_texture", texture);
-
-        // auto entity = Entity::create();
-        // entity->set_mesh(mesh);
-        // entity->set_material(material);
-
-        // graphics.add_entity(entity);
+        entity.mesh = primitive::quad();
+        entity.material = new SimpleMaterial();
+        ((SimpleMaterial *)entity.material)->uniforms.color = {1.0f, 0.5f, 0.2f};
     }
 
     void update(EngineState &state, Update &time)
     {
-        std::cout << "FPS: " << (1.0f / time.delta_time) << std::endl;
     }
 };
 
