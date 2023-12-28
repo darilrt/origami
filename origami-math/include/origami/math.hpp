@@ -1,8 +1,8 @@
 #pragma once
 
-#include <origami/mat/mat.h>
-#include <origami/mat/mat4.h>
+#include "origami/mat/mat.hpp"
+#include "origami/mat/mat4.hpp"
 
-#include <origami/vec/vec.h>
+#include "origami/vec/vec.hpp"
 
-#include <origami/quat/quat.h>
+#include "origami/quat/quat.hpp"

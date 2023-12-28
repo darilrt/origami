@@ -76,7 +76,7 @@ void GraphicsSystem::_render(Vec2 window_size)
         sg_apply_pipeline(entity.material->shader->pipeline);
         sg_apply_bindings(&bindings);
 
-        entity.material->set_std_uniforms(view, projection, Mat4::identity());
+        entity.material->set_std_uniforms(view, projection, entity.model);
         sg_range vs_params = entity.material->get_vs();
         if (vs_params.size > 0)
             sg_apply_uniforms(SG_SHADERSTAGE_VS, 0, vs_params);

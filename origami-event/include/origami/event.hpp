@@ -49,7 +49,10 @@ private:
 Event(PreStart);
 Event(Start);
 Event(PreUpdate);
-Event(Update { float delta_time; });
+Event(Update {
+    float delta_time;
+    float life_time;
+});
 Event(PostUpdate);
 Event(Render);
 Event(Stop);

@@ -2,8 +2,8 @@
 
 #include <cmath>
 
-#include <origami/vec/vec3.h>
-#include <origami/vec/vec4.h>
+#include "origami/vec/vec3.hpp"
+#include "origami/vec/vec4.hpp"
 
 class Vec2
 {
@@ -23,18 +23,6 @@ public:
     }
 
     Vec2(const Vec2 &other)
-    {
-        x = other.x;
-        y = other.y;
-    }
-
-    Vec2(const Vec3 &other)
-    {
-        x = other.x;
-        y = other.y;
-    }
-
-    Vec2(const Vec4 &other)
     {
         x = other.x;
         y = other.y;

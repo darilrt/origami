@@ -51,6 +51,8 @@ public:
 class Game : public Resource
 {
 public:
+    GraphicEntity *entity;
+
     void init(EngineState &state) override
     {
         auto &es = state.get_resource<EventSystem>();
@@ -70,20 +72,23 @@ public:
 
         auto &graphics = state.get_resource<GraphicsSystem>();
 
-        int half_width_x = window.get_size().x / 2 / 50;
-        int half_width_y = window.get_size().y / 2 / 50;
+        float half_width_x = (window.get_size().x / 2) / 200;
+        float half_width_y = (window.get_size().y / 2) / 200;
+
         graphics.set_view(Mat4::identity());
         graphics.set_projection(Mat4::ortho(-half_width_x, half_width_x, -half_width_y, half_width_y, -1.0f, 1.0f));
 
-        auto &entity = graphics.create_entity();
-        entity.mesh = primitive::quad();
-        entity.material = new SimpleMaterial();
-        ((SimpleMaterial *)entity.material)->uniforms.color = {1.0f, 0.5f, 0.2f};
+        entity = &graphics.create_entity();
+        entity->model = Mat4::identity();
+        entity->mesh = primitive::quad();
+        entity->material = new SimpleMaterial();
+        ((SimpleMaterial *)entity->material)->uniforms.color = {1.0f, 0.5f, 0.2f};
     }
 
     void update(EngineState &state, Update &time)
     {
-    }
+        entity->model = Quat::from_euler({0.0f, 0.0f, sin(time.life_time)}).to_mat4();
+    };
 };
 
 int main()

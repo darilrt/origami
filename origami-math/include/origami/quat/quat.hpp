@@ -2,9 +2,10 @@
 
 #include <cmath>
 
-#include <origami/mat/mat4.h>
-#include <origami/vec/vec3.h>
-#include <origami/vec/vec4.h>
+#include "origami/vec/vec3.hpp"
+#include "origami/vec/vec4.hpp"
+
+class Mat4;
 
 class Quat
 {
@@ -102,19 +103,7 @@ public:
             cos_half_y * cos_half_x * cos_half_z + sin_half_y * sin_half_x * sin_half_z);
     }
 
-    static Mat4 to_mat4(const Quat &q)
-    {
-        float i = q.i;
-        float j = q.j;
-        float k = q.k;
-        float r = q.r;
-
-        return Mat4(
-            1.0f - 2.0f * j * j - 2.0f * k * k, 2.0f * i * j - 2.0f * k * r, 2.0f * i * k + 2.0f * j * r, 0.0f,
-            2.0f * i * j + 2.0f * k * r, 1.0f - 2.0f * i * i - 2.0f * k * k, 2.0f * j * k - 2.0f * i * r, 0.0f,
-            2.0f * i * k - 2.0f * j * r, 2.0f * j * k + 2.0f * i * r, 1.0f - 2.0f * i * i - 2.0f * j * j, 0.0f,
-            0.0f, 0.0f, 0.0f, 1.0f);
-    }
+    Mat4 to_mat4();
 
     static Quat slerp(Quat &a, const Quat &b, float t)
     {
@@ -238,15 +227,5 @@ public:
     const float &operator[](int index) const
     {
         return data[index];
-    }
-
-    operator Mat4() const
-    {
-        return to_mat4(*this);
-    }
-
-    operator Vec4() const
-    {
-        return Vec4(i, j, k, r);
     }
 };

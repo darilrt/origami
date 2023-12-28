@@ -9,6 +9,8 @@
 class GraphicEntity
 {
 public:
+    Mat4 model;
+    sg_pipeline pipeline;
     bool is_visible = true;
     Mesh *mesh = nullptr;
     Material *material = nullptr;
@@ -16,13 +18,4 @@ public:
     GraphicEntity();
 
     ~GraphicEntity();
-
-    inline void set_transform(Mat4 transform) { transform = transform; }
-
-    Mat4 get_transform() { return transform; }
-
-private:
-    Mat4 transform;
-
-    sg_pipeline pipeline;
 };

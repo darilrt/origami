@@ -41,6 +41,7 @@ void Window::run(EngineState &state)
     Uint64 NOW = SDL_GetPerformanceCounter();
     Uint64 LAST = 0;
     float delta_time = 0;
+    float life_time = 0;
 
     es.emit<PreStart>();
     es.emit<Start>();
@@ -49,6 +50,7 @@ void Window::run(EngineState &state)
         LAST = NOW;
         NOW = SDL_GetPerformanceCounter();
         delta_time = (float)((NOW - LAST) / (float)SDL_GetPerformanceFrequency());
+        life_time += delta_time;
 
         while (SDL_PollEvent(&event) != 0)
         {
@@ -69,6 +71,7 @@ void Window::run(EngineState &state)
         es.emit<PreUpdate>();
         es.emit(Update{
             .delta_time = delta_time,
+            .life_time = life_time,
         });
         es.emit<PostUpdate>();
         es.emit<Render>();

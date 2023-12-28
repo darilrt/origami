@@ -2,8 +2,8 @@
 
 #include <cmath>
 
-#include <origami/vec/vec2.h>
-#include <origami/vec/vec3.h>
+#include "origami/vec/vec2.hpp"
+#include "origami/vec/vec3.hpp"
 
 class Vec4
 {
