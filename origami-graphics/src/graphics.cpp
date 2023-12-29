@@ -25,6 +25,8 @@ GraphicsSystem::~GraphicsSystem()
 {
     if (gs_state)
         delete gs_state;
+
+    entities.clear();
 }
 
 void GraphicsSystem::init(EngineState &state)
@@ -55,8 +57,9 @@ void GraphicsSystem::set_clear_color(Vec4 color)
 
 GraphicEntity &GraphicsSystem::create_entity()
 {
-    entities.push_back(GraphicEntity());
-    return entities.back();
+    GraphicEntity *entity = new GraphicEntity;
+    entities.push_back(entity);
+    return *entity;
 }
 
 void GraphicsSystem::_render(Vec2 window_size)
@@ -66,26 +69,26 @@ void GraphicsSystem::_render(Vec2 window_size)
 
     for (auto &entity : entities)
     {
-        if (!entity.is_visible)
+        if (!entity->is_visible)
             continue;
 
-        sg_bindings bindings = entity.material->bindings;
-        bindings.vertex_buffers[0] = entity.mesh->vertex_buffer;
-        bindings.index_buffer = entity.mesh->index_buffer;
+        sg_bindings bindings = entity->material->bindings;
+        bindings.vertex_buffers[0] = entity->mesh->vertex_buffer;
+        bindings.index_buffer = entity->mesh->index_buffer;
 
-        sg_apply_pipeline(entity.material->shader->pipeline);
+        sg_apply_pipeline(entity->material->shader->pipeline);
         sg_apply_bindings(&bindings);
 
-        entity.material->set_std_uniforms(view, projection, entity.model);
-        sg_range vs_params = entity.material->get_vs();
+        entity->material->set_std_uniforms(view, projection, entity->model);
+        sg_range vs_params = entity->material->get_vs();
         if (vs_params.size > 0)
             sg_apply_uniforms(SG_SHADERSTAGE_VS, 0, vs_params);
 
-        sg_range fs_params = entity.material->get_fs();
+        sg_range fs_params = entity->material->get_fs();
         if (fs_params.size > 0)
             sg_apply_uniforms(SG_SHADERSTAGE_FS, 0, fs_params);
 
-        sg_draw(0, entity.mesh->get_index_count(), 1);
+        sg_draw(0, entity->mesh->get_index_count(), 1);
     }
 
     sg_end_pass();

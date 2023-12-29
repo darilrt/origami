@@ -7,11 +7,8 @@ class Transform
 public:
     Transform *parent = nullptr;
     Vec3 position;
-    Quat rotation;
-    Vec3 scale;
-
-    Transform() : position(Vec3(0.0f)), rotation(Quat::identity()), scale(Vec3(1.0)) {}
-    Transform(const Vec3 &position, const Quat &rotation, const Vec3 &scale) : position(position), rotation(rotation), scale(scale) {}
+    Quat rotation = Quat::identity();
+    Vec3 scale = Vec3(1.0f);
 
     Mat4 get_matrix() const
     {

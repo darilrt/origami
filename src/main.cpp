@@ -4,6 +4,7 @@
 
 #include "simple_material.hpp"
 #include "transform.hpp"
+#include <string>
 
 class Sprite
 {
@@ -47,15 +48,28 @@ public:
 class Player : public Entity
 {
 public:
-    Sprite sprite;
     Transform transform;
+
+    Sprite sprite{
+        .sampler = std::shared_ptr<Sampler>(Sampler::from_file("assets/textures/mint.png")),
+        .transform = {
+            .parent = &transform,
+            .position = {0.5f, 0.5f, 0.0f},
+        },
+    };
+
+    Sprite sprite2 = {
+        .sampler = std::shared_ptr<Sampler>(Sampler::from_file("assets/textures/mint.png")),
+        .transform = {
+            .parent = &transform,
+            .position = {-0.5f, -0.5f, 0.0f},
+        },
+    };
 
     void start(EngineState &state) override
     {
-        sprite.sampler = std::shared_ptr<Sampler>(Sampler::from_file("assets/textures/mint.png"));
-        sprite.transform.parent = &transform;
-        sprite.transform.position = {0.5f, 0.5f, 0.0f};
         sprite.start(state);
+        sprite2.start(state);
     }
 
     void update(EngineState &state, const Update &time) override
@@ -70,6 +84,7 @@ public:
         transform.rotation *= Quat::from_euler({0.0f, 0.0f, time.delta_time});
 
         sprite.update(state, time);
+        sprite2.update(state, time);
     }
 
     void destroy(EngineState &state) override {}
@@ -85,7 +100,7 @@ public:
         auto &window = state.get_resource<Window>();
         window.set_size({1280, 720});
         window.set_title("Origami");
-        window.set_vsync(true);
+        window.set_vsync(false);
 
         auto &graphics = state.get_resource<GraphicsSystem>();
 
@@ -102,6 +117,22 @@ public:
 
     void update(EngineState &state, const Update &time) override
     {
+        static auto &window = state.get_resource<Window>();
+        static int fps = 0;
+        static float fps_timer = 0;
+
+        fps_timer += time.delta_time;
+        if (fps_timer >= 1.0f)
+        {
+            window.set_title("Origami - " + std::to_string(fps));
+            fps_timer = 0;
+            fps = 0;
+        }
+        else
+        {
+            fps++;
+        }
+
         group.update(state, time);
     }
 

@@ -33,7 +33,7 @@ private:
     class State;
 
     State *gs_state = nullptr;
-    std::vector<GraphicEntity> entities;
+    std::vector<GraphicEntity *> entities;
     Vec4 viewport;
     Mat4 view;
     Mat4 projection;

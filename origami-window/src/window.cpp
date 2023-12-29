@@ -131,9 +131,9 @@ void Window::set_size(Vec2 size)
     SDL_SetWindowSize((SDL_Window *)window, size.x, size.y);
 }
 
-void Window::set_title(const char *title)
+void Window::set_title(const std::string &title)
 {
-    SDL_SetWindowTitle((SDL_Window *)window, title);
+    SDL_SetWindowTitle((SDL_Window *)window, title.c_str());
 }
 
 void Window::set_vsync(bool vsync)

@@ -18,7 +18,7 @@ public:
 
     void set_size(Vec2 size);
 
-    void set_title(const char *title);
+    void set_title(const std::string &title);
 
     void set_vsync(bool vsync);
 
