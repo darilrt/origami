@@ -9,7 +9,7 @@ public:
     Transform2D transform;
 
     Sprite sprite{
-        .sampler = std::shared_ptr<Sampler>(Sampler::from_file("assets/textures/gridbox.png")),
+        .sampler = std::shared_ptr<Sampler>(Sampler::from_file("assets/textures/mint.png")),
         .transform = {
             .parent = &transform,
             .position = {0.0f, 0.0f},

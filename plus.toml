@@ -48,6 +48,9 @@ path = "origami-event"
 [subprojects.origami-scene]
 path = "origami-scene"
 
+[subprojects.origami-components]
+path = "origami-components"
+
 [deps.sokol]
 git = "https://github.com/floooh/sokol"
 includes = [ "./",]

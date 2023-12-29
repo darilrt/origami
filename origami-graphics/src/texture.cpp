@@ -30,8 +30,9 @@ Sampler *Sampler::from_file(const std::string &path)
     stbi_image_free(pixels);
 
     image->sampler = sg_make_sampler(sg_sampler_desc{
-        .min_filter = SG_FILTER_LINEAR,
-        .mag_filter = SG_FILTER_LINEAR,
+        .min_filter = SG_FILTER_NEAREST,
+        .mag_filter = SG_FILTER_NEAREST,
+        .mipmap_filter = SG_FILTER_NEAREST,
         .wrap_u = SG_WRAP_MIRRORED_REPEAT,
         .wrap_v = SG_WRAP_MIRRORED_REPEAT,
     });

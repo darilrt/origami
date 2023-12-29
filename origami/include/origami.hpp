@@ -6,6 +6,7 @@
 #include <origami/graphics.hpp>
 #include <origami/assets.hpp>
 #include <origami/scene.hpp>
+#include <origami/components.hpp>
 
 #define ENTRY_POINT(T)  \
     int main()          \
