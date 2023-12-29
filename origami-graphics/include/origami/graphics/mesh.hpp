@@ -7,12 +7,19 @@
 
 class GraphicEntity;
 
+struct Vertex
+{
+    Vec3 position;
+    Vec3 normal;
+    Vec2 uv;
+};
+
 class Mesh
 {
     friend class GraphicsSystem;
 
 public:
-    Mesh(std::vector<Vec3> vertices, std::vector<Vec3> normals, std::vector<Vec2> uvs, std::vector<uint32_t> indices);
+    Mesh(std::vector<Vertex> uvs, std::vector<uint32_t> indices);
 
     ~Mesh();
 

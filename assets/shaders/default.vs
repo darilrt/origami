@@ -1,16 +1,22 @@
 #version 330 core
 
-layout(location = 0) in vec3 position;
+struct Vertex
+{
+    vec3 position;
+    vec3 normal;
+    vec2 tex_coords;
+};
+
+layout(location = 0) in Vertex vert;
 
 uniform mat4 view;
 uniform mat4 projection;
 uniform mat4 model;
-uniform vec3 color;
 
-out vec3 v_color;
+out vec2 tex_coord;
 
 void main()
 {
-    v_color = color;
-    gl_Position = projection * view * model * vec4(position, 1.0);
+    tex_coord = vert.tex_coords;
+    gl_Position = projection * view * model * vec4(vert.position, 1.0);
 }

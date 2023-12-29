@@ -4,6 +4,9 @@
 #include <origami/event.hpp>
 #include <origami/math.hpp>
 
+#include "origami/window/enums.hpp"
+#include "origami/window/events.hpp"
+
 class Window : public Resource
 {
 public:

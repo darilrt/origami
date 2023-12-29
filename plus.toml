@@ -24,6 +24,9 @@ flags = []
 libdirs = []
 libs = []
 
+[subprojects.origami]
+path = "origami"
+
 [subprojects.origami-core]
 path = "origami-core"
 
@@ -41,6 +44,9 @@ path = "origami-window"
 
 [subprojects.origami-event]
 path = "origami-event"
+
+[subprojects.origami-scene]
+path = "origami-scene"
 
 [deps.sokol]
 git = "https://github.com/floooh/sokol"

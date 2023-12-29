@@ -26,11 +26,15 @@ public:
 
     void rotate(Quat rotation);
 
+    void scale(Vec3 scale);
+
     static Mat4 identity();
 
     static Mat4 ortho(float left, float right, float bottom, float top, float near, float far);
 
     static Mat4 perspective(float fov, float aspect, float near, float far);
+
+    Mat4 operator+(const Mat4 &other);
 
     Mat4 operator*(const Mat4 &other);
 };

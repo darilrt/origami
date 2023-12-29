@@ -10,38 +10,30 @@ class Mat4;
 class Quat
 {
 public:
-    float data[4];
-
-    union
-    {
-        struct
-        {
-            float i, j, k, r;
-        };
-    };
+    float i, j, k, r;
 
     Quat(float value)
     {
-        data[0] = value;
-        data[1] = value;
-        data[2] = value;
-        data[3] = value;
+        i = value;
+        j = value;
+        k = value;
+        r = value;
     }
 
     Quat(float i, float j, float k, float r)
     {
-        data[0] = i;
-        data[1] = j;
-        data[2] = k;
-        data[3] = r;
+        this->i = i;
+        this->j = j;
+        this->k = k;
+        this->r = r;
     }
 
     Quat()
     {
-        data[0] = 0.0;
-        data[1] = 0.0;
-        data[2] = 0.0;
-        data[3] = 1.0;
+        i = 0.0f;
+        j = 0.0f;
+        k = 0.0f;
+        r = 1.0f;
     }
 
     Quat normalize()
@@ -82,26 +74,7 @@ public:
         return Quat(axis.x * sin_half_angle, axis.y * sin_half_angle, axis.z * sin_half_angle, cos(half_angle));
     }
 
-    static Quat from_euler(const Vec3 &euler)
-    {
-        float half_x = euler.x * 0.5;
-        float half_y = euler.y * 0.5;
-        float half_z = euler.z * 0.5;
-
-        float sin_half_x = sin(half_x);
-        float sin_half_y = sin(half_y);
-        float sin_half_z = sin(half_z);
-
-        float cos_half_x = cos(half_x);
-        float cos_half_y = cos(half_y);
-        float cos_half_z = cos(half_z);
-
-        return Quat(
-            cos_half_y * sin_half_x * cos_half_z + sin_half_y * cos_half_x * sin_half_z,
-            sin_half_y * cos_half_x * cos_half_z - cos_half_y * sin_half_x * sin_half_z,
-            cos_half_y * cos_half_x * sin_half_z - sin_half_y * sin_half_x * cos_half_z,
-            cos_half_y * cos_half_x * cos_half_z + sin_half_y * sin_half_x * sin_half_z);
-    }
+    static Quat from_euler(const Vec3 &euler);
 
     Mat4 to_mat4();
 
@@ -217,15 +190,5 @@ public:
     bool operator!=(const Quat &other) const
     {
         return !(*this == other);
-    }
-
-    float &operator[](int index)
-    {
-        return data[index];
-    }
-
-    const float &operator[](int index) const
-    {
-        return data[index];
     }
 };

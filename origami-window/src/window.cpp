@@ -56,15 +56,60 @@ void Window::run(EngineState &state)
         {
             if (event.type == SDL_QUIT)
             {
+                es.emit<WindowClose>();
                 is_running = false;
             }
             else if (event.type == SDL_WINDOWEVENT && event.window.windowID == window_id)
             {
+                switch (event.window.event)
+                {
+                case SDL_WINDOWEVENT_RESIZED:
+                    es.emit<WindowResize>({
+                        .width = event.window.data1,
+                        .height = event.window.data2,
+                    });
+                    break;
+                }
             }
             else if (event.type == SDL_KEYDOWN)
             {
-                if (event.key.keysym.sym == SDLK_ESCAPE)
-                    is_running = false;
+                es.emit<KeyDown>({
+                    .key_code = (KeyCode)event.key.keysym.scancode,
+                });
+            }
+            else if (event.type == SDL_KEYUP)
+            {
+                es.emit<KeyUp>({
+                    .key_code = (KeyCode)event.key.keysym.scancode,
+                });
+            }
+            else if (event.type == SDL_MOUSEBUTTONDOWN)
+            {
+                es.emit<MouseButtonDown>({
+                    .button = (MouseButton)event.button.button,
+                });
+            }
+            else if (event.type == SDL_MOUSEBUTTONUP)
+            {
+                es.emit<MouseButtonUp>({
+                    .button = (MouseButton)event.button.button,
+                });
+            }
+            else if (event.type == SDL_MOUSEMOTION)
+            {
+                es.emit<MouseMove>({
+                    .x = event.motion.x,
+                    .y = event.motion.y,
+                    .dx = event.motion.xrel,
+                    .dy = event.motion.yrel,
+                });
+            }
+            else if (event.type == SDL_MOUSEWHEEL)
+            {
+                es.emit<MouseScroll>({
+                    .x = event.wheel.x,
+                    .y = event.wheel.y,
+                });
             }
         }
 

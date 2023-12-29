@@ -14,9 +14,7 @@ Shader::~Shader()
     sg_destroy_pipeline(pipeline);
 }
 
-Shader *Shader::from_file(const std::string &path,
-                          size_t uvs_size, std::vector<Uniform> uniforms_vs,
-                          size_t ufs_size, std::vector<Uniform> uniforms_fs)
+Shader *Shader::from_file(const std::string &path, Shader::Descriptor descriptor)
 {
     std::string fs = path + ".fs";
     std::string vs = path + ".vs";
@@ -51,9 +49,9 @@ Shader *Shader::from_file(const std::string &path,
         },
     };
 
-    shader_desc.vs.uniform_blocks[0].size = uvs_size;
+    shader_desc.vs.uniform_blocks[0].size = descriptor.uniforms_vs.size;
     int num_uniforms = 0;
-    for (auto &uniform : uniforms_vs)
+    for (auto &uniform : descriptor.uniforms_vs.uniforms)
     {
         shader_desc.vs.uniform_blocks[0].uniforms[num_uniforms++] = {
             .name = uniform.name.c_str(),
@@ -61,13 +59,32 @@ Shader *Shader::from_file(const std::string &path,
         };
     }
 
-    shader_desc.fs.uniform_blocks[0].size = 0;
+    shader_desc.fs.uniform_blocks[0].size = descriptor.uniforms_fs.size;
     num_uniforms = 0;
-    for (auto &uniform : uniforms_fs)
+    for (auto &uniform : descriptor.uniforms_fs.uniforms)
     {
         shader_desc.fs.uniform_blocks[0].uniforms[num_uniforms++] = {
             .name = uniform.name.c_str(),
             .type = uniform.type,
+        };
+    }
+
+    int num_images = 0;
+    for (auto &image : descriptor.images)
+    {
+        shader_desc.fs.images[num_images++] = {
+            .used = true,
+            .image_type = image.type,
+        };
+        shader_desc.fs.samplers[num_images - 1] = {
+            .used = true,
+            .sampler_type = SG_SAMPLERTYPE_FILTERING,
+        };
+        shader_desc.fs.image_sampler_pairs[num_images - 1] = {
+            .used = true,
+            .image_slot = num_images - 1,
+            .sampler_slot = num_images - 1,
+            .glsl_name = image.name.c_str(),
         };
     }
 
@@ -81,8 +98,12 @@ Shader *Shader::from_file(const std::string &path,
 
     auto pipeline_desc = sg_pipeline_desc{
         .shader = shader->shader,
+        .primitive_type = descriptor.primitive_type,
+        .cull_mode = descriptor.cull_mode,
     };
     pipeline_desc.layout.attrs[0].format = SG_VERTEXFORMAT_FLOAT3;
+    pipeline_desc.layout.attrs[1].format = SG_VERTEXFORMAT_FLOAT3;
+    pipeline_desc.layout.attrs[2].format = SG_VERTEXFORMAT_FLOAT2;
     pipeline_desc.index_type = SG_INDEXTYPE_UINT32;
     shader->pipeline = sg_make_pipeline(pipeline_desc);
 

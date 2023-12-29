@@ -69,7 +69,7 @@ void GraphicsSystem::_render(Vec2 window_size)
         if (!entity.is_visible)
             continue;
 
-        sg_bindings bindings = {0};
+        sg_bindings bindings = entity.material->bindings;
         bindings.vertex_buffers[0] = entity.mesh->vertex_buffer;
         bindings.index_buffer = entity.mesh->index_buffer;
 

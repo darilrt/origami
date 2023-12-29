@@ -13,7 +13,6 @@ class AssetManager : public Resource
 public:
     void init(EngineState &state) override
     {
-        std::cout << "AssetManager::init" << std::endl;
     }
 
     template <typename T>

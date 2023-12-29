@@ -76,7 +76,15 @@ Mat4 Mat4::identity()
 
 void Mat4::rotate(Quat rotation)
 {
-    *this = rotation.to_mat4() * *this;
+    Mat4 rotation_matrix = rotation.to_mat4();
+    *this = rotation_matrix * *this;
+}
+
+void Mat4::scale(Vec3 scale)
+{
+    data[0] *= scale.x;
+    data[5] *= scale.y;
+    data[10] *= scale.z;
 }
 
 Mat4 Mat4::ortho(float left, float right, float bottom, float top, float near, float far)
@@ -103,6 +111,28 @@ Mat4 Mat4::perspective(float fov, float aspect, float near, float far)
                 0.0f, 0.0f, -1.0f, 0.0f);
 }
 
+Mat4 Mat4::operator+(const Mat4 &other)
+{
+    Mat4 result{};
+
+    __m128 row_0 = _mm_load_ps(data);
+    __m128 row_1 = _mm_load_ps(data + 4);
+    __m128 row_2 = _mm_load_ps(data + 8);
+    __m128 row_3 = _mm_load_ps(data + 12);
+
+    __m128 row_0_other = _mm_load_ps(other.data);
+    __m128 row_1_other = _mm_load_ps(other.data + 4);
+    __m128 row_2_other = _mm_load_ps(other.data + 8);
+    __m128 row_3_other = _mm_load_ps(other.data + 12);
+
+    _mm_store_ps(result.data, _mm_add_ps(row_0, row_0_other));
+    _mm_store_ps(result.data + 4, _mm_add_ps(row_1, row_1_other));
+    _mm_store_ps(result.data + 8, _mm_add_ps(row_2, row_2_other));
+    _mm_store_ps(result.data + 12, _mm_add_ps(row_3, row_3_other));
+
+    return result;
+}
+
 Mat4 Mat4::operator*(const Mat4 &other)
 {
     Mat4 result{};
@@ -114,19 +144,18 @@ Mat4 Mat4::operator*(const Mat4 &other)
 
     for (int i = 0; i < 4; i++)
     {
-        __m128 brod1 = _mm_set1_ps(data[4 * i + 0]);
-        __m128 brod2 = _mm_set1_ps(data[4 * i + 1]);
-        __m128 brod3 = _mm_set1_ps(data[4 * i + 2]);
-        __m128 brod4 = _mm_set1_ps(data[4 * i + 3]);
+        __m128 brod_0 = _mm_set1_ps(other.data[4 * i + 0]);
+        __m128 brod_1 = _mm_set1_ps(other.data[4 * i + 1]);
+        __m128 brod_2 = _mm_set1_ps(other.data[4 * i + 2]);
+        __m128 brod_3 = _mm_set1_ps(other.data[4 * i + 3]);
         __m128 row = _mm_add_ps(
             _mm_add_ps(
-                _mm_mul_ps(brod1, row_0),
-                _mm_mul_ps(brod2, row_1)),
+                _mm_mul_ps(brod_0, row_0),
+                _mm_mul_ps(brod_1, row_1)),
             _mm_add_ps(
-                _mm_mul_ps(brod3, row_2),
-                _mm_mul_ps(brod4, row_3)));
-
-        _mm_store_ps(result.data + 4 * i, row);
+                _mm_mul_ps(brod_2, row_2),
+                _mm_mul_ps(brod_3, row_3)));
+        _mm_store_ps(&result.data[4 * i], row);
     }
     return result;
 }

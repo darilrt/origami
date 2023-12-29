@@ -1,69 +1,86 @@
+#include <origami.hpp>
 #include <memory>
 #include <iostream>
 
-#include <origami/core.hpp>
-#include <origami/window.hpp>
-#include <origami/event.hpp>
-#include <origami/graphics.hpp>
-#include <origami/assets.hpp>
+#include "simple_material.hpp"
+#include "transform.hpp"
 
-class SimpleMaterial : public Material
+class Sprite
 {
 public:
-    struct
-    {
-        STD_UNIFORM_HEADER_VS
-        Vec3 color;
-    } uniforms;
+    std::shared_ptr<Sampler> sampler;
+    Transform transform;
+    GraphicEntity *entity;
 
-    SimpleMaterial()
+    void start(EngineState &state)
     {
-        shader = Shader::from_file(
-            "assets/shaders/default",
-            sizeof(uniforms),
-            {
-                {"view", SG_UNIFORMTYPE_MAT4},
-                {"projection", SG_UNIFORMTYPE_MAT4},
-                {"model", SG_UNIFORMTYPE_MAT4},
-                {"color", SG_UNIFORMTYPE_FLOAT3},
-            },
-            0, {});
+        if (!sampler)
+        {
+            throw std::runtime_error("Sprite::sampler is nullptr");
+        }
+
+        auto &graphics = state.get_resource<GraphicsSystem>();
+
+        entity = &graphics.create_entity();
+        entity->mesh = primitive::quad();
+        entity->material = new SimpleMaterial();
+        entity->material->set_texture(0, sampler.get());
+        entity->model = transform.get_matrix();
     }
 
-    sg_range get_vs() override
+    void update(EngineState &state, const Update &time)
     {
-        return {&uniforms, sizeof(uniforms)};
+        entity->model = transform.get_matrix();
     }
 
-    sg_range get_fs() override
+    void set_visible(bool visible)
     {
-        return {nullptr, 0};
+        entity->is_visible = visible;
     }
 
-    void set_std_uniforms(const Mat4 &view, const Mat4 &projection, const Mat4 &model) override
+    bool is_visible()
     {
-        uniforms.view = view;
-        uniforms.projection = projection;
-        uniforms.model = model;
+        return entity->is_visible;
     }
 };
 
-class Game : public Resource
+class Player : public Entity
+{
+public:
+    Sprite sprite;
+    Transform transform;
+
+    void start(EngineState &state) override
+    {
+        sprite.sampler = std::shared_ptr<Sampler>(Sampler::from_file("assets/textures/mint.png"));
+        sprite.transform.parent = &transform;
+        sprite.transform.position = {0.5f, 0.5f, 0.0f};
+        sprite.start(state);
+    }
+
+    void update(EngineState &state, const Update &time) override
+    {
+        static auto &input = state.get_resource<Input>();
+
+        if (input.key_down(KeyCode::T))
+        {
+            sprite.set_visible(!sprite.is_visible());
+        }
+
+        transform.rotation *= Quat::from_euler({0.0f, 0.0f, time.delta_time});
+
+        sprite.update(state, time);
+    }
+
+    void destroy(EngineState &state) override {}
+};
+
+class Game : public Scene
 {
 public:
     GraphicEntity *entity;
 
-    void init(EngineState &state) override
-    {
-        auto &es = state.get_resource<EventSystem>();
-        es.regist<Start>([&](EngineState &state, void *payload)
-                         { this->start(state); });
-
-        es.regist<Update>([&](EngineState &state, void *payload)
-                          { this->update(state, *static_cast<Update *>(payload)); });
-    }
-
-    void start(EngineState &state)
+    void start(EngineState &state) override
     {
         auto &window = state.get_resource<Window>();
         window.set_size({1280, 720});
@@ -78,29 +95,17 @@ public:
         graphics.set_view(Mat4::identity());
         graphics.set_projection(Mat4::ortho(-half_width_x, half_width_x, -half_width_y, half_width_y, -1.0f, 1.0f));
 
-        entity = &graphics.create_entity();
-        entity->model = Mat4::identity();
-        entity->mesh = primitive::quad();
-        entity->material = new SimpleMaterial();
-        ((SimpleMaterial *)entity->material)->uniforms.color = {1.0f, 0.5f, 0.2f};
+        group.create<Player>();
+
+        group.start(state);
     }
 
-    void update(EngineState &state, Update &time)
+    void update(EngineState &state, const Update &time) override
     {
-        entity->model = Quat::from_euler({0.0f, 0.0f, sin(time.life_time)}).to_mat4();
-    };
+        group.update(state, time);
+    }
+
+    void destroy(EngineState &state) override {}
 };
 
-int main()
-{
-    auto state = std::make_unique<EngineState>();
-    state->init_resource<AssetManager>();
-    state->init_resource<EventSystem>();
-    state->init_resource<Window>();
-    state->init_resource<GraphicsSystem>();
-    state->init_resource<Game>();
-    state->start();
-
-    state->get_resource<Window>().run(*state);
-    return 0;
-}
+ENTRY_POINT(Game)

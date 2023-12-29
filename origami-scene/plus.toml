@@ -1,4 +1,4 @@
-require = ["sokol", "stb"]
+require = []
 
 [subprojects]
 origami-core = { path = "../origami-core" }
@@ -7,7 +7,7 @@ origami-window = { path = "../origami-window" }
 origami-math = { path = "../origami-math" }
 
 [project]
-name = "origami-graphics"
+name = "origami-scene"
 version = "0.1.0"
 description = ""
 author = ""
@@ -20,7 +20,7 @@ cxx = "g++"
 standard = "c++17"
 flags = []
 includes = ["include"]
-defines = ["SOKOL_GLCORE33"]
+defines = []
 warnings = []
 debug = true
 
@@ -29,11 +29,3 @@ type = "static-lib"
 flags = []
 libdirs = []
 libs = []
-
-[deps.sokol]
-git = "https://github.com/floooh/sokol"
-includes = ["./"]
-
-[deps.stb]
-git = "https://github.com/nothings/stb.git"
-includes = ["./"]

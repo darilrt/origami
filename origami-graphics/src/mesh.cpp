@@ -1,9 +1,9 @@
 #include "origami/graphics/mesh.hpp"
 
-Mesh::Mesh(std::vector<Vec3> vertices, std::vector<Vec3> normals, std::vector<Vec2> uvs, std::vector<uint32_t> indices)
+Mesh::Mesh(std::vector<Vertex> vertices, std::vector<uint32_t> indices)
 {
     vertex_buffer = sg_make_buffer(sg_buffer_desc{
-        .data = {vertices.data(), vertices.size() * sizeof(Vec3)},
+        .data = {vertices.data(), vertices.size() * sizeof(Vertex)},
     });
     index_buffer = sg_make_buffer(sg_buffer_desc{
         .type = SG_BUFFERTYPE_INDEXBUFFER,
