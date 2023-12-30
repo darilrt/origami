@@ -44,7 +44,7 @@ void SpriteMaterial::set_std_uniforms(const Mat4 &view, const Mat4 &projection, 
 
 void Sprite::start(EngineState &state)
 {
-    if (!sampler)
+    if (!sprite)
     {
         throw std::runtime_error("Sprite::sampler is nullptr");
     }
@@ -52,10 +52,10 @@ void Sprite::start(EngineState &state)
     auto &graphics = state.get_resource<GraphicsSystem>();
 
     entity = &graphics.create_entity();
+    entity->model = transform.get_matrix();
     entity->mesh = primitive::quad();
     entity->material = new SpriteMaterial();
-    entity->material->set_texture(0, sampler.get());
-    entity->model = transform.get_matrix();
+    entity->material->set_texture(0, sprite->image.get(), sprite->sampler.get());
 }
 
 void Sprite::update(EngineState &state, const Update &time)

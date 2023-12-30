@@ -1,25 +1,44 @@
 #pragma once
 
 #include <origami/core.hpp>
+#include <unordered_map>
 
-class Asset
-{
-public:
-    virtual void load(const std::string &path) = 0;
+template <typename T>
+concept Asset = requires(const std::string &path) {
+    {
+        T::load_asset(path)
+    } -> std::same_as<T *>;
 };
+
+template <typename T>
+using AssetArray = std::unordered_map<std::string, T *>;
 
 class AssetManager : public Resource
 {
 public:
-    void init(EngineState &state) override
+    void init(EngineState &state) override {}
+
+    template <Asset T>
+    T &get(const std::string &path)
     {
+        AssetArray<T> &array = _get_array<T>();
+
+        if (array.contains(path))
+        {
+            return *array[path];
+        }
+
+        T *asset = T::load_asset(path);
+        array[path] = asset;
+
+        return *asset;
     }
 
+private:
     template <typename T>
-    T &load(const std::string &path)
+    AssetArray<T> &_get_array()
     {
-        auto asset = std::make_unique<T>();
-        asset->load(path);
-        return *asset;
+        static AssetArray<T> array;
+        return array;
     }
 };

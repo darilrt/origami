@@ -25,9 +25,5 @@ public:
 
     virtual void set_std_uniforms(const Mat4 &view, const Mat4 &projection, const Mat4 &model) = 0;
 
-    void set_texture(int slot, Sampler *sampler)
-    {
-        bindings.fs.images[slot] = sampler->image;
-        bindings.fs.samplers[slot] = sampler->sampler;
-    }
+    void set_texture(int slot, Image *image, Sampler *sampler);
 };
