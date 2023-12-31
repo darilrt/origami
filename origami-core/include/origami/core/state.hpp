@@ -3,8 +3,9 @@
 #include <unordered_map>
 #include <memory>
 
-#include "type_id.hpp"
-#include "resources.hpp"
+#include "origami/core/ptr.hpp"
+#include "origami/core/type_id.hpp"
+#include "origami/core/resources.hpp"
 
 struct InitializedResources; // Event
 
@@ -26,11 +27,11 @@ public:
     template <typename T>
     inline void init_resource()
     {
-        resources[TypeID<T>::value()] = std::make_unique<T>();
+        resources[TypeID<T>::value()] = new_unique<T>();
     }
 
     void start();
 
 private:
-    std::unordered_map<typeid_t, std::unique_ptr<Resource>> resources;
+    std::unordered_map<typeid_t, Unique<Resource>> resources;
 };

@@ -51,7 +51,7 @@ void Sprite::start(EngineState &state)
 
     auto &graphics = state.get_resource<GraphicsSystem>();
 
-    entity = &graphics.create_entity();
+    entity = graphics.create_entity();
     entity->model = transform.get_matrix();
     entity->mesh = primitive::quad();
     entity->material = new SpriteMaterial();

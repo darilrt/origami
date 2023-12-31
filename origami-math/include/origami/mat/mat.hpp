@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstddef>
+
 template <typename T, int N, size_t M>
 class Mat
 {

@@ -21,7 +21,13 @@ public:
 
     sg_sampler sampler;
 
-    Sampler(Filter min_filter = Nearest, Filter mag_filter = Nearest, Filter mipmap_filter = Nearest, Wrap wrap_u = Repeat, Wrap wrap_v = Repeat);
+    Sampler(
+        Filter min_filter = Linear,
+        Filter mag_filter = Linear,
+        Filter mipmap_filter = Linear,
+        Wrap wrap_u = Repeat,
+        Wrap wrap_v = Repeat);
+
     ~Sampler();
 };
 
@@ -36,5 +42,5 @@ public:
 
     static Image *create_depth_target(int width, int height);
 
-    sg_image image;
+    sg_image image = {0};
 };

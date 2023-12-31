@@ -10,12 +10,7 @@ class GraphicEntity
 {
 public:
     Mat4 model;
-    sg_pipeline pipeline;
     bool is_visible = true;
     Mesh *mesh = nullptr;
     Material *material = nullptr;
-
-    GraphicEntity();
-
-    ~GraphicEntity();
 };

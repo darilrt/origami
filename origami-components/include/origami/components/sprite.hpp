@@ -26,13 +26,13 @@ public:
 class Sprite
 {
 public:
-    Texture *sprite = nullptr;
+    Shared<Texture> sprite = nullptr;
     Transform2D transform = {
         .position = Vec2(0.0f),
         .rotation = 0.0f,
         .scale = Vec2(1.0f),
     };
-    GraphicEntity *entity;
+    Shared<GraphicEntity> entity;
 
     void start(EngineState &state);
 

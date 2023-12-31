@@ -62,6 +62,7 @@ Image *Image::create_render_target(int width, int height)
         .width = width,
         .height = height,
         .pixel_format = SG_PIXELFORMAT_RGBA8,
+        .sample_count = 1,
     };
 
     Image *image = new Image();

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <origami/core.hpp>
-#include <origami/type_id.hpp>
+#include <origami/core/type_id.hpp>
 
 #include <unordered_map>
 #include <vector>

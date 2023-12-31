@@ -11,7 +11,7 @@ concept Asset = requires(const std::string &path) {
 };
 
 template <typename T>
-using AssetArray = std::unordered_map<std::string, T *>;
+using AssetArray = std::unordered_map<std::string, Shared<T>>;
 
 class AssetManager : public Resource
 {
@@ -19,19 +19,17 @@ public:
     void init(EngineState &state) override {}
 
     template <Asset T>
-    T &get(const std::string &path)
+    Shared<T> get(const std::string &path)
     {
         AssetArray<T> &array = _get_array<T>();
 
-        if (array.contains(path))
+        if (!array.contains(path))
         {
-            return *array[path];
+            T *asset = T::load_asset(path);
+            array[path] = Shared<T>(asset);
         }
 
-        T *asset = T::load_asset(path);
-        array[path] = asset;
-
-        return *asset;
+        return array[path];
     }
 
 private:

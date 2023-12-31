@@ -27,6 +27,7 @@ public:
         {
             std::string name;
             sg_image_type type;
+            sg_image_sample_type sample_type;
         };
 
         sg_cull_mode cull_mode = SG_CULLMODE_FRONT;
@@ -34,6 +35,7 @@ public:
         Uniforms uniforms_vs = {};
         Uniforms uniforms_fs = {};
         std::vector<Image> images = {};
+        sg_pixel_format depth_format = SG_PIXELFORMAT_DEPTH;
     };
 
     Shader();

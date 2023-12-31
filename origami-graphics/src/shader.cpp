@@ -75,6 +75,7 @@ Shader *Shader::from_file(const std::string &path, Shader::Descriptor descriptor
         shader_desc.fs.images[num_images++] = {
             .used = true,
             .image_type = image.type,
+            .sample_type = image.sample_type,
         };
         shader_desc.fs.samplers[num_images - 1] = {
             .used = true,
@@ -98,13 +99,20 @@ Shader *Shader::from_file(const std::string &path, Shader::Descriptor descriptor
 
     auto pipeline_desc = sg_pipeline_desc{
         .shader = shader->shader,
+        .depth = {
+            .pixel_format = descriptor.depth_format,
+            .compare = SG_COMPAREFUNC_LESS_EQUAL,
+            .write_enabled = true,
+        },
         .primitive_type = descriptor.primitive_type,
+        .index_type = SG_INDEXTYPE_UINT32,
         .cull_mode = descriptor.cull_mode,
+        .sample_count = 1,
     };
+
     pipeline_desc.layout.attrs[0].format = SG_VERTEXFORMAT_FLOAT3;
     pipeline_desc.layout.attrs[1].format = SG_VERTEXFORMAT_FLOAT3;
     pipeline_desc.layout.attrs[2].format = SG_VERTEXFORMAT_FLOAT2;
-    pipeline_desc.index_type = SG_INDEXTYPE_UINT32;
     shader->pipeline = sg_make_pipeline(pipeline_desc);
 
     if (shader->pipeline.id == SG_INVALID_ID)

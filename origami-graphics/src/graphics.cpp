@@ -2,10 +2,13 @@
 #include <origami/window.hpp>
 #include <sokol_gfx.h>
 #include <sokol_log.h>
-
 #include <iostream>
 
-#include "origami/graphics.hpp"
+#include "origami/graphics/primitives.hpp"
+#include "origami/graphics/material.hpp"
+#include "origami/graphics/render_pass.hpp"
+#include "origami/graphics/graphics_system.hpp"
+#include "origami/graphics/default_pass_material.hpp"
 
 class GraphicsSystem::State
 {
@@ -17,8 +20,6 @@ GraphicsSystem::GraphicsSystem()
 {
     gs_state = new State;
     gs_state->clear_pass = {0};
-    gs_state->clear_pass.colors[0].load_action = SG_LOADACTION_CLEAR;
-    gs_state->clear_pass.colors[0].clear_value = {0.1f, 0.1f, 0.1f, 1.0f};
 }
 
 GraphicsSystem::~GraphicsSystem()
@@ -50,47 +51,87 @@ void GraphicsSystem::init(EngineState &state)
                     { sg_shutdown(); });
 }
 
-void GraphicsSystem::set_clear_color(Vec4 color)
+Shared<GraphicEntity> GraphicsSystem::create_entity()
 {
-    gs_state->clear_pass.colors[0].clear_value = {color.x, color.y, color.z, color.w};
+    auto entity = new_shared<GraphicEntity>();
+    entities.push_back(entity);
+    return entity;
 }
 
-GraphicEntity &GraphicsSystem::create_entity()
+Shared<RenderPass> GraphicsSystem::create_render_pass(int width, int height)
 {
-    GraphicEntity *entity = new GraphicEntity;
-    entities.push_back(entity);
-    return *entity;
+    auto render_pass = new_shared<RenderPass>(width, height);
+    render_passes.push_back(render_pass);
+    return render_pass;
 }
 
 void GraphicsSystem::_render(Vec2 window_size)
 {
+    static GraphicEntity *entity = nullptr;
+    static Sampler sampler = Sampler(
+        Sampler::Nearest,
+        Sampler::Nearest,
+        Sampler::Nearest,
+        Sampler::Repeat,
+        Sampler::Repeat);
+
+    if (!entity)
+    {
+        entity = new GraphicEntity();
+        entity->mesh = primitive::quad();
+        entity->material = new DefaultPassMaterial();
+        entity->model = Mat4::identity();
+    }
+
+    for (auto &rp : render_passes)
+    {
+        sg_begin_pass(rp->pass, &rp->action);
+
+        set_view(rp->view);
+        set_projection(rp->projection);
+
+        for (auto &entity : entities)
+        {
+            _render_entity(*entity);
+        }
+
+        sg_end_pass();
+    }
+
     sg_apply_viewport(viewport.x, viewport.y, viewport.z, viewport.w, true);
     sg_begin_default_pass(&gs_state->clear_pass, (int)window_size.x, (int)window_size.y);
 
-    for (auto &entity : entities)
+    if (current_render_pass)
     {
-        if (!entity->is_visible)
-            continue;
+        entity->material->set_texture(
+            0,
+            current_render_pass->color_attachment.get(),
+            &sampler);
 
-        sg_bindings bindings = entity->material->bindings;
-        bindings.vertex_buffers[0] = entity->mesh->vertex_buffer;
-        bindings.index_buffer = entity->mesh->index_buffer;
-
-        sg_apply_pipeline(entity->material->shader->pipeline);
-        sg_apply_bindings(&bindings);
-
-        entity->material->set_std_uniforms(view, projection, entity->model);
-        sg_range vs_params = entity->material->get_vs();
-        if (vs_params.size > 0)
-            sg_apply_uniforms(SG_SHADERSTAGE_VS, 0, vs_params);
-
-        sg_range fs_params = entity->material->get_fs();
-        if (fs_params.size > 0)
-            sg_apply_uniforms(SG_SHADERSTAGE_FS, 0, fs_params);
-
-        sg_draw(0, entity->mesh->get_index_count(), 1);
+        _render_entity(*entity);
     }
 
     sg_end_pass();
     sg_commit();
+}
+
+void GraphicsSystem::_render_entity(GraphicEntity &entity)
+{
+    sg_bindings bindings = entity.material->bindings;
+    bindings.vertex_buffers[0] = entity.mesh->vertex_buffer;
+    bindings.index_buffer = entity.mesh->index_buffer;
+
+    sg_apply_pipeline(entity.material->shader->pipeline);
+    sg_apply_bindings(&bindings);
+
+    entity.material->set_std_uniforms(view, projection, entity.model);
+    sg_range vs_params = entity.material->get_vs();
+    if (vs_params.size > 0)
+        sg_apply_uniforms(SG_SHADERSTAGE_VS, 0, vs_params);
+
+    sg_range fs_params = entity.material->get_fs();
+    if (fs_params.size > 0)
+        sg_apply_uniforms(SG_SHADERSTAGE_FS, 0, fs_params);
+
+    sg_draw(0, entity.mesh->get_index_count(), 1);
 }
