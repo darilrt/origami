@@ -36,18 +36,18 @@ public:
         r = 1.0f;
     }
 
-    Quat normalize()
+    Quat normalize() const
     {
         float length = sqrt(i * i + j * j + k * k + r * r);
         return Quat(i / length, j / length, k / length, r / length);
     }
 
-    Quat conjugate()
+    Quat conjugate() const
     {
         return Quat(-i, -j, -k, r);
     }
 
-    Quat inverse()
+    Quat inverse() const
     {
         return conjugate() / (i * i + j * j + k * k + r * r);
     }

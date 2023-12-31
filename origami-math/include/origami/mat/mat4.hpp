@@ -20,6 +20,10 @@ public:
 
     Mat4 inverse();
 
+    Mat4 transpose();
+
+    Mat4 cofactor();
+
     float determinant();
 
     void translate(Vec3 translation);

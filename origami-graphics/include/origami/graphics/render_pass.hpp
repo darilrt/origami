@@ -8,8 +8,6 @@
 class RenderPass
 {
 public:
-    int width = 0;
-    int height = 0;
     Vec4 clear_color = {0.1f, 0.1f, 0.1f, 1.0f};
     Mat4 view;
     Mat4 projection;
@@ -22,4 +20,6 @@ public:
     RenderPass(int width, int height);
 
     ~RenderPass();
+
+    void resize(int width, int height);
 };

@@ -13,6 +13,8 @@ public:
     Vec3 scale = Vec3(1.0f);
 
     Mat4 get_matrix() const;
+
+    Mat4 get_inverse_matrix() const;
 };
 
 class Transform2D

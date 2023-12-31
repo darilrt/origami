@@ -13,6 +13,19 @@ Mat4 Transform::get_matrix() const
     return matrix;
 }
 
+Mat4 Transform::get_inverse_matrix() const
+{
+    Mat4 matrix = Mat4::identity();
+    matrix.translate(-position);
+    matrix.rotate(rotation.inverse());
+    matrix.scale(Vec3(1.0f / scale.x, 1.0f / scale.y, 1.0f / scale.z));
+
+    if (parent)
+        matrix = matrix * parent->get_inverse_matrix();
+
+    return matrix;
+}
+
 Mat4 Transform2D::get_matrix() const
 {
     Mat4 matrix = Mat4::identity();

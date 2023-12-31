@@ -4,7 +4,51 @@
 
 #include "origami/graphics/texture.hpp"
 
-Sampler::Sampler(Filter min_filter, Filter mag_filter, Filter mipmap_filter, Wrap wrap_u, Wrap wrap_v)
+Image::Image(
+    int width,
+    int height,
+    int num_mipmaps,
+    Format format,
+    Usage usage,
+    bool render_target,
+    const void *data)
+{
+    this->width = width;
+    this->height = height;
+    this->num_mipmaps = num_mipmaps;
+    this->format = format;
+    this->usage = usage;
+    this->render_target = render_target;
+
+    sg_image_desc desc = {
+        .render_target = render_target,
+        .width = width,
+        .height = height,
+        .num_mipmaps = num_mipmaps,
+        .usage = (sg_usage)usage,
+        .pixel_format = (sg_pixel_format)format,
+    };
+
+    if (data)
+    {
+        desc.data.subimage[0][0].ptr = data;
+        desc.data.subimage[0][0].size = width * height * 4;
+    }
+
+    image = sg_make_image(&desc);
+}
+
+Image::~Image()
+{
+    sg_destroy_image(image);
+}
+
+Sampler::Sampler(
+    Filter min_filter,
+    Filter mag_filter,
+    Filter mipmap_filter,
+    Wrap wrap_u,
+    Wrap wrap_v)
 {
     sampler = sg_make_sampler(sg_sampler_desc{
         .min_filter = (sg_filter)min_filter,
@@ -40,48 +84,42 @@ Image *Image::from_file(const std::string &path)
 
 Image *Image::from_memory(const void *data, int width, int height)
 {
-    sg_image_desc desc = {
-        .width = width,
-        .height = height,
-        .pixel_format = SG_PIXELFORMAT_RGBA8,
-    };
-
-    desc.data.subimage[0][0].ptr = data;
-    desc.data.subimage[0][0].size = width * height * 4;
-
-    Image *image = new Image();
-    image->image = sg_make_image(&desc);
+    Image *image = new Image(
+        width,
+        height,
+        1,
+        RGBA8,
+        Immutable,
+        false,
+        data);
 
     return image;
 }
 
 Image *Image::create_render_target(int width, int height)
 {
-    sg_image_desc desc = {
-        .render_target = true,
-        .width = width,
-        .height = height,
-        .pixel_format = SG_PIXELFORMAT_RGBA8,
-        .sample_count = 1,
-    };
-
-    Image *image = new Image();
-    image->image = sg_make_image(&desc);
+    Image *image = new Image(
+        width,
+        height,
+        1,
+        RGBA8,
+        Immutable,
+        true,
+        nullptr);
 
     return image;
 }
 
 Image *Image::create_depth_target(int width, int height)
 {
-    sg_image_desc desc = {
-        .render_target = true,
-        .width = width,
-        .height = height,
-        .pixel_format = SG_PIXELFORMAT_DEPTH,
-    };
-
-    Image *image = new Image();
-    image->image = sg_make_image(&desc);
+    Image *image = new Image(
+        width,
+        height,
+        1,
+        Depth,
+        Immutable,
+        true,
+        nullptr);
 
     return image;
 }

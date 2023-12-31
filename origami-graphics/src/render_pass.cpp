@@ -5,9 +5,6 @@
 
 RenderPass::RenderPass(int width, int height)
 {
-    this->width = width;
-    this->height = height;
-
     this->color_attachment = Shared<Image>(Image::create_render_target(width, height));
     this->depth_attachment = Shared<Image>(Image::create_depth_target(width, height));
 
@@ -38,4 +35,10 @@ RenderPass::RenderPass(int width, int height)
 RenderPass::~RenderPass()
 {
     sg_destroy_pass(this->pass);
+}
+
+void RenderPass::resize(int width, int height)
+{
+    this->color_attachment = Shared<Image>(Image::create_render_target(width, height));
+    this->depth_attachment = Shared<Image>(Image::create_depth_target(width, height));
 }

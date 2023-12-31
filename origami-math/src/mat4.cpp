@@ -59,6 +59,82 @@ void Mat4::print()
     }
 }
 
+Mat4 Mat4::inverse()
+{
+    Mat4 result{};
+
+    float det = determinant();
+
+    if (det == 0.0f)
+        return result;
+
+    Mat4 cofactor_matrix = cofactor();
+    Mat4 transpose_matrix = cofactor_matrix.transpose();
+
+    for (int i = 0; i < 16; i++)
+        result.data[i] = transpose_matrix.data[i] / det;
+
+    return result;
+}
+
+Mat4 Mat4::transpose()
+{
+    return Mat4(data[0], data[4], data[8], data[12],
+                data[1], data[5], data[9], data[13],
+                data[2], data[6], data[10], data[14],
+                data[3], data[7], data[11], data[15]);
+}
+
+Mat4 Mat4::cofactor()
+{
+    Mat4 result{};
+
+    for (int i = 0; i < 4; i++)
+    {
+        int sign = (i % 2 == 0) ? 1 : -1;
+
+        for (int j = 0; j < 4; j++)
+        {
+            int index = i * 4 + j;
+            int index_cofactor = (i + 1) % 4 * 4 + (j + 1) % 4;
+
+            result.data[index] = sign * data[index_cofactor];
+            sign *= -1;
+        }
+    }
+
+    return result;
+}
+
+float Mat4::determinant()
+{
+    float det = 0.0f;
+
+    for (int i = 0; i < 4; i++)
+    {
+        int sign = (i % 2 == 0) ? 1 : -1;
+
+        int index = i;
+        int index_cofactor = (i + 1) % 4;
+
+        float cofactor = sign * data[index_cofactor];
+        sign *= -1;
+
+        for (int j = 0; j < 3; j++)
+        {
+            index += 4;
+            index_cofactor = (index_cofactor + 1) % 4;
+
+            cofactor *= data[index_cofactor];
+            sign *= -1;
+        }
+
+        det += cofactor;
+    }
+
+    return det;
+}
+
 void Mat4::translate(Vec3 translation)
 {
     data[12] += translation.x;

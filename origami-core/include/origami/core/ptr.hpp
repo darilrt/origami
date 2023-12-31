@@ -30,7 +30,7 @@ class Hook
     T data;
 
 public:
-    std::function<void(T, T)> on_change;
+    std::function<void(const T, const T)> on_change;
 
     Hook(T val)
     {
@@ -39,14 +39,14 @@ public:
 
     T get()
     {
-        data;
+        return data;
     }
 
-    operator=(T val)
+    void operator=(T val)
     {
-        on_change(data, val);
+        if (on_change)
+            on_change(data, val);
         data = val;
-        return *this;
     }
 
     operator T()
@@ -54,3 +54,9 @@ public:
         return data;
     }
 };
+
+template <typename T, typename... Args>
+Hook<T> new_hook(Args &&...args)
+{
+    return Hook<T>(std::forward<Args>(args)...);
+}

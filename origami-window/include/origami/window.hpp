@@ -16,6 +16,8 @@ public:
 
     inline Vec2 get_size() { return size; }
 
+    inline float get_aspect() { return size.x / size.y; }
+
     void set_size(Vec2 size);
 
     void set_title(const std::string &title);
