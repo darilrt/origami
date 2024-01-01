@@ -5,6 +5,16 @@
 
 RenderPass::RenderPass(int width, int height)
 {
+    resize(width, height);
+}
+
+RenderPass::~RenderPass()
+{
+    sg_destroy_pass(this->pass);
+}
+
+void RenderPass::resize(int width, int height)
+{
     this->color_attachment = Shared<Image>(Image::create_render_target(width, height));
     this->depth_attachment = Shared<Image>(Image::create_depth_target(width, height));
 
@@ -15,6 +25,9 @@ RenderPass::RenderPass(int width, int height)
     };
 
     desc.depth_stencil_attachment.image = this->depth_attachment->image;
+
+    if (this->pass.id != SG_INVALID_ID)
+        sg_destroy_pass(this->pass);
 
     this->pass = sg_make_pass(&desc);
 
@@ -30,15 +43,4 @@ RenderPass::RenderPass(int width, int height)
         .store_action = SG_STOREACTION_DONTCARE,
         .clear_value = 1.0f,
     };
-}
-
-RenderPass::~RenderPass()
-{
-    sg_destroy_pass(this->pass);
-}
-
-void RenderPass::resize(int width, int height)
-{
-    this->color_attachment = Shared<Image>(Image::create_render_target(width, height));
-    this->depth_attachment = Shared<Image>(Image::create_depth_target(width, height));
 }

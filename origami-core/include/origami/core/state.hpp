@@ -7,8 +7,6 @@
 #include "origami/core/type_id.hpp"
 #include "origami/core/resources.hpp"
 
-struct InitializedResources; // Event
-
 class EngineState
 {
 public:

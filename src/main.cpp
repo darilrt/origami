@@ -12,7 +12,7 @@ public:
         window.set_size({1280, 720});
         window.set_vsync(true);
 
-        camera.resolution = window.get_size() / 5.0f;
+        camera.resolution = window.get_size();
         camera.start(state);
         camera.set_active(state);
         camera.set_orthographic(5, window.get_aspect(), -1, 1);

@@ -3,21 +3,21 @@
 class Game : public Scene
 {
 public:
+    Camera camera;
     Sprite sprite;
 
     void start(EngineState &state) override
     {
         auto &window = state.get_resource<Window>();
+        window.set_size({1280, 720});
         window.set_vsync(true);
 
-        auto &graphics = state.get_resource<GraphicsSystem>();
-        graphics.set_view(Mat4::identity());
-
-        Vec2 half = window.get_size() / 2.0f / 100;
-        graphics.set_projection(Mat4::ortho(-half.x, half.x, -half.y, half.y, -1.0f, 1.0f));
+        camera.resolution = window.get_size();
+        camera.start(state);
+        camera.set_active(state);
+        camera.set_orthographic(5, window.get_aspect(), -1, 1);
 
         auto &assets = state.get_resource<AssetManager>();
-
         sprite.sprite = assets.get<Texture>("assets/textures/gridbox.png"),
         sprite.start(state);
     }
@@ -35,7 +35,20 @@ public:
         }
         fps++;
 
+        auto &input = state.get_resource<Input>();
+
+        if (input.key_pressed(KeyCode::A))
+            camera.transform.position.x -= 10.0 * time.delta_time;
+        if (input.key_pressed(KeyCode::D))
+            camera.transform.position.x += 10.0 * time.delta_time;
+        if (input.key_pressed(KeyCode::W))
+            camera.transform.position.y += 10.0 * time.delta_time;
+        if (input.key_pressed(KeyCode::S))
+            camera.transform.position.y -= 10.0 * time.delta_time;
+
+        sprite.transform.rotation += 1.0f * time.delta_time;
         sprite.update(state, time);
+        camera.update(state, time);
     }
 
     void destroy(EngineState &state) override {}
