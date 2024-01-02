@@ -117,6 +117,9 @@ void GraphicsSystem::_render(Vec2 window_size)
 
 void GraphicsSystem::_render_entity(GraphicEntity &entity)
 {
+    if (entity.mesh->vertices_count == 0)
+        return;
+
     sg_bindings bindings = entity.material->bindings;
     bindings.vertex_buffers[0] = entity.mesh->vertex_buffer;
 

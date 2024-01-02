@@ -24,9 +24,6 @@ void Camera::set_orthographic(float size, float aspect, float near, float far)
     this->near = near;
     this->far = far;
 
-    if (!render_pass)
-        return;
-
     float half_width = size * aspect / 2.0f;
     float half_height = size / 2.0f;
 
@@ -43,9 +40,6 @@ void Camera::set_perspective(float fov, float aspect, float near, float far)
     this->near = near;
     this->far = far;
 
-    if (!render_pass)
-        return;
-
     render_pass->projection = Mat4::perspective(fov, aspect, near, far);
 }
 
@@ -56,9 +50,6 @@ void Camera::set_resolution(Vec2 _resolution)
 
     resolution = _resolution;
     float aspect = _resolution.x / _resolution.y;
-
-    if (!render_pass)
-        return;
 
     render_pass->resize((float)resolution.x, (float)resolution.y);
 
