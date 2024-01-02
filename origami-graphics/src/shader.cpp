@@ -105,7 +105,6 @@ Shader *Shader::from_file(const std::string &path, Shader::Descriptor descriptor
             .write_enabled = true,
         },
         .primitive_type = descriptor.primitive_type,
-        .index_type = SG_INDEXTYPE_UINT32,
         .cull_mode = descriptor.cull_mode,
         .sample_count = 1,
     };

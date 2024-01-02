@@ -19,18 +19,24 @@ class Mesh
     friend class GraphicsSystem;
 
 public:
-    Mesh(std::vector<Vertex> uvs, std::vector<uint32_t> indices);
+    enum Type
+    {
+        Static = SG_USAGE_IMMUTABLE,
+        Dynamic = SG_USAGE_DYNAMIC,
+        Stream = SG_USAGE_STREAM,
+    };
+
+    Mesh(const std::vector<Vertex> &uvs, Type type = Static);
 
     ~Mesh();
 
+    void set_vertices(const std::vector<Vertex> &vertices);
+
     inline size_t get_vertex_count() { return vertices_count; }
 
-    inline size_t get_index_count() { return indices_count; }
-
 private:
+    Type type;
     sg_buffer vertex_buffer;
-    sg_buffer index_buffer;
 
     size_t vertices_count;
-    size_t indices_count;
 };

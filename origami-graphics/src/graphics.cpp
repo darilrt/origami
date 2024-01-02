@@ -119,7 +119,6 @@ void GraphicsSystem::_render_entity(GraphicEntity &entity)
 {
     sg_bindings bindings = entity.material->bindings;
     bindings.vertex_buffers[0] = entity.mesh->vertex_buffer;
-    bindings.index_buffer = entity.mesh->index_buffer;
 
     sg_apply_pipeline(entity.material->shader->pipeline);
     sg_apply_bindings(&bindings);
@@ -133,5 +132,5 @@ void GraphicsSystem::_render_entity(GraphicEntity &entity)
     if (fs_params.size > 0)
         sg_apply_uniforms(SG_SHADERSTAGE_FS, 0, fs_params);
 
-    sg_draw(0, entity.mesh->get_index_count(), 1);
+    sg_draw(0, entity.mesh->get_vertex_count(), 1);
 }

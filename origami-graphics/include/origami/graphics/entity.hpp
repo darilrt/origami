@@ -9,8 +9,8 @@
 class GraphicEntity
 {
 public:
-    Mat4 model;
     bool is_visible = true;
+    Mat4 model;
     Mesh *mesh = nullptr;
     Material *material = nullptr;
 };
