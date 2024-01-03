@@ -64,6 +64,8 @@ void Camera::set_resolution(Vec2 _resolution)
     {
         render_pass->projection = Mat4::perspective(size, aspect, near, far);
     }
+
+    render_pass->view = transform.get_inverse_matrix();
 }
 
 void Camera::set_active(EngineState &state)
