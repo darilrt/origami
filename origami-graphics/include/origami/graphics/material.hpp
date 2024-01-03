@@ -11,6 +11,11 @@
     Mat4 projection;          \
     Mat4 model;
 
+#define STD_UNIFORM_VS(uniforms, view, projection, model) \
+    uniforms.view = view;                                 \
+    uniforms.projection = projection;                     \
+    uniforms.model = model;
+
 class Material
 {
     friend class GraphicEntity;

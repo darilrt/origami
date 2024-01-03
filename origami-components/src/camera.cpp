@@ -74,3 +74,34 @@ void Camera::set_active(EngineState &state)
     static auto &graphics = state.get_resource<GraphicsSystem>();
     graphics.set_render_pass(render_pass);
 }
+
+Vec2 Camera::screen_to_world2d(Vec2 pos, Vec2 window_resolution)
+{
+    if (!render_pass)
+        throw std::runtime_error("Camera not initialized, call Camera::start() first");
+
+    float aspect = window_resolution.x / window_resolution.y;
+    Vec2 npos = pos / window_resolution * 2.0f - 1.0f;
+    npos.y *= -1.0f;
+
+    if (is_orhographic)
+    {
+        float half_width = size * aspect / 2.0f;
+        float half_height = size / 2.0f;
+
+        npos.x *= half_width;
+        npos.y *= half_height;
+    }
+    else
+    {
+        float half_width = near * tan(size / 2.0f);
+        float half_height = half_width / aspect;
+
+        npos.x *= half_width;
+        npos.y *= half_height;
+    }
+
+    Vec4 rpos = transform.get_matrix() * Vec4(npos.x, npos.y, 0.0f, 1.0f);
+
+    return Vec2(rpos.x, rpos.y);
+}

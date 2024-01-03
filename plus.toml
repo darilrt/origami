@@ -54,6 +54,9 @@ path = "origami-components"
 [subprojects.origami-utils]
 path = "origami-utils"
 
+[subprojects.origami-debug]
+path = "origami-debug"
+
 [deps.sokol]
 git = "https://github.com/floooh/sokol"
 includes = [ "./",]

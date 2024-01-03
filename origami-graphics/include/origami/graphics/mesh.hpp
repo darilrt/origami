@@ -5,6 +5,8 @@
 #include <vector>
 #include <sokol_gfx.h>
 
+#include "origami/graphics/buffer.hpp"
+
 class GraphicEntity;
 
 struct Vertex
@@ -26,6 +28,11 @@ public:
         Stream = SG_USAGE_STREAM,
     };
 
+    size_t vertices_count;
+    std::vector<Shared<Buffer>> buffers;
+
+    Mesh(Type type = Static);
+
     Mesh(const std::vector<Vertex> &uvs, Type type = Static);
 
     ~Mesh();
@@ -36,7 +43,4 @@ public:
 
 private:
     Type type;
-    sg_buffer vertex_buffer;
-
-    size_t vertices_count;
 };

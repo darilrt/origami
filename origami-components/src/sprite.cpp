@@ -11,6 +11,7 @@ SpriteMaterial::SpriteMaterial()
     shader = Shader::from_file(
         "assets/shaders/sprite",
         Shader::Descriptor{
+            .primitive_type = SG_PRIMITIVETYPE_TRIANGLE_STRIP,
             .uniforms_vs = {
                 .size = sizeof(uniforms),
                 .uniforms = {

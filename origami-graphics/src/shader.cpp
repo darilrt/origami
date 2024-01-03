@@ -109,9 +109,14 @@ Shader *Shader::from_file(const std::string &path, Shader::Descriptor descriptor
         .sample_count = 1,
     };
 
-    pipeline_desc.layout.attrs[0].format = SG_VERTEXFORMAT_FLOAT3;
-    pipeline_desc.layout.attrs[1].format = SG_VERTEXFORMAT_FLOAT3;
-    pipeline_desc.layout.attrs[2].format = SG_VERTEXFORMAT_FLOAT2;
+    int num_vertex_formats = 0;
+    for (auto &vertex_format : descriptor.vertex_formats)
+    {
+        pipeline_desc.layout.attrs[num_vertex_formats++] = {
+            .format = vertex_format,
+        };
+    }
+
     shader->pipeline = sg_make_pipeline(pipeline_desc);
 
     if (shader->pipeline.id == SG_INVALID_ID)

@@ -25,6 +25,8 @@ public:
 
     void set_active(EngineState &state);
 
+    Vec2 screen_to_world2d(Vec2 pos, Vec2 window_resolution);
+
 private:
     bool is_orhographic = false;
     Shared<RenderPass> render_pass;

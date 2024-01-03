@@ -10,7 +10,7 @@ class GraphicEntity
 {
 public:
     bool is_visible = true;
-    Mat4 model;
+    Mat4 model = Mat4::identity();
     Mesh *mesh = nullptr;
     Material *material = nullptr;
 };

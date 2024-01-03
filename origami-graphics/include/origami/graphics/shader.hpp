@@ -35,6 +35,11 @@ public:
         Uniforms uniforms_vs = {};
         Uniforms uniforms_fs = {};
         std::vector<Image> images = {};
+        std::vector<sg_vertex_format> vertex_formats = {
+            SG_VERTEXFORMAT_FLOAT3,
+            SG_VERTEXFORMAT_FLOAT3,
+            SG_VERTEXFORMAT_FLOAT2,
+        };
         sg_pixel_format depth_format = SG_PIXELFORMAT_DEPTH;
     };
 

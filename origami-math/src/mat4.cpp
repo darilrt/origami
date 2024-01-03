@@ -235,3 +235,30 @@ Mat4 Mat4::operator*(const Mat4 &other)
     }
     return result;
 }
+
+Vec4 Mat4::operator*(const Vec4 &other)
+{
+    Vec4 result{};
+
+    __m128 row_0 = _mm_load_ps(data);
+    __m128 row_1 = _mm_load_ps(data + 4);
+    __m128 row_2 = _mm_load_ps(data + 8);
+    __m128 row_3 = _mm_load_ps(data + 12);
+
+    __m128 brod_0 = _mm_set1_ps(other.x);
+    __m128 brod_1 = _mm_set1_ps(other.y);
+    __m128 brod_2 = _mm_set1_ps(other.z);
+    __m128 brod_3 = _mm_set1_ps(other.w);
+
+    __m128 row = _mm_add_ps(
+        _mm_add_ps(
+            _mm_mul_ps(brod_0, row_0),
+            _mm_mul_ps(brod_1, row_1)),
+        _mm_add_ps(
+            _mm_mul_ps(brod_2, row_2),
+            _mm_mul_ps(brod_3, row_3)));
+
+    _mm_store_ps(&result.x, row);
+
+    return result;
+}

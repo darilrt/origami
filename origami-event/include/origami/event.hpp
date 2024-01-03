@@ -17,12 +17,32 @@ class EventSystem : public Resource
 public:
     void init(EngineState &state);
 
+    // Function to register an event into the event system
+    // the event system will call the handler when the event is emitted
+    // the handler will be called with the engine state and the event
+    // the event can be nullptr if the event is emitted without data
+    // example:
+    // ```c++
+    // es.regist<Start>([&](const EngineState &s, void *_) {
+    //     std::cout << "Start" << std::endl;
+    // });
+    // ```
     template <typename T>
     void regist(EventHandler handler)
     {
         event_handlers[TypeID<T>::value()].push_back(handler);
     }
 
+    // Function to emit an event
+    // The event will be passed to all the handlers registered for this event
+    // Example:
+    // ```c++
+    //  es.emit<Start>();
+    // ```
+    // or with data
+    // ```c++
+    //  es.emit(Update { delta_time = 1 });
+    // ```
     template <typename T>
     void emit(T event)
     {
@@ -32,6 +52,16 @@ public:
         }
     }
 
+    // Function to emit an event
+    // The event will be passed to all the handlers registered for this event
+    // Example:
+    // ```c++
+    //  es.emit<Start>();
+    // ```
+    // or with data
+    // ```c++
+    //  es.emit(Update { delta_time = 1 });
+    // ```
     template <typename T>
     void emit()
     {

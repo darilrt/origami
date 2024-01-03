@@ -117,11 +117,19 @@ void GraphicsSystem::_render(Vec2 window_size)
 
 void GraphicsSystem::_render_entity(GraphicEntity &entity)
 {
-    if (entity.mesh->vertices_count == 0)
+    if (!entity.mesh || !entity.material)
+        return;
+
+    if (!entity.mesh->get_vertex_count())
         return;
 
     sg_bindings bindings = entity.material->bindings;
-    bindings.vertex_buffers[0] = entity.mesh->vertex_buffer;
+
+    int i = 0;
+    for (auto &buffer : entity.mesh->buffers)
+    {
+        bindings.vertex_buffers[i++] = buffer->buffer;
+    }
 
     sg_apply_pipeline(entity.material->shader->pipeline);
     sg_apply_bindings(&bindings);

@@ -41,4 +41,6 @@ public:
     Mat4 operator+(const Mat4 &other);
 
     Mat4 operator*(const Mat4 &other);
+
+    Vec4 operator*(const Vec4 &other);
 };
