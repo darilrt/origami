@@ -28,11 +28,11 @@ public:
     template <typename T>
     T &create()
     {
-        T *ref = new T;
+        Shared<T> ref = new_shared<T>();
         _entities.push_back(ref);
-        return *ref;
+        return *ref.get();
     }
 
 private:
-    std::vector<Entity *> _entities;
+    std::vector<Shared<Entity>> _entities;
 };

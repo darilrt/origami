@@ -17,7 +17,7 @@ public:
     }
 
 private:
-    std::unique_ptr<Scene> scene;
+    Unique<Scene> scene;
 
     void _start(EngineState &state, void *);
 

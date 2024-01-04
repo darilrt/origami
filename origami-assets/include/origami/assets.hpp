@@ -2,6 +2,7 @@
 
 #include <origami/core.hpp>
 #include <unordered_map>
+#include <string>
 
 template <typename T>
 concept Asset = requires(const std::string &path) {

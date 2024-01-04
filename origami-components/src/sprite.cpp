@@ -54,8 +54,8 @@ void Sprite::start(EngineState &state)
 
     entity = graphics.create_entity();
     entity->model = transform.get_matrix();
-    entity->mesh = primitive::quad();
-    entity->material = new SpriteMaterial();
+    entity->mesh = Shared<Mesh>(primitive::quad());
+    entity->material = new_shared<SpriteMaterial>();
     entity->material->set_texture(0, sprite->image.get(), sprite->sampler.get());
 }
 

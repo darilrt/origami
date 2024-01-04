@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <functional>
+#include <optional>
 
 template <typename T>
 using Shared = std::shared_ptr<T>;
@@ -23,6 +24,12 @@ inline Unique<T> new_unique(Args &&...args)
 {
     return std::make_unique<T>(std::forward<Args>(args)...);
 }
+
+template <typename T>
+using Optional = std::optional<T>;
+
+template <typename T>
+using Function = std::function<T>;
 
 template <typename T>
 class Hook

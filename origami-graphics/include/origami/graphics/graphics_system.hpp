@@ -27,15 +27,12 @@ public:
     Shared<RenderPass> create_render_pass(int width, int height);
 
 private:
-    class State;
-
     std::vector<Shared<GraphicEntity>> entities;
     std::vector<Shared<RenderPass>> render_passes;
     Shared<RenderPass> current_render_pass = nullptr;
     Vec4 viewport;
     Mat4 view;
     Mat4 projection;
-    State *gs_state = nullptr;
 
     void _render(Vec2 window_size);
 

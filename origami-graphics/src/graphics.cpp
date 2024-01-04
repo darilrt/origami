@@ -10,24 +10,12 @@
 #include "origami/graphics/graphics_system.hpp"
 #include "origami/graphics/default_pass_material.hpp"
 
-class GraphicsSystem::State
-{
-public:
-    sg_pass_action clear_pass;
-};
-
 GraphicsSystem::GraphicsSystem()
 {
-    gs_state = new State;
-    gs_state->clear_pass = {0};
 }
 
 GraphicsSystem::~GraphicsSystem()
 {
-    if (gs_state)
-        delete gs_state;
-
-    entities.clear();
 }
 
 void GraphicsSystem::init(EngineState &state)
@@ -78,8 +66,8 @@ void GraphicsSystem::_render(Vec2 window_size)
     if (!entity)
     {
         entity = new GraphicEntity();
-        entity->mesh = primitive::quad();
-        entity->material = new DefaultPassMaterial();
+        entity->mesh = Shared<Mesh>(primitive::quad());
+        entity->material = new_shared<DefaultPassMaterial>();
         entity->model = Mat4::identity();
     }
 
@@ -99,7 +87,10 @@ void GraphicsSystem::_render(Vec2 window_size)
     }
 
     sg_apply_viewport(viewport.x, viewport.y, viewport.z, viewport.w, true);
-    sg_begin_default_pass(&gs_state->clear_pass, (int)window_size.x, (int)window_size.y);
+
+    static sg_pass_action clear_pass_action = {0};
+
+    sg_begin_default_pass(&clear_pass_action, (int)window_size.x, (int)window_size.y);
 
     if (current_render_pass)
     {

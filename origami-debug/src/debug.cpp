@@ -19,8 +19,8 @@ void Debug::init(EngineState &state)
             mesh->buffers.push_back(
                 new_shared<Buffer>(Buffer::Vertex, Buffer::Dynamic));
 
-            entity->mesh = mesh.get();
-            entity->material = new LineMaterial();
+            entity->mesh = mesh;
+            entity->material = new_shared<LineMaterial>();
             entity->model = Mat4::identity();
         });
 
