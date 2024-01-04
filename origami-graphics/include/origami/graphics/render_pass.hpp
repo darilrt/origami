@@ -22,4 +22,6 @@ public:
     ~RenderPass();
 
     void resize(int width, int height);
+
+    void set_clear_color(Vec4 color);
 };

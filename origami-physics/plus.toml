@@ -1,0 +1,37 @@
+require = ["sokol"]
+
+[subprojects]
+origami-core = { path = "../origami-core" }
+origami-graphics = { path = "../origami-graphics" }
+origami-math = { path = "../origami-math" }
+origami-event = { path = "../origami-event" }
+origami-window = { path = "../origami-window" }
+origami-debug = { path = "../origami-debug" }
+
+[project]
+name = "origami-physics"
+version = "0.1.0"
+description = ""
+author = ""
+email = ""
+url = ""
+license = ""
+
+[compiler]
+cxx = "g++"
+standard = "c++17"
+flags = []
+includes = ["include"]
+defines = []
+warnings = []
+debug = true
+
+[linker]
+type = "static-lib"
+flags = []
+libdirs = []
+libs = []
+
+[deps.sokol]
+git = "https://github.com/floooh/sokol"
+includes = ["./"]

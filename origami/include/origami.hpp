@@ -1,5 +1,6 @@
 #pragma once
 
+#include <origami/core.hpp>
 #include <origami/window.hpp>
 #include <origami/input.hpp>
 #include <origami/event.hpp>

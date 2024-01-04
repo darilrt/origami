@@ -21,7 +21,7 @@ public:
 
     void set_resolution(Vec2 size);
 
-    inline void set_clear_color(Vec4 color) { render_pass->clear_color = color; }
+    inline void set_clear_color(Vec4 color) { render_pass->set_clear_color(color); }
 
     void set_active(EngineState &state);
 

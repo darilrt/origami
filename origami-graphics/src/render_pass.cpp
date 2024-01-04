@@ -44,3 +44,9 @@ void RenderPass::resize(int width, int height)
         .clear_value = 1.0f,
     };
 }
+
+void RenderPass::set_clear_color(Vec4 color)
+{
+    this->clear_color = color;
+    this->action.colors[0].clear_value = {color.x, color.y, color.z, color.w};
+}
