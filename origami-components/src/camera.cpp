@@ -14,33 +14,20 @@ void Camera::update(EngineState &state, const Update &time)
     render_pass->view = transform.get_inverse_matrix();
 }
 
-void Camera::set_orthographic(float size, float aspect, float near, float far)
+void Camera::set_orthographic(float size, float near, float far)
 {
-    if (!render_pass)
-        throw std::runtime_error("Camera not initialized, call Camera::start() first");
-
     is_orhographic = true;
     this->size = size;
     this->near = near;
     this->far = far;
-
-    float half_width = size * aspect / 2.0f;
-    float half_height = size / 2.0f;
-
-    render_pass->projection = Mat4::ortho(-half_width, half_width, -half_height, half_height, near, far);
 }
 
-void Camera::set_perspective(float fov, float aspect, float near, float far)
+void Camera::set_perspective(float fov, float near, float far)
 {
-    if (!render_pass)
-        throw std::runtime_error("Camera not initialized, call Camera::start() first");
-
     is_orhographic = false;
     this->size = fov;
     this->near = near;
     this->far = far;
-
-    render_pass->projection = Mat4::perspective(fov, aspect, near, far);
 }
 
 void Camera::set_resolution(Vec2 _resolution)
@@ -49,9 +36,10 @@ void Camera::set_resolution(Vec2 _resolution)
         throw std::runtime_error("Camera not initialized, call Camera::start() first");
 
     resolution = _resolution;
-    float aspect = _resolution.x / _resolution.y;
+    float aspect = resolution.x / resolution.y;
 
     render_pass->resize((float)resolution.x, (float)resolution.y);
+    render_pass->view = transform.get_inverse_matrix();
 
     if (is_orhographic)
     {
@@ -64,8 +52,6 @@ void Camera::set_resolution(Vec2 _resolution)
     {
         render_pass->projection = Mat4::perspective(size, aspect, near, far);
     }
-
-    render_pass->view = transform.get_inverse_matrix();
 }
 
 void Camera::set_active(EngineState &state)

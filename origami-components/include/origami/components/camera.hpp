@@ -15,9 +15,9 @@ public:
 
     void update(EngineState &state, const Update &time);
 
-    void set_orthographic(float size, float aspect, float near, float far);
+    void set_orthographic(float size, float near, float far);
 
-    void set_perspective(float fov, float aspect, float near, float far);
+    void set_perspective(float fov, float near, float far);
 
     void set_resolution(Vec2 size);
 

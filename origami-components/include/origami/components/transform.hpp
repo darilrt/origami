@@ -7,9 +7,9 @@
 class Transform
 {
 public:
-    Transform *parent = nullptr;
+    Unique<Transform> parent;
     Vec3 position;
-    Quat rotation = Quat::identity();
+    Quat rotation = Quat();
     Vec3 scale = Vec3(1.0f);
 
     Mat4 get_matrix() const;
@@ -20,7 +20,7 @@ public:
 class Transform2D
 {
 public:
-    Transform2D *parent = nullptr;
+    Unique<Transform> parent;
     Vec2 position;
     float rotation = 0.0f;
     Vec2 scale = Vec2(1.0f);

@@ -179,12 +179,19 @@ Mat4 Mat4::ortho(float left, float right, float bottom, float top, float near, f
 
 Mat4 Mat4::perspective(float fov, float aspect, float near, float far)
 {
-    float f = 1.0f / tan(fov / 2.0f);
+    float s = 1.0f / tan(fov / 2.0f);
 
-    return Mat4(f / aspect, 0.0f, 0.0f, 0.0f,
-                0.0f, f, 0.0f, 0.0f,
-                0.0f, 0.0f, (far + near) / (near - far), (2.0f * far * near) / (near - far),
-                0.0f, 0.0f, -1.0f, 0.0f);
+    Mat4 result = Mat4::identity();
+
+    result.data[0] = s / aspect;
+    result.data[5] = s;
+    result.data[10] = -far / (far - near);
+    result.data[14] = -(far * near) / (far - near);
+
+    result.data[11] = -1.0f;
+    result.data[15] = 0.0f;
+
+    return result;
 }
 
 Mat4 Mat4::operator+(const Mat4 &other)
