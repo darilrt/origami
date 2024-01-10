@@ -15,6 +15,9 @@ public:
     Mat4 get_matrix() const;
 
     Mat4 get_inverse_matrix() const;
+
+    // rotation methods
+    void look_at(const Vec3 &target, const Vec3 &up = Vec3(0, 1, 0));
 };
 
 class Transform2D

@@ -24,6 +24,8 @@ public:
 
     void set_vsync(bool vsync);
 
+    void set_fullscreen(bool fullscreen);
+
 private:
     void *window;
     Vec2 size = {800, 600};

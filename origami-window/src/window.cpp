@@ -140,3 +140,8 @@ void Window::set_vsync(bool vsync)
 {
     SDL_GL_SetSwapInterval(vsync ? 1 : 0);
 }
+
+void Window::set_fullscreen(bool fullscreen)
+{
+    SDL_SetWindowFullscreen((SDL_Window *)window, fullscreen ? SDL_WINDOW_FULLSCREEN : 0);
+}

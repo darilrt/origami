@@ -38,3 +38,8 @@ Mat4 Transform2D::get_matrix() const
 
     return matrix;
 }
+
+void Transform::look_at(const Vec3 &target, const Vec3 &up)
+{
+    rotation = Quat::look_at(position, target, up);
+}

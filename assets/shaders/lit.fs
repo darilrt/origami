@@ -1,8 +1,11 @@
 #version 330 core
 
+uniform sampler2D albedo;
+
 in vec2 tex_coord;
 out vec4 frag_color;
 
 void main() {
-    frag_color = vec4(tex_coord.x, 0.0, tex_coord.y, 1.0f);
+    vec3 color = texture(albedo, tex_coord).rgb;
+    frag_color = vec4(color, 1.0f);
 }

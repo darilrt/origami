@@ -7,6 +7,7 @@ LitMaterial::LitMaterial()
     shader = Shader::from_file(
         "assets/shaders/lit",
         {
+            // .primitive_type = SG_PRIMITIVETYPE_LINE_STRIP,
             .uniforms_vs = {
                 .size = sizeof(uniforms),
                 .uniforms = {
@@ -14,6 +15,9 @@ LitMaterial::LitMaterial()
                     {"projection", SG_UNIFORMTYPE_MAT4},
                     {"model", SG_UNIFORMTYPE_MAT4},
                 },
+            },
+            .images = {
+                {"albedo", SG_IMAGETYPE_2D},
             },
         });
 }

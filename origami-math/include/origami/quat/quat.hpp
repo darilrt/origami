@@ -67,14 +67,11 @@ public:
         return Quat();
     }
 
-    static Quat from_axis_angle(const Vec3 &axis, float angle)
-    {
-        float half_angle = angle * 0.5;
-        float sin_half_angle = sin(half_angle);
-        return Quat(axis.x * sin_half_angle, axis.y * sin_half_angle, axis.z * sin_half_angle, cos(half_angle));
-    }
+    static Quat from_axis_angle(const Vec3 &axis, float angle);
 
     static Quat from_euler(const Vec3 &euler);
+
+    static Quat look_at(const Vec3 &from, const Vec3 &to, const Vec3 &up);
 
     Mat4 to_mat4();
 
