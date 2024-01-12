@@ -27,11 +27,13 @@ public:
         {
             std::string name;
             sg_image_type type;
-            sg_image_sample_type sample_type;
+            sg_image_sample_type sample_type = SG_IMAGESAMPLETYPE_FLOAT;
+            sg_sampler_type sampler_type = SG_SAMPLERTYPE_FILTERING;
         };
 
         sg_cull_mode cull_mode = SG_CULLMODE_FRONT;
         sg_primitive_type primitive_type = SG_PRIMITIVETYPE_TRIANGLES;
+        int color_count = 4;
         Uniforms uniforms_vs = {};
         Uniforms uniforms_fs = {};
         std::vector<Image> images = {};

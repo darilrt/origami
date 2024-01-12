@@ -1,39 +1,5 @@
 #include <origami.hpp>
 
-class MeshRenderer
-{
-public:
-    Transform transform;
-    Shared<GraphicEntity> entity;
-
-    void start(EngineState &state)
-    {
-        auto &graphics = state.get_resource<GraphicsSystem>();
-        entity = graphics.create_entity();
-
-        if (!entity->mesh)
-            entity->mesh = Shared<Mesh>(new Mesh({}));
-
-        if (!entity->material)
-            entity->material = new_shared<LitMaterial>();
-
-        entity->model = transform.get_matrix();
-    }
-
-    void update(EngineState &state, const Update &time)
-    {
-        entity->model = transform.get_matrix();
-    }
-
-    inline Shared<Mesh> get_mesh() const { return entity->mesh; }
-
-    inline Shared<Material> get_material() const { return entity->material; }
-
-    inline void set_mesh(Shared<Mesh> mesh) { entity->mesh = mesh; }
-
-    inline void set_material(Shared<Material> material) { entity->material = material; }
-};
-
 class PBRRenderer
 {
 public:
@@ -43,8 +9,7 @@ public:
     void start(EngineState &state)
     {
         auto &assets = state.get_resource<AssetManager>();
-        auto texture = assets.get<Texture>("assets/textures/gridbox.png");
-        material->set_texture(0, texture->image.get(), texture->sampler.get());
+        material->set_texture(0, assets.get<Texture>("assets/textures/gridbox.png"));
 
         renderer->start(state);
         renderer->set_mesh(Shared<Mesh>(primitive::cube()));
@@ -56,6 +21,7 @@ public:
         renderer->update(state, time);
     }
 };
+
 class Player : public Entity
 {
 public:
@@ -82,9 +48,17 @@ public:
         ground->renderer->set_mesh(Shared<Mesh>(primitive::plane()));
         ground->renderer->transform.scale = {10, 10, 10};
 
-        cube = new_unique<PBRRenderer>();
-        cube->start(state);
-        cube->renderer->transform.position.y = 0.5f;
+        auto &assets = state.get_resource<AssetManager>();
+        ground->material->set_texture(0, assets.get<Texture>("assets/textures/SandyStoneRoad/SandyStoneRoad01_BaseColor.png"));
+        ground->material->set_texture(1, assets.get<Texture>("assets/textures/SandyStoneRoad/SandyStoneRoad01_Normal.png"));
+        ground->material->set_texture(2, assets.get<Texture>("assets/textures/SandyStoneRoad/SandyStoneRoad01_AO.png"));
+        ground->material->set_texture(3, assets.get<Texture>("assets/textures/SandyStoneRoad/SandyStoneRoad01_Roughness.png"));
+        ground->material->set_texture(4, assets.get<Texture>("assets/textures/SandyStoneRoad/SandyStoneRoad01_Roughness.png"));
+        ground->material->set_texture(5, assets.get<Texture>("assets/textures/SandyStoneRoad/SandyStoneRoad01_Metallic.png"));
+
+        // cube = new_unique<PBRRenderer>();
+        // cube->start(state);
+        // cube->renderer->transform.position.y = 0.5f;
     }
 
     void update(EngineState &state, const Update &time) override
@@ -93,7 +67,7 @@ public:
         camera.transform.rotation = camera.transform.rotation * Quat::from_euler({0, -time.delta_time * 0.5f, 0});
 
         ground->update(state, time);
-        cube->update(state, time);
+        // cube->update(state, time);
         camera.update(state, time);
     }
 

@@ -2,8 +2,8 @@
 
 #include <origami/core.hpp>
 #include <origami/math.hpp>
+#include <origami/graphics/texture.hpp>
 
-#include "origami/components/texture.hpp"
 #include "origami/components/transform.hpp"
 
 class SpriteMaterial : public Material

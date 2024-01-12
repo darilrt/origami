@@ -72,21 +72,23 @@ Shader *Shader::from_file(const std::string &path, Shader::Descriptor descriptor
     int num_images = 0;
     for (auto &image : descriptor.images)
     {
-        shader_desc.fs.images[num_images++] = {
+        shader_desc.fs.images[num_images] = {
             .used = true,
             .image_type = image.type,
             .sample_type = image.sample_type,
         };
-        shader_desc.fs.samplers[num_images - 1] = {
+        shader_desc.fs.samplers[num_images] = {
             .used = true,
-            .sampler_type = SG_SAMPLERTYPE_FILTERING,
+            .sampler_type = image.sampler_type,
         };
-        shader_desc.fs.image_sampler_pairs[num_images - 1] = {
+        shader_desc.fs.image_sampler_pairs[num_images] = {
             .used = true,
-            .image_slot = num_images - 1,
-            .sampler_slot = num_images - 1,
+            .image_slot = num_images,
+            .sampler_slot = num_images,
             .glsl_name = image.name.c_str(),
         };
+
+        num_images++;
     }
 
     shader->shader = sg_make_shader(shader_desc);
@@ -98,15 +100,18 @@ Shader *Shader::from_file(const std::string &path, Shader::Descriptor descriptor
     }
 
     auto pipeline_desc = sg_pipeline_desc{
+        ._start_canary = 0,
         .shader = shader->shader,
         .depth = {
             .pixel_format = descriptor.depth_format,
             .compare = SG_COMPAREFUNC_LESS_EQUAL,
             .write_enabled = true,
         },
+        .color_count = descriptor.color_count,
         .primitive_type = descriptor.primitive_type,
         .cull_mode = descriptor.cull_mode,
         .sample_count = 1,
+        ._end_canary = 0,
     };
 
     int num_vertex_formats = 0;

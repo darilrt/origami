@@ -17,7 +17,12 @@ LitMaterial::LitMaterial()
                 },
             },
             .images = {
-                {"albedo", SG_IMAGETYPE_2D},
+                {"u_albedo", SG_IMAGETYPE_2D},
+                {"u_normal", SG_IMAGETYPE_2D},
+                {"u_ambient_occlusion", SG_IMAGETYPE_2D},
+                {"u_roughness", SG_IMAGETYPE_2D},
+                {"u_emissive", SG_IMAGETYPE_2D},
+                {"u_metallic", SG_IMAGETYPE_2D},
             },
         });
 }

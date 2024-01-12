@@ -30,5 +30,7 @@ public:
 
     virtual void set_std_uniforms(const Mat4 &view, const Mat4 &projection, const Mat4 &model) = 0;
 
+    void set_texture(int slot, Shared<Texture> texture);
+
     void set_texture(int slot, Image *image, Sampler *sampler);
 };

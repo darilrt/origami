@@ -96,7 +96,22 @@ void GraphicsSystem::_render(Vec2 window_size)
     {
         entity->material->set_texture(
             0,
-            current_render_pass->color_attachment.get(),
+            current_render_pass->albedo_attachment.get(),
+            &sampler);
+
+        entity->material->set_texture(
+            1,
+            current_render_pass->normal_ao_attachment.get(),
+            &sampler);
+
+        entity->material->set_texture(
+            2,
+            current_render_pass->position_roughness_attachment.get(),
+            &sampler);
+
+        entity->material->set_texture(
+            3,
+            current_render_pass->emissive_metallic_attachment.get(),
             &sampler);
 
         _render_entity(*entity);
