@@ -40,7 +40,7 @@ public:
         camera.set_perspective(math::rad(60.0), 0.1f, 100.0f);
         camera.set_resolution(window.get_size());
         camera.set_clear_color({0.1f, 0.11f, 0.10f, 1.0f});
-        camera.transform.position = {0, 3, 3};
+        camera.transform.position = {0, 2, 2};
         camera.transform.rotation = Quat::from_euler({math::rad(45.0f), 0, 0});
 
         ground = new_unique<PBRRenderer>();
@@ -56,9 +56,15 @@ public:
         ground->material->set_texture(4, assets.get<Texture>("assets/textures/SandyStoneRoad/SandyStoneRoad01_Roughness.png"));
         ground->material->set_texture(5, assets.get<Texture>("assets/textures/SandyStoneRoad/SandyStoneRoad01_Metallic.png"));
 
-        // cube = new_unique<PBRRenderer>();
-        // cube->start(state);
-        // cube->renderer->transform.position.y = 0.5f;
+        cube = new_unique<PBRRenderer>();
+        cube->start(state);
+        cube->renderer->transform.position.y = 0.5f;
+        cube->material->set_texture(0, assets.get<Texture>("assets/textures/SandyStoneRoad/SandyStoneRoad01_BaseColor.png"));
+        cube->material->set_texture(1, assets.get<Texture>("assets/textures/SandyStoneRoad/SandyStoneRoad01_Normal.png"));
+        cube->material->set_texture(2, assets.get<Texture>("assets/textures/SandyStoneRoad/SandyStoneRoad01_AO.png"));
+        cube->material->set_texture(3, assets.get<Texture>("assets/textures/SandyStoneRoad/SandyStoneRoad01_Roughness.png"));
+        cube->material->set_texture(4, assets.get<Texture>("assets/textures/SandyStoneRoad/SandyStoneRoad01_Roughness.png"));
+        cube->material->set_texture(5, assets.get<Texture>("assets/textures/SandyStoneRoad/SandyStoneRoad01_Metallic.png"));
     }
 
     void update(EngineState &state, const Update &time) override
@@ -67,7 +73,7 @@ public:
         camera.transform.rotation = camera.transform.rotation * Quat::from_euler({0, -time.delta_time * 0.5f, 0});
 
         ground->update(state, time);
-        // cube->update(state, time);
+        cube->update(state, time);
         camera.update(state, time);
     }
 

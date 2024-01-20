@@ -1,4 +1,4 @@
-require = [ "sdl2",]
+require = ["sdl2"]
 
 [project]
 name = "origami-window"
@@ -13,7 +13,7 @@ license = ""
 cxx = "g++"
 standard = "c++17"
 flags = []
-includes = [ "include",]
+includes = ["include"]
 defines = []
 warnings = []
 debug = true
@@ -32,3 +32,17 @@ path = "../origami-event"
 
 [subprojects.origami-math]
 path = "../origami-math"
+
+[deps.sdl2]
+libs = ["SDL2", "SDL2main"]
+defines = ["SDL_MAIN_HANDLED"]
+
+[deps.sdl2.windows]
+pre-build = [
+    "wget https://github.com/libsdl-org/SDL/releases/download/release-2.28.5/SDL2-devel-2.28.5-mingw.tar.gz -O sdl2.tar.gz",
+    "tar -xf sdl2.tar.gz",
+    "rm sdl2.tar.gz",
+]
+includes = ["SDL2-2.28.5/x86_64-w64-mingw32/include"]
+libdirs = ["SDL2-2.28.5/x86_64-w64-mingw32/lib"]
+binaries = ["SDL2-2.28.5/x86_64-w64-mingw32/bin/SDL2.dll"]

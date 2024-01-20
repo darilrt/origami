@@ -10,6 +10,7 @@ class Camera
 {
 public:
     Transform transform;
+    Shared<RenderPass> render_pass;
 
     void start(EngineState &state);
 
@@ -29,7 +30,6 @@ public:
 
 private:
     bool is_orhographic = false;
-    Shared<RenderPass> render_pass;
     Vec2 resolution = {1.0, 1.0};
 
     float size;
