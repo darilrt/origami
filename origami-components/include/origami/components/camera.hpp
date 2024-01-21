@@ -6,6 +6,21 @@
 
 #include "origami/components/transform.hpp"
 
+// Common Camera component for 2D and 3D
+// example, setup camera:
+// ```c++
+// auto camera = new_shared<Camera>();
+//
+// void start(EngineState &state)
+// {
+//     ...
+//     camera->start(state);
+//     camera->set_active(state);
+//     camera->set_orthographic(1.0, -1.0, 1.0);
+//     camera->set_resolution(wm.get_size());
+//     ...
+// }
+// ```
 class Camera
 {
 public:

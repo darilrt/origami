@@ -65,3 +65,13 @@ void RenderPass::set_clear_color(Vec4 color)
     this->clear_color = color;
     this->action.colors[0].clear_value = {color.x, color.y, color.z, color.w};
 }
+
+void RenderPass::begin()
+{
+    sg_begin_pass(this->pass, &this->action);
+}
+
+void RenderPass::end()
+{
+    sg_end_pass();
+}

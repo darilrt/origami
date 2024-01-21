@@ -73,7 +73,7 @@ void GraphicsSystem::_render(Vec2 window_size)
 
     for (auto &rp : render_passes)
     {
-        sg_begin_pass(rp->pass, &rp->action);
+        rp->begin();
 
         set_view(rp->view);
         set_projection(rp->projection);
@@ -83,7 +83,7 @@ void GraphicsSystem::_render(Vec2 window_size)
             _render_entity(*entity);
         }
 
-        sg_end_pass();
+        rp->end();
     }
 
     sg_apply_viewport(viewport.x, viewport.y, viewport.z, viewport.w, true);

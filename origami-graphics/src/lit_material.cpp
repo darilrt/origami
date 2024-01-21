@@ -7,7 +7,6 @@ LitMaterial::LitMaterial()
     shader = Shader::from_file(
         "assets/shaders/lit",
         {
-            // .primitive_type = SG_PRIMITIVETYPE_LINE_STRIP,
             .uniforms_vs = {
                 .size = sizeof(uniforms),
                 .uniforms = {

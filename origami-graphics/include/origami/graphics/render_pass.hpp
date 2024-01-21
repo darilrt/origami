@@ -27,4 +27,8 @@ public:
     void resize(int width, int height);
 
     void set_clear_color(Vec4 color);
+
+    void begin();
+
+    void end();
 };
