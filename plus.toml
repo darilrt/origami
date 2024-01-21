@@ -15,6 +15,7 @@ standard = "c++20"
 flags = []
 includes = ["include"]
 defines = ["SDL_MAIN_HANDLED"]
+binaries = []
 warnings = []
 debug = true
 
@@ -59,6 +60,9 @@ path = "origami-debug"
 
 [subprojects.origami-physics]
 path = "origami-physics"
+
+[subprojects.origami-vr]
+path = "origami-vr"
 
 [deps.sokol]
 git = "https://github.com/floooh/sokol"
