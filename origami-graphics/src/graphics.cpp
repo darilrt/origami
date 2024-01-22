@@ -10,14 +10,6 @@
 #include "origami/graphics/graphics_system.hpp"
 #include "origami/graphics/default_pass_material.hpp"
 
-GraphicsSystem::GraphicsSystem()
-{
-}
-
-GraphicsSystem::~GraphicsSystem()
-{
-}
-
 void GraphicsSystem::init(EngineState &state)
 {
     auto &window = state.get_resource<Window>();
@@ -25,18 +17,22 @@ void GraphicsSystem::init(EngineState &state)
 
     viewport = {0, 0, window.get_size().x, window.get_size().y};
 
-    es.regist<PreStart>([](EngineState &state, void *_)
-                        {
-        sg_desc desc = {
-            .logger = slog_func,
-        };
-        sg_setup(&desc); });
+    es.regist<PreStart>(
+        [](EngineState &state, void *_)
+        {
+            sg_desc desc = {
+                .logger = slog_func,
+            };
+            sg_setup(&desc);
+        });
 
-    es.regist<Render>([&](EngineState &state, void *_)
-                      { _render(window.get_size()); });
+    es.regist<Render>(
+        [&](EngineState &state, void *_)
+        { _render(window.get_size()); });
 
-    es.regist<Stop>([](EngineState &state, void *_)
-                    { sg_shutdown(); });
+    es.regist<Stop>(
+        [](EngineState &state, void *_)
+        { sg_shutdown(); });
 }
 
 Shared<GraphicEntity> GraphicsSystem::create_entity()
@@ -70,55 +66,6 @@ void GraphicsSystem::_render(Vec2 window_size)
         entity->material = new_shared<DefaultPassMaterial>();
         entity->model = Mat4::identity();
     }
-
-    for (auto &rp : render_passes)
-    {
-        rp->begin();
-
-        set_view(rp->view);
-        set_projection(rp->projection);
-
-        for (auto &entity : entities)
-        {
-            _render_entity(*entity);
-        }
-
-        rp->end();
-    }
-
-    sg_apply_viewport(viewport.x, viewport.y, viewport.z, viewport.w, true);
-
-    static sg_pass_action clear_pass_action = {0};
-
-    sg_begin_default_pass(&clear_pass_action, (int)window_size.x, (int)window_size.y);
-
-    if (current_render_pass)
-    {
-        entity->material->set_texture(
-            0,
-            current_render_pass->albedo_attachment.get(),
-            &sampler);
-
-        entity->material->set_texture(
-            1,
-            current_render_pass->normal_ao_attachment.get(),
-            &sampler);
-
-        entity->material->set_texture(
-            2,
-            current_render_pass->position_roughness_attachment.get(),
-            &sampler);
-
-        entity->material->set_texture(
-            3,
-            current_render_pass->emissive_metallic_attachment.get(),
-            &sampler);
-
-        _render_entity(*entity);
-    }
-
-    sg_end_pass();
-    sg_commit();
 }
 
 void GraphicsSystem::_render_entity(GraphicEntity &entity)

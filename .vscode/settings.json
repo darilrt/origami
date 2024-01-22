@@ -77,6 +77,13 @@
         "deque": "cpp",
         "ranges": "cpp",
         "span": "cpp",
-        "xtree": "cpp"
+        "xtree": "cpp",
+        "codecvt": "cpp",
+        "condition_variable": "cpp",
+        "cstdarg": "cpp",
+        "map": "cpp",
+        "set": "cpp",
+        "shared_mutex": "cpp",
+        "stack": "cpp"
     }
 }

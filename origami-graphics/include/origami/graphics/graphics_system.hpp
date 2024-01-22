@@ -8,10 +8,6 @@
 class GraphicsSystem : public Resource
 {
 public:
-    GraphicsSystem();
-
-    ~GraphicsSystem();
-
     void init(EngineState &state);
 
     void set_viewport(Vec4 size) { this->viewport = size; }
