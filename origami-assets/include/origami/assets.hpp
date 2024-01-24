@@ -4,6 +4,8 @@
 #include <unordered_map>
 #include <string>
 
+#include <toml.hpp>
+
 template <typename T>
 concept Asset = requires(const std::string &path) {
     {

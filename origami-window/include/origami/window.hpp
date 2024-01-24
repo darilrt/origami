@@ -10,6 +10,8 @@
 class Window : public Resource
 {
 public:
+    void *window;
+
     void init(EngineState &state);
 
     void run(EngineState &state);
@@ -26,7 +28,10 @@ public:
 
     void set_fullscreen(bool fullscreen);
 
+    void create_surface_khr(void *instance, void *surface);
+
+    std::vector<const char *> get_required_extensions();
+
 private:
-    void *window;
     Vec2 size = {800, 600};
 };

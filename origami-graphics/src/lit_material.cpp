@@ -4,26 +4,26 @@
 
 LitMaterial::LitMaterial()
 {
-    shader = Shader::from_file(
-        "assets/shaders/lit",
-        {
-            .uniforms_vs = {
-                .size = sizeof(uniforms),
-                .uniforms = {
-                    {"view", SG_UNIFORMTYPE_MAT4},
-                    {"projection", SG_UNIFORMTYPE_MAT4},
-                    {"model", SG_UNIFORMTYPE_MAT4},
-                },
-            },
-            .images = {
-                {"u_albedo", SG_IMAGETYPE_2D},
-                {"u_normal", SG_IMAGETYPE_2D},
-                {"u_ambient_occlusion", SG_IMAGETYPE_2D},
-                {"u_roughness", SG_IMAGETYPE_2D},
-                {"u_emissive", SG_IMAGETYPE_2D},
-                {"u_metallic", SG_IMAGETYPE_2D},
-            },
-        });
+    // shader = Shader::from_file(
+    //     "assets/shaders/lit",
+    //     {
+    //         .uniforms_vs = {
+    //             .size = sizeof(uniforms),
+    //             .uniforms = {
+    //                 {"view", SG_UNIFORMTYPE_MAT4},
+    //                 {"projection", SG_UNIFORMTYPE_MAT4},
+    //                 {"model", SG_UNIFORMTYPE_MAT4},
+    //             },
+    //         },
+    //         .images = {
+    //             {"u_albedo", SG_IMAGETYPE_2D},
+    //             {"u_normal", SG_IMAGETYPE_2D},
+    //             {"u_ambient_occlusion", SG_IMAGETYPE_2D},
+    //             {"u_roughness", SG_IMAGETYPE_2D},
+    //             {"u_emissive", SG_IMAGETYPE_2D},
+    //             {"u_metallic", SG_IMAGETYPE_2D},
+    //         },
+    //     });
 }
 
 sg_range LitMaterial::get_vs()

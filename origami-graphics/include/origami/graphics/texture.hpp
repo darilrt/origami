@@ -9,7 +9,7 @@
 class Texture
 {
 public:
-    Unique<Image> image;
+    Unique<ImageOld> image;
     Unique<Sampler> sampler;
 
     static Texture *load_asset(const std::string &path);

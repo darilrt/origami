@@ -1,15 +1,19 @@
 #pragma once
 
 #include <iostream>
+#include <functional>
+#include <optional>
 #include <vulkan/vulkan.h>
 #include <origami/core.hpp>
 
-// To enable validation layers, define ORIGAMI_ENABLE_VALIDATION_LAYERS before including origami.hpp
-#ifdef ORIGAMI_ENABLE_VALIDATION_LAYERS
-#define ORIGAMI_ENABLE_VALIDATION_LAYERS 1
-#else
-#define ORIGAMI_ENABLE_VALIDATION_LAYERS 0
-#endif
+#include "origami/gfx/image.hpp"
+#include "origami/gfx/command_pool.hpp"
+#include "origami/gfx/command_buffer.hpp"
+#include "origami/gfx/image_view.hpp"
+#include "origami/gfx/render_pass.hpp"
+#include "origami/gfx/framebuffer.hpp"
+#include "origami/gfx/shader_module.hpp"
+#include "origami/gfx/pipeline.hpp"
 
 namespace gfx
 {
@@ -23,12 +27,59 @@ namespace gfx
         bool enable_validation_layers;
         std::vector<const char *> validation_layers;
         std::vector<const char *> required_extensions;
+        std::function<void()> create_surface;
+        VkPhysicalDeviceFeatures device_features = {};
+        std::function<VkExtent2D()> get_extent;
+    };
+
+    struct SwapChainSupportDetails
+    {
+        VkSurfaceCapabilitiesKHR capabilities;
+        std::vector<VkSurfaceFormatKHR> formats;
+        std::vector<VkPresentModeKHR> present_modes;
+    };
+
+    struct QueueFamilyIndices
+    {
+        std::optional<uint32_t> graphics_family;
+        std::optional<uint32_t> present_family;
+
+        bool is_complete()
+        {
+            return graphics_family.has_value() && present_family.has_value();
+        }
     };
 
     struct State
     {
+        ~State();
+
         void setup(const SetupInfo &info);
 
+        void wait_for_render();
+
+        void submit(const std::vector<CommandBuffer> &command_buffers);
+
+        void draw_frame();
+
+        CommandPool allocate_command_pool();
+
+        inline RenderPass get_render_pass()
+        {
+            return render_pass;
+        }
+
+        inline FrameBuffer get_current_framebuffer()
+        {
+            return swap_chain_framebuffers[current_frame];
+        }
+
+        inline FrameBuffer get_framebuffer(size_t index)
+        {
+            return swap_chain_framebuffers[index];
+        }
+
+        std::function<VkExtent2D()> get_extent;
         VkInstance instance;
         VkSurfaceKHR surface;
         VkPhysicalDevice physical_device = VK_NULL_HANDLE;
@@ -36,12 +87,9 @@ namespace gfx
         VkQueue graphics_queue;
         VkQueue present_queue;
         VkSwapchainKHR swap_chain;
-        std::vector<VkImage> swap_chain_images;
         VkFormat swap_chain_image_format;
         VkExtent2D swap_chain_extent;
-        std::vector<VkImageView> swap_chain_image_views;
         VkDebugUtilsMessengerEXT debug_messenger;
-        std::vector<VkFramebuffer> swap_chain_framebuffers;
         VkCommandPool command_pool;
         std::vector<VkCommandBuffer> command_buffers;
         std::vector<VkSemaphore> image_available_semaphores;
@@ -51,19 +99,36 @@ namespace gfx
         const std::vector<const char *> device_extensions = {
             VK_KHR_SWAPCHAIN_EXTENSION_NAME,
         };
+        bool enable_validation_layers = false;
+
+        RenderPass render_pass;
+        std::vector<Image> swap_chain_images;
+        std::vector<ImageView> swap_chain_image_views;
+        std::vector<FrameBuffer> swap_chain_framebuffers;
 
         void create_instance(const SetupInfo &info);
-        void setup_debug_messenger(const SetupInfo &info);
+        void setup_debug_messenger(bool enable_validation_layers);
         void pick_physical_device();
-        void create_logical_device();
-        void create_surface();
-        void create_swap_chain();
+        void create_logical_device(const SetupInfo &info);
+        void create_swap_chain(const VkExtent2D &window_extent);
         void create_image_views();
+        void create_render_pass();
+        void create_framebuffers();
         void create_command_pool();
         void create_command_buffer();
         void create_sync_objects();
         void cleanup_swap_chain();
         void recreate_swap_chain();
-        void cleanup();
+
+        static VKAPI_ATTR VkBool32 VKAPI_CALL debug_callback(
+            VkDebugUtilsMessageSeverityFlagBitsEXT message_severity,
+            VkDebugUtilsMessageTypeFlagsEXT message_type,
+            const VkDebugUtilsMessengerCallbackDataEXT *callback_data,
+            void *user_data);
+
+        int rate_device_suitable(VkPhysicalDevice device);
+        SwapChainSupportDetails query_swap_chain_support(VkPhysicalDevice device);
+
+        QueueFamilyIndices find_queue_families(VkPhysicalDevice device);
     };
 }

@@ -3,7 +3,7 @@
 #include <sokol_gfx.h>
 #include <string>
 
-class Image
+class ImageOld
 {
 public:
     enum Format
@@ -22,7 +22,7 @@ public:
         Stream = SG_USAGE_STREAM,
     };
 
-    Image(
+    ImageOld(
         int width,
         int height,
         int num_mipmaps,
@@ -31,17 +31,17 @@ public:
         bool render_target = false,
         const void *data = nullptr);
 
-    ~Image();
+    ~ImageOld();
 
     void resize(int width, int height);
 
-    static Image *from_file(const std::string &path);
+    static ImageOld *from_file(const std::string &path);
 
-    static Image *from_memory(const void *data, int width, int height);
+    static ImageOld *from_memory(const void *data, int width, int height);
 
-    static Image *create_render_target(int width, int height);
+    static ImageOld *create_render_target(int width, int height);
 
-    static Image *create_depth_target(int width, int height);
+    static ImageOld *create_depth_target(int width, int height);
 
     sg_image image = {0};
 
@@ -53,5 +53,5 @@ private:
     int num_mipmaps;
     bool render_target;
 
-    Image() = default;
+    ImageOld() = default;
 };

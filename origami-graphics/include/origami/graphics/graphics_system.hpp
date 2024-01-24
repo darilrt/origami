@@ -16,19 +16,22 @@ public:
 
     void set_projection(Mat4 projection) { this->projection = projection; }
 
-    void set_render_pass(Shared<RenderPass> render_pass) { this->current_render_pass = render_pass; }
+    void set_render_pass(Shared<RenderPassOld> render_pass) { this->current_render_pass = render_pass; }
 
     Shared<GraphicEntity> create_entity();
 
-    Shared<RenderPass> create_render_pass(int width, int height);
+    Shared<RenderPassOld> create_render_pass(int width, int height);
 
 private:
+    void *gfx_state_ptr;
     std::vector<Shared<GraphicEntity>> entities;
-    std::vector<Shared<RenderPass>> render_passes;
-    Shared<RenderPass> current_render_pass = nullptr;
+    std::vector<Shared<RenderPassOld>> render_passes;
+    Shared<RenderPassOld> current_render_pass = nullptr;
     Vec4 viewport;
     Mat4 view;
     Mat4 projection;
+
+    void _start(EngineState &state);
 
     void _render(Vec2 window_size);
 

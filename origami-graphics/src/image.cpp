@@ -4,7 +4,7 @@
 
 #include "origami/graphics/image.hpp"
 
-Image::Image(
+ImageOld::ImageOld(
     int width,
     int height,
     int num_mipmaps,
@@ -39,12 +39,12 @@ Image::Image(
     image = sg_make_image(&desc);
 }
 
-Image::~Image()
+ImageOld::~ImageOld()
 {
     sg_destroy_image(image);
 }
 
-Image *Image::from_file(const std::string &path)
+ImageOld *ImageOld::from_file(const std::string &path)
 {
     int width, height, channels;
     stbi_uc *pixels = stbi_load(path.c_str(), &width, &height, &channels, STBI_rgb_alpha);
@@ -55,16 +55,16 @@ Image *Image::from_file(const std::string &path)
         return nullptr;
     }
 
-    Image *image = Image::from_memory(pixels, width, height);
+    ImageOld *image = ImageOld::from_memory(pixels, width, height);
 
     stbi_image_free(pixels);
 
     return image;
 }
 
-Image *Image::from_memory(const void *data, int width, int height)
+ImageOld *ImageOld::from_memory(const void *data, int width, int height)
 {
-    Image *image = new Image(
+    ImageOld *image = new ImageOld(
         width,
         height,
         1,
@@ -76,9 +76,9 @@ Image *Image::from_memory(const void *data, int width, int height)
     return image;
 }
 
-Image *Image::create_render_target(int width, int height)
+ImageOld *ImageOld::create_render_target(int width, int height)
 {
-    Image *image = new Image(
+    ImageOld *image = new ImageOld(
         width,
         height,
         1,
@@ -90,9 +90,9 @@ Image *Image::create_render_target(int width, int height)
     return image;
 }
 
-Image *Image::create_depth_target(int width, int height)
+ImageOld *ImageOld::create_depth_target(int width, int height)
 {
-    Image *image = new Image(
+    ImageOld *image = new ImageOld(
         width,
         height,
         1,

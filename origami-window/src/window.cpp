@@ -1,5 +1,6 @@
 #include <iostream>
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_vulkan.h>
 
 #include "origami/window.hpp"
 
@@ -17,19 +18,19 @@ void Window::init(EngineState &state)
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
     SDL_GL_SetSwapInterval(1);
 
-    window = SDL_CreateWindow("Origami", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, size.x, size.y, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+    window = SDL_CreateWindow("Origami", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, size.x, size.y, SDL_WINDOW_VULKAN | SDL_WINDOW_SHOWN);
     if (window == nullptr)
     {
         std::cerr << "Window could not be created! SDL_Error: " << SDL_GetError() << std::endl;
         return;
     }
 
-    context = SDL_GL_CreateContext((SDL_Window *)window);
-    if (context == nullptr)
-    {
-        std::cerr << "OpenGL context could not be created! SDL_Error: " << SDL_GetError() << std::endl;
-        return;
-    }
+    // context = SDL_GL_CreateContext((SDL_Window *)window);
+    // if (context == nullptr)
+    // {
+    //     std::cerr << "OpenGL context could not be created! SDL_Error: " << SDL_GetError() << std::endl;
+    //     return;
+    // }
 }
 
 void Window::run(EngineState &state)
@@ -144,4 +145,28 @@ void Window::set_vsync(bool vsync)
 void Window::set_fullscreen(bool fullscreen)
 {
     SDL_SetWindowFullscreen((SDL_Window *)window, fullscreen ? SDL_WINDOW_FULLSCREEN : 0);
+}
+
+void Window::create_surface_khr(void *instance, void *surface)
+{
+    SDL_bool result = SDL_Vulkan_CreateSurface(
+        (SDL_Window *)window,
+        (VkInstance)instance,
+        (VkSurfaceKHR *)surface);
+
+    if (result != SDL_TRUE)
+    {
+        throw std::runtime_error("Window::create_surface_khr: Failed to create Vulkan surface");
+    }
+}
+
+std::vector<const char *> Window::get_required_extensions()
+{
+    unsigned int count;
+    SDL_Vulkan_GetInstanceExtensions((SDL_Window *)window, &count, nullptr);
+
+    std::vector<const char *> extensions(count);
+    SDL_Vulkan_GetInstanceExtensions((SDL_Window *)window, &count, extensions.data());
+
+    return extensions;
 }

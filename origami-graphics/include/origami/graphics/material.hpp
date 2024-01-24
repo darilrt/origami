@@ -32,5 +32,5 @@ public:
 
     void set_texture(int slot, Shared<Texture> texture);
 
-    void set_texture(int slot, Image *image, Sampler *sampler);
+    void set_texture(int slot, ImageOld *image, Sampler *sampler);
 };

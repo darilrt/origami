@@ -25,7 +25,7 @@ class Camera
 {
 public:
     Transform transform;
-    Shared<RenderPass> render_pass;
+    Shared<RenderPassOld> render_pass;
 
     void start(EngineState &state);
 

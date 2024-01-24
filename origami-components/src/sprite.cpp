@@ -8,22 +8,22 @@
 
 SpriteMaterial::SpriteMaterial()
 {
-    shader = Shader::from_file(
-        "assets/shaders/sprite",
-        Shader::Descriptor{
-            .primitive_type = SG_PRIMITIVETYPE_TRIANGLE_STRIP,
-            .uniforms_vs = {
-                .size = sizeof(uniforms),
-                .uniforms = {
-                    {"view", SG_UNIFORMTYPE_MAT4},
-                    {"projection", SG_UNIFORMTYPE_MAT4},
-                    {"model", SG_UNIFORMTYPE_MAT4},
-                },
-            },
-            .images = {
-                {"sprite", SG_IMAGETYPE_2D},
-            },
-        });
+    // shader = Shader::from_file(
+    //     "assets/shaders/sprite",
+    //     Shader::Descriptor{
+    //         .primitive_type = SG_PRIMITIVETYPE_TRIANGLE_STRIP,
+    //         .uniforms_vs = {
+    //             .size = sizeof(uniforms),
+    //             .uniforms = {
+    //                 {"view", SG_UNIFORMTYPE_MAT4},
+    //                 {"projection", SG_UNIFORMTYPE_MAT4},
+    //                 {"model", SG_UNIFORMTYPE_MAT4},
+    //             },
+    //         },
+    //         .images = {
+    //             {"sprite", SG_IMAGETYPE_2D},
+    //         },
+    //     });
 }
 
 sg_range SpriteMaterial::get_vs()

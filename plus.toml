@@ -1,4 +1,4 @@
-require = [ "sdl2", "sokol",]
+require = [ "sdl2", "sokol", "tomlplusplus",]
 
 [project]
 name = "origami"
@@ -58,9 +58,6 @@ path = "origami-components"
 [subprojects.origami-utils]
 path = "origami-utils"
 
-[subprojects.origami-debug]
-path = "origami-debug"
-
 [subprojects.origami-physics]
 path = "origami-physics"
 
@@ -74,6 +71,10 @@ includes = [ "./",]
 [deps.sdl2]
 libs = [ "SDL2", "SDL2main",]
 defines = [ "SDL_MAIN_HANDLED",]
+
+[deps.tomlplusplus]
+git = "https://github.com/ToruNiina/toml11.git"
+includes = [ "./",]
 
 [deps.sdl2.windows]
 pre-build = [ "wget https://github.com/libsdl-org/SDL/releases/download/release-2.28.5/SDL2-devel-2.28.5-mingw.tar.gz -O sdl2.tar.gz", "tar -xf sdl2.tar.gz", "rm sdl2.tar.gz",]

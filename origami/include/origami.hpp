@@ -9,7 +9,7 @@
 #include <origami/scene.hpp>
 #include <origami/components.hpp>
 #include <origami/utils.hpp>
-#include <origami/debug.hpp>
+// #include <origami/debug.hpp>
 
 #define ENTRY_POINT(T)  \
     int main()          \
@@ -28,7 +28,7 @@ void start_app()
     state->init_resource<SceneSystem>();
     state->init_resource<Window>();
     state->init_resource<GraphicsSystem>();
-    state->init_resource<Debug>();
+    // state->init_resource<Debug>();
     state->start();
 
     state->get_resource<SceneSystem>().load<T>();
