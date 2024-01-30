@@ -14,6 +14,8 @@
 
 Pipeline::Pipeline(const Parameters &parameters)
 {
+    bind_point = parameters.bind_point;
+
     VkPipelineShaderStageCreateInfo vert_shader_stage_info = {
         .sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
         .stage = VK_SHADER_STAGE_VERTEX_BIT,

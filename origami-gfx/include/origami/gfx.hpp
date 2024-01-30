@@ -71,7 +71,7 @@ namespace gfx
 
         inline FrameBuffer get_current_framebuffer()
         {
-            return swap_chain_framebuffers[current_frame];
+            return swap_chain_framebuffers[image_index];
         }
 
         inline FrameBuffer get_framebuffer(size_t index)
@@ -96,6 +96,7 @@ namespace gfx
         std::vector<VkSemaphore> render_finished_semaphores;
         std::vector<VkFence> in_flight_fences;
         uint32_t current_frame = 0;
+        uint32_t image_index;
         const std::vector<const char *> device_extensions = {
             VK_KHR_SWAPCHAIN_EXTENSION_NAME,
         };

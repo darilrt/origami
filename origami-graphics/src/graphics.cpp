@@ -2,6 +2,7 @@
 #include <origami/window.hpp>
 #include <origami/gfx.hpp>
 #include <iostream>
+#include <string>
 
 #include "origami/graphics/primitives.hpp"
 #include "origami/graphics/material.hpp"
@@ -76,6 +77,26 @@ void GraphicsSystem::_start(EngineState &state)
     CommandBuffer cmd = command_pool.allocate_command_buffer();
     FrameBuffer fb = gfx_state->get_current_framebuffer();
 
+    ShaderModule vert_shader_module = ShaderModule({
+        .device = (void *)gfx_state->device,
+        .file_path = "assets/shaders/spirv/vert.spv",
+    });
+
+    ShaderModule frag_shader_module = ShaderModule({
+        .device = (void *)gfx_state->device,
+        .file_path = "assets/shaders/spirv/frag.spv",
+    });
+
+    Pipeline graphics_pipeline = Pipeline({
+        .device = (void *)gfx_state->device,
+        .vs_module = vert_shader_module,
+        .fs_module = frag_shader_module,
+        .render_pass = gfx_state->get_render_pass(),
+    });
+
+    vert_shader_module.destroy();
+    frag_shader_module.destroy();
+
     gfx_state->wait_for_render();
 
     cmd.reset();
@@ -93,6 +114,29 @@ void GraphicsSystem::_start(EngineState &state)
             .height = static_cast<uint32_t>(wm.get_size().y),
         },
         .clear_values = {{0, 0, 0, 0}},
+    });
+
+    cmd.bind_pipeline(graphics_pipeline);
+
+    cmd.set_viewport({
+        .x = 0.0f,
+        .y = 0.0f,
+        .width = static_cast<float>(wm.get_size().x),
+        .height = static_cast<float>(wm.get_size().y),
+    });
+
+    cmd.set_scissor({
+        .x = 0,
+        .y = 0,
+        .width = static_cast<uint32_t>(wm.get_size().x),
+        .height = static_cast<uint32_t>(wm.get_size().y),
+    });
+
+    cmd.draw({
+        .vertex_count = 3,
+        .instance_count = 1,
+        .first_vertex = 0,
+        .first_instance = 0,
     });
 
     cmd.end_render_pass();

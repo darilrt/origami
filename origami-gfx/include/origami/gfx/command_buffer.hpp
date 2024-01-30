@@ -2,6 +2,7 @@
 
 #include <vector>
 
+#include "pipeline.hpp"
 #include "framebuffer.hpp"
 #include "render_pass.hpp"
 
@@ -90,6 +91,8 @@ public:
     };
 
     void set_scissor(const ScissorInfo &viewport);
+
+    void bind_pipeline(const Pipeline &pipeline);
 
     struct DrawInfo
     {

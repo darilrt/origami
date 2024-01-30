@@ -1,4 +1,4 @@
-require = ["sokol"]
+require = []
 
 [subprojects.origami]
 path = "../origami"
@@ -47,7 +47,3 @@ type = "static-lib"
 flags = []
 libdirs = []
 libs = []
-
-[deps.sokol]
-git = "https://github.com/floooh/sokol"
-includes = ["./"]

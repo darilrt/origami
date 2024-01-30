@@ -1,4 +1,4 @@
-require = [ "sdl2", "sokol", "tomlplusplus",]
+require = [ "sdl2", "tomlplusplus",]
 
 [project]
 name = "origami"
@@ -63,10 +63,6 @@ path = "origami-physics"
 
 [subprojects.origami-gfx]
 path = "origami-gfx"
-
-[deps.sokol]
-git = "https://github.com/floooh/sokol"
-includes = [ "./",]
 
 [deps.sdl2]
 libs = [ "SDL2", "SDL2main",]

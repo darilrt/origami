@@ -78,6 +78,11 @@ void CommandBuffer::set_scissor(const ScissorInfo &scissor)
     vkCmdSetScissor((VkCommandBuffer)id, 0, 1, (VkRect2D *)&scissor);
 }
 
+void CommandBuffer::bind_pipeline(const Pipeline &pipeline)
+{
+    vkCmdBindPipeline((VkCommandBuffer)id, (VkPipelineBindPoint)pipeline.bind_point, (VkPipeline)pipeline.id);
+}
+
 void CommandBuffer::draw(const DrawInfo &info)
 {
     vkCmdDraw((VkCommandBuffer)id, info.vertex_count, info.instance_count, info.first_vertex, info.first_instance);
