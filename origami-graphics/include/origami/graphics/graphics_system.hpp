@@ -27,6 +27,7 @@ private:
     std::vector<Shared<GraphicEntity>> entities;
     std::vector<Shared<RenderPassOld>> render_passes;
     Shared<RenderPassOld> current_render_pass = nullptr;
+    EngineState *state;
     Vec4 viewport;
     Mat4 view;
     Mat4 projection;

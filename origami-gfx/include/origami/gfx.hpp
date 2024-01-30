@@ -14,6 +14,7 @@
 #include "origami/gfx/framebuffer.hpp"
 #include "origami/gfx/shader_module.hpp"
 #include "origami/gfx/pipeline.hpp"
+#include "origami/gfx/vk_instance.hpp"
 
 namespace gfx
 {
@@ -74,13 +75,18 @@ namespace gfx
             return swap_chain_framebuffers[image_index];
         }
 
+        inline CommandBuffer get_current_command_buffer()
+        {
+            return command_buffers[current_frame];
+        }
+
         inline FrameBuffer get_framebuffer(size_t index)
         {
             return swap_chain_framebuffers[index];
         }
 
         std::function<VkExtent2D()> get_extent;
-        VkInstance instance;
+        VulkanInstance instance;
         VkSurfaceKHR surface;
         VkPhysicalDevice physical_device = VK_NULL_HANDLE;
         VkDevice device;
@@ -90,8 +96,8 @@ namespace gfx
         VkFormat swap_chain_image_format;
         VkExtent2D swap_chain_extent;
         VkDebugUtilsMessengerEXT debug_messenger;
-        VkCommandPool command_pool;
-        std::vector<VkCommandBuffer> command_buffers;
+        CommandPool command_pool;
+        std::vector<CommandBuffer> command_buffers;
         std::vector<VkSemaphore> image_available_semaphores;
         std::vector<VkSemaphore> render_finished_semaphores;
         std::vector<VkFence> in_flight_fences;

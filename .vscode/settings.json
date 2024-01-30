@@ -84,6 +84,7 @@
         "map": "cpp",
         "set": "cpp",
         "shared_mutex": "cpp",
-        "stack": "cpp"
+        "stack": "cpp",
+        "unordered_set": "cpp"
     }
 }
