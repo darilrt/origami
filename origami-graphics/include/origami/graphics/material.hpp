@@ -2,7 +2,6 @@
 
 #include <origami/graphics/shader.hpp>
 #include <origami/math.hpp>
-#include <sokol_gfx.h>
 
 #include "origami/graphics/texture.hpp"
 
@@ -22,11 +21,6 @@ class Material
 
 public:
     Shader *shader;
-    sg_bindings bindings = {0};
-
-    virtual sg_range get_vs() = 0;
-
-    virtual sg_range get_fs() = 0;
 
     virtual void set_std_uniforms(const Mat4 &view, const Mat4 &projection, const Mat4 &model) = 0;
 

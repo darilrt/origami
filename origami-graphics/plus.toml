@@ -1,4 +1,4 @@
-require = ["sokol", "stb", "tomlplusplus"]
+require = ["stb", "tomlplusplus"]
 
 [subprojects]
 origami-core = { path = "../origami-core" }
@@ -21,7 +21,7 @@ cxx = "g++"
 standard = "c++20"
 flags = []
 includes = ["include"]
-defines = ["SOKOL_GLCORE33"]
+defines = []
 warnings = []
 debug = true
 
@@ -33,10 +33,6 @@ type = "static-lib"
 flags = []
 libdirs = ["C:/VulkanSDK/1.3.275.0/Lib"]
 libs = ["vulkan-1"]
-
-[deps.sokol]
-git = "https://github.com/floooh/sokol"
-includes = ["./"]
 
 [deps.stb]
 git = "https://github.com/nothings/stb.git"

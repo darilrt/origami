@@ -26,16 +26,6 @@ SpriteMaterial::SpriteMaterial()
     //     });
 }
 
-sg_range SpriteMaterial::get_vs()
-{
-    return {&uniforms, sizeof(uniforms)};
-}
-
-sg_range SpriteMaterial::get_fs()
-{
-    return {nullptr, 0};
-}
-
 void SpriteMaterial::set_std_uniforms(const Mat4 &view, const Mat4 &projection, const Mat4 &model)
 {
     uniforms.view = view;

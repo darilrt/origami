@@ -3,7 +3,6 @@
 #include <origami/core.hpp>
 #include <origami/math.hpp>
 #include <vector>
-#include <sokol_gfx.h>
 
 #include "origami/graphics/buffer.hpp"
 
@@ -23,9 +22,9 @@ class Mesh
 public:
     enum Type
     {
-        Static = SG_USAGE_IMMUTABLE,
-        Dynamic = SG_USAGE_DYNAMIC,
-        Stream = SG_USAGE_STREAM,
+        Static,
+        Dynamic,
+        Stream,
     };
 
     size_t vertices_count;

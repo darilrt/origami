@@ -25,8 +25,7 @@ void GraphicsSystem::init(EngineState &state)
         { _render(window.get_size()); });
 
     es.regist<Stop>(
-        [](EngineState &state, void *_)
-        { sg_shutdown(); });
+        [](EngineState &state, void *_) {});
 }
 
 Shared<GraphicEntity> GraphicsSystem::create_entity()
@@ -73,36 +72,36 @@ void GraphicsSystem::_start(EngineState &state)
           }; },
     });
 
-    // CommandPool command_pool = gfx_state->allocate_command_pool();
-    // CommandBuffer cmd = command_pool.allocate_command_buffer();
-    // FrameBuffer fb = gfx_state->get_current_framebuffer();
+    CommandPool command_pool = gfx_state->allocate_command_pool();
+    CommandBuffer cmd = command_pool.allocate_command_buffer();
+    FrameBuffer fb = gfx_state->get_current_framebuffer();
 
-    // gfx_state->wait_for_render();
+    gfx_state->wait_for_render();
 
-    // cmd.reset();
-    // cmd.begin();
+    cmd.reset();
+    cmd.begin();
 
-    // auto &wm = state.get_resource<Window>();
+    auto &wm = state.get_resource<Window>();
 
-    // cmd.begin_render_pass({
-    //     .render_pass = gfx_state->get_render_pass(),
-    //     .framebuffer = fb,
-    //     .render_area = {
-    //         .x = 0,
-    //         .y = 0,
-    //         .width = static_cast<uint32_t>(wm.get_size().x),
-    //         .height = static_cast<uint32_t>(wm.get_size().y),
-    //     },
-    //     .clear_values = {{0, 0, 0, 0}},
-    // });
+    cmd.begin_render_pass({
+        .render_pass = gfx_state->get_render_pass(),
+        .framebuffer = fb,
+        .render_area = {
+            .x = 0,
+            .y = 0,
+            .width = static_cast<uint32_t>(wm.get_size().x),
+            .height = static_cast<uint32_t>(wm.get_size().y),
+        },
+        .clear_values = {{0, 0, 0, 0}},
+    });
 
-    // cmd.end_render_pass();
+    cmd.end_render_pass();
 
-    // cmd.end();
+    cmd.end();
 
-    // gfx_state->submit({cmd});
+    gfx_state->submit({cmd});
 
-    // gfx_state->draw_frame();
+    gfx_state->draw_frame();
 }
 
 void GraphicsSystem::_render(Vec2 window_size)

@@ -1,5 +1,3 @@
-#include <sokol_gfx.h>
-
 #include "origami/graphics/lit_material.hpp"
 
 LitMaterial::LitMaterial()
@@ -24,16 +22,6 @@ LitMaterial::LitMaterial()
     //             {"u_metallic", SG_IMAGETYPE_2D},
     //         },
     //     });
-}
-
-sg_range LitMaterial::get_vs()
-{
-    return SG_RANGE(uniforms);
-}
-
-sg_range LitMaterial::get_fs()
-{
-    return {nullptr, 0};
 }
 
 void LitMaterial::set_std_uniforms(const Mat4 &view, const Mat4 &projection, const Mat4 &model)

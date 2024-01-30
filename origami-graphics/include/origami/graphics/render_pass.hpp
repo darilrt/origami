@@ -1,7 +1,6 @@
 #pragma once
 
 #include <origami/core.hpp>
-#include <sokol_gfx.h>
 
 #include "origami/graphics/texture.hpp"
 
@@ -16,9 +15,6 @@ public:
     Shared<ImageOld> position_roughness_attachment;
     Shared<ImageOld> emissive_metallic_attachment;
     Shared<ImageOld> depth_attachment;
-
-    sg_pass_action action;
-    sg_pass pass;
 
     RenderPassOld(int width, int height);
 

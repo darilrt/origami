@@ -14,8 +14,6 @@ Mesh::Mesh(const std::vector<Vertex> &vertices, Type type)
 
 Mesh::~Mesh()
 {
-    for (auto &buffer : buffers)
-        sg_destroy_buffer(buffer->buffer);
 }
 
 void Mesh::set_vertices(const std::vector<Vertex> &vertices)

@@ -2,7 +2,6 @@
 
 #include <vector>
 #include <iostream>
-#include <sokol_gfx.h>
 
 class Shader
 {

@@ -1,6 +1,5 @@
 #pragma once
 
-#include <sokol_gfx.h>
 #include <string>
 
 class ImageOld
@@ -8,18 +7,18 @@ class ImageOld
 public:
     enum Format
     {
-        RGBA8 = SG_PIXELFORMAT_RGBA8,
-        R32F = SG_PIXELFORMAT_R32F,
-        R16F = SG_PIXELFORMAT_R16F,
-        Depth = SG_PIXELFORMAT_DEPTH,
-        DepthStencil = SG_PIXELFORMAT_DEPTH_STENCIL,
+        RGBA8,
+        R32F,
+        R16F,
+        Depth,
+        DepthStencil,
     };
 
     enum Usage
     {
-        Immutable = SG_USAGE_IMMUTABLE,
-        Dynamic = SG_USAGE_DYNAMIC,
-        Stream = SG_USAGE_STREAM,
+        Immutable,
+        Dynamic,
+        Stream,
     };
 
     ImageOld(
@@ -42,8 +41,6 @@ public:
     static ImageOld *create_render_target(int width, int height);
 
     static ImageOld *create_depth_target(int width, int height);
-
-    sg_image image = {0};
 
 private:
     Format format;

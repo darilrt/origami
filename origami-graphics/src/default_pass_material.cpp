@@ -16,16 +16,6 @@ DefaultPassMaterial::DefaultPassMaterial()
     //     });
 }
 
-sg_range DefaultPassMaterial::get_vs()
-{
-    return {nullptr, 0};
-}
-
-sg_range DefaultPassMaterial::get_fs()
-{
-    return {nullptr, 0};
-}
-
 void DefaultPassMaterial::set_std_uniforms(const Mat4 &view, const Mat4 &projection, const Mat4 &model)
 {
 }
