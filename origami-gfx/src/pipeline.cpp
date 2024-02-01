@@ -12,9 +12,10 @@
 #define ORIGAMI_FS_MAIN "main"
 #endif
 
-Pipeline::Pipeline(const Parameters &parameters)
+Pipeline Pipeline::create(const Parameters &parameters)
 {
-    bind_point = parameters.bind_point;
+    Pipeline pipeline;
+    pipeline.bind_point = parameters.bind_point;
 
     VkPipelineShaderStageCreateInfo vert_shader_stage_info = {
         .sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
@@ -120,7 +121,7 @@ Pipeline::Pipeline(const Parameters &parameters)
         (VkDevice)parameters.device,
         &pipeline_layout_info,
         nullptr,
-        (VkPipelineLayout *)&layout);
+        (VkPipelineLayout *)&pipeline.layout);
 
     if (result != VK_SUCCESS)
     {
@@ -139,7 +140,7 @@ Pipeline::Pipeline(const Parameters &parameters)
         .pDepthStencilState = nullptr,
         .pColorBlendState = &color_blending,
         .pDynamicState = &dynamic_state_info,
-        .layout = reinterpret_cast<VkPipelineLayout>(layout),
+        .layout = reinterpret_cast<VkPipelineLayout>(pipeline.layout),
         .renderPass = reinterpret_cast<VkRenderPass>(parameters.render_pass.id),
         .subpass = 0,
         .basePipelineHandle = VK_NULL_HANDLE,
@@ -151,12 +152,16 @@ Pipeline::Pipeline(const Parameters &parameters)
         1,
         &pipeline_info,
         nullptr,
-        reinterpret_cast<VkPipeline *>(&id));
+        reinterpret_cast<VkPipeline *>(&pipeline.id));
 
     if (result != VK_SUCCESS)
     {
         throw std::runtime_error("Failed to create graphics pipeline");
     }
+
+    pipeline.device = parameters.device;
+
+    return pipeline;
 }
 
 void Pipeline::destroy()

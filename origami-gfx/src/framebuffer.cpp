@@ -3,8 +3,10 @@
 
 #include "origami/gfx/framebuffer.hpp"
 
-FrameBuffer::FrameBuffer(const Parameters &parameters)
+FrameBuffer FrameBuffer::create(const Parameters &parameters)
 {
+    FrameBuffer framebuffer;
+
     std::vector<VkImageView> attachments(parameters.attachments.size());
 
     for (size_t i = 0; i < parameters.attachments.size(); i++)
@@ -26,14 +28,15 @@ FrameBuffer::FrameBuffer(const Parameters &parameters)
         static_cast<VkDevice>(parameters.device),
         &description,
         nullptr,
-        reinterpret_cast<VkFramebuffer *>(&id));
+        reinterpret_cast<VkFramebuffer *>(&framebuffer.id));
 
     if (result != VK_SUCCESS)
     {
         throw std::runtime_error("FrameBuffer::FrameBuffer: failed to create framebuffer");
     }
 
-    device = parameters.device;
+    framebuffer.device = parameters.device;
+    return framebuffer;
 }
 
 void FrameBuffer::destroy()

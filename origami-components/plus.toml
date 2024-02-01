@@ -24,6 +24,9 @@ path = "../origami-event"
 [subprojects.origami-scene]
 path = "../origami-scene"
 
+[subprojects.origami-gfx]
+path = "../origami-gfx"
+
 [project]
 name = "origami-components"
 version = "0.1.0"

@@ -19,7 +19,7 @@ public:
 
     CommandPool() = default;
 
-    CommandPool(const Parameters &parameters);
+    static CommandPool create(const Parameters &parameters);
 
     void destroy();
 

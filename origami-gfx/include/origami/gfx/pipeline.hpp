@@ -29,7 +29,7 @@ public:
 
     Pipeline() = default;
 
-    Pipeline(const Parameters &parameters);
+    static Pipeline create(const Parameters &parameters);
 
     void destroy();
 };

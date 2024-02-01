@@ -1,0 +1,9 @@
+
+[metadata]
+uuid = "53a1ef98-a9b5-9716-5bd6-4f26f97cb939"
+type = "Graphics/Shader"
+name = "Test Shader"
+
+[info]
+fragment = "shaders/spirv/frag.spv"
+vertex = "shaders/spirv/vert.spv"

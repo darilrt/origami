@@ -140,8 +140,6 @@ VulkanDevice VulkanDevice::create(DeviceInfo info)
         throw std::runtime_error("Failed to create logical device");
     }
 
-    vkGetDeviceQueue((VkDevice)device.device, device.graphics_family.value(), 0, (VkQueue *)&device.graphics_queue);
-
     return device;
 }
 
@@ -149,4 +147,9 @@ void VulkanDevice::destroy()
 {
     vkDestroyDevice((VkDevice)device, nullptr);
     vkDestroySurfaceKHR((VkInstance)id, (VkSurfaceKHR)surface, nullptr);
+}
+
+void VulkanDevice::wait_idle()
+{
+    vkDeviceWaitIdle((VkDevice)device);
 }

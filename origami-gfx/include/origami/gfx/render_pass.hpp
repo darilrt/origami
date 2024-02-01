@@ -32,5 +32,5 @@ public:
 
     RenderPass() = default;
 
-    RenderPass(const Parameters &description);
+    static RenderPass create(const Parameters &description);
 };

@@ -4,22 +4,25 @@
 #include "origami/gfx/command_pool.hpp"
 #include "origami/gfx/command_buffer.hpp"
 
-CommandPool::CommandPool(const Parameters &parameters)
+CommandPool CommandPool::create(const Parameters &parameters)
 {
+    CommandPool command_pool;
+
     VkCommandPoolCreateInfo create_info{
         .sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,
         .flags = parameters.flags,
         .queueFamilyIndex = parameters.queue_family_index,
     };
 
-    VkResult result = vkCreateCommandPool((VkDevice)parameters.device, &create_info, nullptr, (VkCommandPool *)&id);
+    VkResult result = vkCreateCommandPool((VkDevice)parameters.device, &create_info, nullptr, (VkCommandPool *)&command_pool.id);
 
     if (result != VK_SUCCESS)
     {
         throw std::runtime_error("gfx::CommandPool::CommandPool(): failed to create command pool!");
     }
 
-    device = parameters.device;
+    command_pool.device = parameters.device;
+    return command_pool;
 }
 
 void CommandPool::destroy()

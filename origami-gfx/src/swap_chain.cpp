@@ -152,10 +152,18 @@ SwapChain SwapChain::create(const SwapChainInfo &info)
         swap_chain.images[i].format = Image::Format::BGRA;
     }
 
+    swap_chain.device = info.device.device;
     return swap_chain;
 }
 
 void SwapChain::destroy()
 {
     vkDestroySwapchainKHR((VkDevice)id, (VkSwapchainKHR)id, nullptr);
+}
+
+uint32_t SwapChain::acquire_next_image(VulkanSemaphore semaphore)
+{
+    uint32_t image_index;
+    vkAcquireNextImageKHR((VkDevice)device, (VkSwapchainKHR)id, UINT64_MAX, (VkSemaphore)semaphore.id, VK_NULL_HANDLE, &image_index);
+    return image_index;
 }

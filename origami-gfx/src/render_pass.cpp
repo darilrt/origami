@@ -2,8 +2,10 @@
 
 #include "origami/gfx/render_pass.hpp"
 
-RenderPass::RenderPass(const Parameters &params)
+RenderPass RenderPass::create(const Parameters &params)
 {
+    RenderPass render_pass;
+
     std::vector<VkAttachmentDescription> attachments;
     std::vector<VkAttachmentReference> color_attachment_refs;
 
@@ -53,15 +55,13 @@ RenderPass::RenderPass(const Parameters &params)
         .pDependencies = &dependency,
     };
 
-    VkRenderPass render_pass;
-
-    VkResult result = vkCreateRenderPass((VkDevice)params.device, &render_pass_info, nullptr, &render_pass);
+    VkResult result = vkCreateRenderPass((VkDevice)params.device, &render_pass_info, nullptr, (VkRenderPass *)&render_pass.id);
 
     if (result != VK_SUCCESS)
     {
         throw std::runtime_error("RenderPass::RenderPass: failed to create render pass!");
     }
 
-    id = static_cast<void *>(render_pass);
-    device = params.device;
+    render_pass.device = params.device;
+    return render_pass;
 }

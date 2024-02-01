@@ -7,8 +7,6 @@ class VulkanDevice
 {
 public:
     void *id;
-    void *graphics_queue;
-    void *present_queue;
     void *surface;
     void *device;
 
@@ -25,4 +23,6 @@ public:
     static VulkanDevice create(DeviceInfo info);
 
     void destroy();
+
+    void wait_idle();
 };

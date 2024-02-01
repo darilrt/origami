@@ -16,7 +16,7 @@ public:
 
     ShaderModule() = default;
 
-    ShaderModule(const Parameters &parameters);
+    static ShaderModule create(const Parameters &parameters);
 
     void destroy();
 };

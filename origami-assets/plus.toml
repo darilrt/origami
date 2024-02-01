@@ -2,6 +2,7 @@ require = ["tomlplusplus"]
 
 [subprojects]
 origami-core = { path = "../origami-core" }
+origami-utils = { path = "../origami-utils" }
 
 [project]
 name = "origami-assets"

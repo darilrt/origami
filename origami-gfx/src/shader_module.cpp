@@ -6,9 +6,10 @@
 
 #include "origami/gfx/shader_module.hpp"
 
-ShaderModule::ShaderModule(const Parameters &parameters)
+ShaderModule ShaderModule::create(const Parameters &parameters)
 {
-    device = parameters.device;
+    ShaderModule shader_module;
+    shader_module.device = parameters.device;
 
     std::ifstream file(parameters.file_path, std::ios::ate | std::ios::binary);
 
@@ -31,12 +32,14 @@ ShaderModule::ShaderModule(const Parameters &parameters)
         .pCode = (uint32_t *)buffer.data(),
     };
 
-    VkResult result = vkCreateShaderModule((VkDevice)device, &create_info, nullptr, (VkShaderModule *)&id);
+    VkResult result = vkCreateShaderModule((VkDevice)shader_module.device, &create_info, nullptr, (VkShaderModule *)&shader_module.id);
 
     if (result != VK_SUCCESS)
     {
         throw std::runtime_error("gfx::ShaderModule::ShaderModule(): failed to create shader module!");
     }
+
+    return shader_module;
 }
 
 void ShaderModule::destroy()

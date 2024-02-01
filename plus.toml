@@ -40,9 +40,6 @@ path = "origami-math"
 [subprojects.origami-graphics]
 path = "origami-graphics"
 
-[subprojects.origami-assets]
-path = "origami-assets"
-
 [subprojects.origami-window]
 path = "origami-window"
 
@@ -60,6 +57,9 @@ path = "origami-utils"
 
 [subprojects.origami-physics]
 path = "origami-physics"
+
+[subprojects.origami-assets]
+path = "origami-assets"
 
 [subprojects.origami-gfx]
 path = "origami-gfx"

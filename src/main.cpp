@@ -9,6 +9,9 @@ class Game : public Scene
 public:
     void start(EngineState &state) override
     {
+        auto &assets = state.get_resource<AssetManager>();
+
+        Shared<Shader> sh = assets.get<Shader>("shaders/spirv/shader");
     }
 
     void update(EngineState &state, const Update &time) override {}

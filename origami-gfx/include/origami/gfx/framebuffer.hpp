@@ -24,7 +24,7 @@ public:
 
     FrameBuffer() = default;
 
-    FrameBuffer(const Parameters &parameters);
+    static FrameBuffer create(const Parameters &parameters);
 
     void destroy();
 };
