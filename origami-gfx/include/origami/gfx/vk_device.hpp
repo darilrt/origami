@@ -12,6 +12,9 @@ public:
     void *surface;
     void *device;
 
+    std::optional<uint32_t> graphics_family;
+    std::optional<uint32_t> present_family;
+
     struct DeviceInfo
     {
         void *id;
@@ -19,7 +22,7 @@ public:
         std::vector<const char *> extensions;
     };
 
-    static VulkanDevice from_id(DeviceInfo info);
+    static VulkanDevice create(DeviceInfo info);
 
     void destroy();
 };

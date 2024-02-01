@@ -46,15 +46,14 @@ VKAPI_ATTR VkBool32 VKAPI_CALL debug_callback(
     return VK_FALSE;
 }
 
-void populate_debug_messenger_create_info(VkDebugUtilsMessengerCreateInfoEXT &create_info, PFN_vkDebugUtilsMessengerCallbackEXT callback)
+void populate_debug_messenger_create_info(VkDebugUtilsMessengerCreateInfoEXT &create_info)
 {
-    create_info = {
-        .sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT,
-        .messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT,
-        .messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT,
-        .pfnUserCallback = callback,
-        .pUserData = nullptr,
-    };
+    create_info = {};
+    create_info.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
+    create_info.messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
+    create_info.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
+    create_info.pfnUserCallback = debug_callback;
+    create_info.pUserData = nullptr;
 }
 
 VulkanInstance VulkanInstance::create(const InstanceInfo &info)
@@ -62,14 +61,10 @@ VulkanInstance VulkanInstance::create(const InstanceInfo &info)
     VulkanInstance instance;
 
     std::vector<const char *> extensions = info.required_extensions;
-
-#ifdef VULKAN_DEBUG
-    extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
-#endif
-
     std::vector<const char *> validation_layers = info.validation_layers;
 
 #ifdef VULKAN_DEBUG
+    extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
     validation_layers.push_back("VK_LAYER_KHRONOS_validation");
 #endif
 
@@ -85,7 +80,6 @@ VulkanInstance VulkanInstance::create(const InstanceInfo &info)
 
     VkInstanceCreateInfo create_info = {
         .sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
-        .pNext = nullptr,
         .flags = 0,
         .pApplicationInfo = &app_info,
         .enabledLayerCount = static_cast<uint32_t>(validation_layers.size()),
@@ -96,21 +90,31 @@ VulkanInstance VulkanInstance::create(const InstanceInfo &info)
 
 #ifdef VULKAN_DEBUG
     VkDebugUtilsMessengerCreateInfoEXT debug_create_info;
-    populate_debug_messenger_create_info(debug_create_info, debug_callback);
+    populate_debug_messenger_create_info(debug_create_info);
     create_info.pNext = (VkDebugUtilsMessengerCreateInfoEXT *)&debug_create_info;
+#else
+    create_info.enabledLayerCount = 0;
+    create_info.pNext = nullptr;
 #endif
 
-    if (vkCreateInstance(&create_info, nullptr, (VkInstance *)&instance.id) != VK_SUCCESS)
+    VkResult result = vkCreateInstance(&create_info, nullptr, (VkInstance *)&instance.id);
+
+    if (result != VK_SUCCESS)
     {
         throw std::runtime_error("gfx::VulkanInstance::create: failed to create instance!");
     }
 
 #ifdef VULKAN_DEBUG
-    debug_create_info = {};
-    populate_debug_messenger_create_info(debug_create_info, debug_callback);
-    VkDebugUtilsMessengerEXT debug_messenger;
+    VkDebugUtilsMessengerCreateInfoEXT debug_create_info2;
+    populate_debug_messenger_create_info(debug_create_info2);
 
-    if (create_debug_utils_messenger_EXT((VkInstance)instance.id, &debug_create_info, nullptr, &debug_messenger) != VK_SUCCESS)
+    result = create_debug_utils_messenger_EXT(
+        (VkInstance)instance.id,
+        &debug_create_info2,
+        nullptr,
+        (VkDebugUtilsMessengerEXT *)&instance.debug_messenger);
+
+    if (result != VK_SUCCESS)
     {
         throw std::runtime_error("gfx::State::setup_debug_messenger: failed to set up debug messenger");
     }
@@ -121,10 +125,6 @@ VulkanInstance VulkanInstance::create(const InstanceInfo &info)
 
 void VulkanInstance::destroy()
 {
-#ifdef VULKAN_DEBUG
-    destroy_debug_utils_messenger_EXT((VkInstance)id, (VkDebugUtilsMessengerEXT)debug_messenger, nullptr);
-#endif
-
     vkDestroyInstance((VkInstance)id, nullptr);
 }
 
@@ -148,7 +148,7 @@ VulkanDevice VulkanInstance::create_device(void *surface)
 
         if (device_properties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU)
         {
-            return VulkanDevice::from_id({
+            return VulkanDevice::create({
                 .id = device,
                 .surface = surface,
                 .extensions = {
@@ -158,7 +158,7 @@ VulkanDevice VulkanInstance::create_device(void *surface)
         }
     }
 
-    return VulkanDevice::from_id({
+    return VulkanDevice::create({
         .id = devices[0],
         .surface = surface,
         .extensions = {

@@ -13,7 +13,6 @@ public:
         void *device;
         Image image;
         uint32_t view_type = 1;
-        uint32_t format = 37;
         uint32_t components[4] = {0, 0, 0, 0};
         struct
         {
@@ -27,7 +26,7 @@ public:
 
     ImageView() = default;
 
-    ImageView(const Parameters &parameters);
+    static ImageView create(const Parameters &params);
 
     void destroy();
 };

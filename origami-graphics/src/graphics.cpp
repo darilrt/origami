@@ -75,17 +75,17 @@ void GraphicsSystem::_start(EngineState &state)
     });
 
     ShaderModule vert_shader_module = ShaderModule({
-        .device = (void *)gfx_state->device,
+        .device = (void *)gfx_state->vk_device.device,
         .file_path = "assets/shaders/spirv/vert.spv",
     });
 
     ShaderModule frag_shader_module = ShaderModule({
-        .device = (void *)gfx_state->device,
+        .device = (void *)gfx_state->vk_device.device,
         .file_path = "assets/shaders/spirv/frag.spv",
     });
 
     graphics_pipeline = Pipeline({
-        .device = (void *)gfx_state->device,
+        .device = (void *)gfx_state->vk_device.device,
         .vs_module = vert_shader_module,
         .fs_module = frag_shader_module,
         .render_pass = gfx_state->get_render_pass(),

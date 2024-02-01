@@ -8,6 +8,12 @@ public:
     void *id = 0;
     void *device = 0;
 
+    enum Format
+    {
+        BGRA = 50,
+        RGBA = 43,
+    } format;
+
     struct Parameters
     {
         void *device;
@@ -17,7 +23,7 @@ public:
         uint32_t mip_levels = 1;
         uint32_t array_layers = 1;
         uint32_t samples = 1;
-        uint32_t format = 37;
+        uint32_t format = 43;
         uint32_t tiling = 0;
         uint32_t usage = 0;
         uint32_t memory_properties = 1;
@@ -25,4 +31,8 @@ public:
     };
 
     Image() = default;
+
+    static Image create(const Parameters &params);
+
+    void destroy();
 };

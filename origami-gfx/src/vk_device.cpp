@@ -88,7 +88,7 @@ SwapChainSupportDetails query_swap_chain_support(VkPhysicalDevice device, VkSurf
     return details;
 }
 
-VulkanDevice VulkanDevice::from_id(DeviceInfo info)
+VulkanDevice VulkanDevice::create(DeviceInfo info)
 {
     VulkanDevice device;
     device.id = info.id;
@@ -96,13 +96,16 @@ VulkanDevice VulkanDevice::from_id(DeviceInfo info)
 
     QueueFamilyIndices indices = find_queue_families((VkPhysicalDevice)device.id, (VkSurfaceKHR)device.surface);
 
+    device.graphics_family = indices.graphics_family;
+    device.present_family = indices.present_family;
+
     if (!indices.is_complete())
     {
         throw std::runtime_error("gfx::VulkanDevice::from_id: failed to find queue families!");
     }
 
     std::vector<VkDeviceQueueCreateInfo> queue_create_infos;
-    std::set<uint32_t> unique_queue_families = {indices.graphics_family.value(), indices.present_family.value()};
+    std::set<uint32_t> unique_queue_families = {device.graphics_family.value(), indices.present_family.value()};
 
     float queue_priority = 1.0f;
     for (uint32_t queue_family : unique_queue_families)
@@ -114,6 +117,9 @@ VulkanDevice VulkanDevice::from_id(DeviceInfo info)
             .pQueuePriorities = &queue_priority,
         });
     }
+
+    std::vector<const char *> device_extensions(info.extensions.begin(), info.extensions.end());
+    device_extensions.push_back(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
 
     VkPhysicalDeviceFeatures device_features = {};
 
@@ -134,13 +140,13 @@ VulkanDevice VulkanDevice::from_id(DeviceInfo info)
         throw std::runtime_error("Failed to create logical device");
     }
 
-    vkGetDeviceQueue((VkDevice)device.device, indices.graphics_family.value(), 0, (VkQueue *)&device.graphics_queue);
+    vkGetDeviceQueue((VkDevice)device.device, device.graphics_family.value(), 0, (VkQueue *)&device.graphics_queue);
 
     return device;
 }
 
 void VulkanDevice::destroy()
 {
-    vkDestroySurfaceKHR((VkInstance)id, (VkSurfaceKHR)surface, nullptr);
     vkDestroyDevice((VkDevice)device, nullptr);
+    vkDestroySurfaceKHR((VkInstance)id, (VkSurfaceKHR)surface, nullptr);
 }
