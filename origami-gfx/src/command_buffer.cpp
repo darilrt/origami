@@ -87,3 +87,8 @@ void CommandBuffer::draw(const DrawInfo &info)
 {
     vkCmdDraw((VkCommandBuffer)id, info.vertex_count, info.instance_count, info.first_vertex, info.first_instance);
 }
+
+void CommandBuffer::bind_vertex_buffers(const std::vector<void *> &buffers, const std::vector<uint64_t> &offsets)
+{
+    vkCmdBindVertexBuffers((VkCommandBuffer)id, 0, (uint32_t)buffers.size(), (VkBuffer *)buffers.data(), (VkDeviceSize *)offsets.data());
+}

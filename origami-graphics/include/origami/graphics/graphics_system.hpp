@@ -50,7 +50,7 @@ public:
 
     void _start(EngineState &state);
 
-    void _render(Vec2 window_size);
+    void _render(EngineState &state);
 
     void _render_entity(GraphicEntity &entity);
 };

@@ -2,6 +2,7 @@
 
 #include <optional>
 #include <tuple>
+#include <vector>
 
 class VulkanDevice
 {

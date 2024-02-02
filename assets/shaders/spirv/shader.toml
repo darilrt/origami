@@ -5,5 +5,5 @@ type = "Graphics/Shader"
 name = "Test Shader"
 
 [info]
-fragment = "shaders/spirv/frag.spv"
-vertex = "shaders/spirv/vert.spv"
+fragment = "assets/shaders/spirv/shader.frag.spv"
+vertex = "assets/shaders/spirv/shader.vert.spv"

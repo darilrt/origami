@@ -1,6 +1,7 @@
 #include <origami/event.hpp>
 #include <origami/window.hpp>
 #include <origami/gfx.hpp>
+#include <origami/assets.hpp>
 #include <iostream>
 #include <string>
 #include <vulkan/vulkan.h>
@@ -10,6 +11,7 @@
 #include "origami/graphics/render_pass.hpp"
 #include "origami/graphics/graphics_system.hpp"
 #include "origami/graphics/default_pass_material.hpp"
+#include "origami/graphics/mesh.hpp"
 
 VulkanDevice GraphicsSystem::vk_device;
 RenderPass GraphicsSystem::render_pass;
@@ -28,7 +30,7 @@ void GraphicsSystem::init(EngineState &state)
 
     es.regist<Render>(
         [&](EngineState &state, void *_)
-        { _render(window.get_size()); });
+        { _render(state); });
 
     es.regist<Stop>(
         [](EngineState &state, void *_) {});
@@ -62,12 +64,10 @@ GraphicsSystem::~GraphicsSystem()
     vk_instance.destroy();
 }
 
-Pipeline graphics_pipeline;
-
 void GraphicsSystem::_start(EngineState &state)
 {
-    auto &window = state.get_resource<Window>();
-    auto extensions = window.get_required_extensions();
+    Window &window = state.get_resource<Window>();
+    std::vector<const char *> extensions = window.get_required_extensions();
 
     vk_instance = VulkanInstance::create({
         .app_info = {
@@ -175,33 +175,19 @@ void GraphicsSystem::_start(EngineState &state)
             .flags = VK_FENCE_CREATE_SIGNALED_BIT,
         });
     }
-
-    ShaderModule vert_shader_module = ShaderModule::create({
-        .device = vk_device.device,
-        .file_path = "assets/shaders/spirv/vert.spv",
-    });
-
-    ShaderModule frag_shader_module = ShaderModule::create({
-        .device = vk_device.device,
-        .file_path = "assets/shaders/spirv/frag.spv",
-    });
-
-    graphics_pipeline = Pipeline::create({
-        .device = vk_device.device,
-        .vs_module = vert_shader_module,
-        .fs_module = frag_shader_module,
-        .render_pass = render_pass,
-    });
-
-    vert_shader_module.destroy();
-    frag_shader_module.destroy();
 }
 
-void GraphicsSystem::_render(Vec2 window_size)
+void GraphicsSystem::_render(EngineState &state)
 {
-    in_flight_fences[current_frame].wait();
+    static auto &wm = state.get_resource<Window>();
+    static auto &assets = state.get_resource<AssetManager>();
+    static Shared<Shader> shader = assets.get<Shader>("shaders/spirv/shader");
+    static Mesh *mesh = primitive::quad();
+
+    VulkanFence fence = in_flight_fences[current_frame];
+    fence.wait();
     uint32_t image_index = swap_chain.acquire_next_image(image_available_semaphores[current_frame]);
-    in_flight_fences[current_frame].reset();
+    fence.reset();
     FrameBuffer fb = swap_chain_framebuffers[image_index];
     CommandBuffer cmd = command_buffers[current_frame];
 
@@ -214,30 +200,35 @@ void GraphicsSystem::_render(Vec2 window_size)
         .render_area = {
             .x = 0,
             .y = 0,
-            .width = static_cast<uint32_t>(window_size.x),
-            .height = static_cast<uint32_t>(window_size.y),
+            .width = static_cast<uint32_t>(wm.get_size().x),
+            .height = static_cast<uint32_t>(wm.get_size().y),
         },
         .clear_values = {{0, 0, 0, 0}},
     });
 
-    cmd.bind_pipeline(graphics_pipeline);
+    cmd.bind_pipeline(shader->pipeline);
 
     cmd.set_viewport({
         .x = 0.0f,
         .y = 0.0f,
-        .width = static_cast<float>(window_size.x),
-        .height = static_cast<float>(window_size.y),
+        .width = static_cast<float>(wm.get_size().x),
+        .height = static_cast<float>(wm.get_size().y),
     });
 
     cmd.set_scissor({
         .x = 0,
         .y = 0,
-        .width = static_cast<uint32_t>(window_size.x),
-        .height = static_cast<uint32_t>(window_size.y),
+        .width = static_cast<uint32_t>(wm.get_size().x),
+        .height = static_cast<uint32_t>(wm.get_size().y),
     });
 
+    // VkBuffer buffers[] = {(VkBuffer)mesh->buffer.id};
+    // vkCmdBindVertexBuffers((VkCommandBuffer)cmd.id, 0, 1, buffers, offsets);
+    VkDeviceSize offsets[] = {0};
+    cmd.bind_vertex_buffers({mesh->buffer.id}, {0ULL});
+
     cmd.draw({
-        .vertex_count = 3,
+        .vertex_count = mesh->vertices_count,
         .instance_count = 1,
         .first_vertex = 0,
         .first_instance = 0,
@@ -252,7 +243,7 @@ void GraphicsSystem::_render(Vec2 window_size)
         .wait_semaphores = {image_available_semaphores[current_frame]},
         .wait_stages = {VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT},
         .signal_semaphores = {render_finished_semaphores[current_frame]},
-        .fence = in_flight_fences[current_frame],
+        .fence = fence,
     });
     vk_present_queue.present({
         .wait_semaphores = {render_finished_semaphores[current_frame]},

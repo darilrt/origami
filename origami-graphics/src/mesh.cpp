@@ -1,5 +1,8 @@
+#include <vulkan/vulkan.h>
+#include <stdexcept>
+
+#include "origami/graphics/graphics_system.hpp"
 #include "origami/graphics/mesh.hpp"
-#include <cassert>
 
 Mesh::Mesh(Type type)
 {
@@ -14,19 +17,23 @@ Mesh::Mesh(const std::vector<Vertex> &vertices, Type type)
 
 Mesh::~Mesh()
 {
+    buffer.destroy();
 }
 
 void Mesh::set_vertices(const std::vector<Vertex> &vertices)
 {
-    if (buffers.size() == 0)
-        buffers.push_back(Shared<Buffer>(
-            new Buffer(
-                Buffer::Type::Default, static_cast<Buffer::Usage>(type))));
-
-    vertices_count = vertices.size();
-
-    if (vertices_count == 0)
-        return;
-
-    buffers[0]->set_data(vertices.data(), vertices.size() * sizeof(Vertex));
+    if (buffer.id == 0)
+    {
+        buffer = Buffer::create({
+            .device = GraphicsSystem::vk_device,
+            .usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
+            .memory_properties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+            .size = sizeof(Vertex) * vertices.size(),
+            .data = (void *)vertices.data(),
+        });
+    }
+    else
+    {
+        throw std::runtime_error("Mesh already has vertices TODO update buffer");
+    }
 }

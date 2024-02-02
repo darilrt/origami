@@ -28,22 +28,6 @@ public:
         uint32_t level = 0;
     };
 
-    // struct SubmitInfo
-    // {
-    //     void *queue = 0;
-    //     uint32_t wait_semaphore_count = 0;
-    //     void *wait_semaphores = nullptr;
-
-    //     void *wait_stages = nullptr;
-
-    //     std::vector<void *> command_buffers;
-
-    //     uint32_t signal_semaphore_count = 0;
-    //     void *signal_semaphores = nullptr;
-
-    //     void *fence = 0;
-    // };
-
     CommandBuffer() = default;
 
     CommandBuffer(const Parameters &parameters);
@@ -103,4 +87,6 @@ public:
     };
 
     void draw(const DrawInfo &info);
+
+    void bind_vertex_buffers(const std::vector<void *> &buffers, const std::vector<uint64_t> &offsets);
 };

@@ -12,7 +12,7 @@
 #define ORIGAMI_FS_MAIN "main"
 #endif
 
-Pipeline Pipeline::create(const Parameters &parameters)
+Pipeline Pipeline::create(const PipelineInfo &parameters)
 {
     Pipeline pipeline;
     pipeline.bind_point = parameters.bind_point;
@@ -51,12 +51,33 @@ Pipeline Pipeline::create(const Parameters &parameters)
         .pDynamicStates = dynamic_states.data(),
     };
 
+    std::vector<VkVertexInputBindingDescription> binding_description(parameters.binding_descriptions.size());
+    for (size_t i = 0; i < parameters.binding_descriptions.size(); i++)
+    {
+        binding_description[i] = {
+            .binding = parameters.binding_descriptions[i].binding,
+            .stride = parameters.binding_descriptions[i].stride,
+            .inputRate = (VkVertexInputRate)parameters.binding_descriptions[i].input_rate,
+        };
+    }
+
+    std::vector<VkVertexInputAttributeDescription> attribute_description(parameters.attribute_descriptions.size());
+    for (size_t i = 0; i < parameters.attribute_descriptions.size(); i++)
+    {
+        attribute_description[i] = {
+            .location = parameters.attribute_descriptions[i].location,
+            .binding = parameters.attribute_descriptions[i].binding,
+            .format = (VkFormat)parameters.attribute_descriptions[i].format,
+            .offset = parameters.attribute_descriptions[i].offset,
+        };
+    }
+
     VkPipelineVertexInputStateCreateInfo vertex_input_info = {
         .sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO,
-        .vertexBindingDescriptionCount = 0,
-        .pVertexBindingDescriptions = nullptr, // TODO: Vertex input binding
-        .vertexAttributeDescriptionCount = 0,
-        .pVertexAttributeDescriptions = nullptr, // TODO: Vertex input attribute
+        .vertexBindingDescriptionCount = static_cast<uint32_t>(binding_description.size()),
+        .pVertexBindingDescriptions = binding_description.data(),
+        .vertexAttributeDescriptionCount = static_cast<uint32_t>(attribute_description.size()),
+        .pVertexAttributeDescriptions = attribute_description.data(),
     };
 
     VkPipelineViewportStateCreateInfo viewport_state{

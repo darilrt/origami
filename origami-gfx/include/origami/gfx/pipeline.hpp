@@ -3,6 +3,21 @@
 #include "shader_module.hpp"
 #include "render_pass.hpp"
 
+struct BindingDescription
+{
+    uint32_t binding;
+    uint32_t stride;
+    uint32_t input_rate;
+};
+
+struct AttributeDescription
+{
+    uint32_t location;
+    uint32_t binding;
+    uint32_t format;
+    uint32_t offset;
+};
+
 class Pipeline
 {
 public:
@@ -18,18 +33,20 @@ public:
     void *device = 0;
     BindPoint bind_point;
 
-    struct Parameters
+    struct PipelineInfo
     {
         void *device = 0;
         BindPoint bind_point = GRAPHICS;
         ShaderModule vs_module;
         ShaderModule fs_module;
         RenderPass render_pass;
+        std::vector<BindingDescription> binding_descriptions;
+        std::vector<AttributeDescription> attribute_descriptions;
     };
 
     Pipeline() = default;
 
-    static Pipeline create(const Parameters &parameters);
+    static Pipeline create(const PipelineInfo &parameters);
 
     void destroy();
 };
