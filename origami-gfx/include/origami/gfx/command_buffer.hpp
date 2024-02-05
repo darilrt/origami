@@ -2,9 +2,9 @@
 
 #include <vector>
 
-#include "pipeline.hpp"
-#include "framebuffer.hpp"
-#include "render_pass.hpp"
+#include "origami/gfx/pipeline.hpp"
+#include "origami/gfx/framebuffer.hpp"
+#include "origami/gfx/render_pass.hpp"
 
 struct Viewport
 {
@@ -20,6 +20,8 @@ class CommandBuffer
 {
 public:
     void *id = 0;
+    void *device = 0;
+    void *command_pool = 0;
 
     struct Parameters
     {
@@ -31,6 +33,8 @@ public:
     CommandBuffer() = default;
 
     CommandBuffer(const Parameters &parameters);
+
+    void destroy();
 
     void reset();
 
@@ -78,6 +82,16 @@ public:
 
     void bind_pipeline(const Pipeline &pipeline);
 
+    struct DescriptorSetInfo
+    {
+        uint32_t pipeline_bind_point = 0;
+        vkid_t pipeline_layout = 0;
+        uint32_t first_set = 0;
+        std::vector<vkid_t> descriptor_sets = {};
+    };
+
+    void bind_descriptor_sets(const DescriptorSetInfo &info);
+
     struct DrawInfo
     {
         uint32_t vertex_count = 0;
@@ -89,4 +103,6 @@ public:
     void draw(const DrawInfo &info);
 
     void bind_vertex_buffers(const std::vector<void *> &buffers, const std::vector<uint64_t> &offsets);
+
+    void copy_buffer(void *src, void *dst, uint64_t size);
 };

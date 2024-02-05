@@ -33,20 +33,23 @@ public:
     Mat4 view;
     Mat4 projection;
 
+    static uint32_t frames_in_flight;
     VulkanInstance vk_instance;
     static VulkanDevice vk_device;
-    VulkanQueue vk_graphic_queue;
+    static VulkanQueue vk_graphic_queue;
     VulkanQueue vk_present_queue;
     SwapChain swap_chain;
     std::vector<ImageView> swap_chain_image_views;
     std::vector<FrameBuffer> swap_chain_framebuffers;
     static RenderPass render_pass;
-    CommandPool command_pool;
+    static CommandPool command_pool;
     std::vector<CommandBuffer> command_buffers;
     int current_frame = 0;
     std::vector<VulkanSemaphore> image_available_semaphores;
     std::vector<VulkanSemaphore> render_finished_semaphores;
     std::vector<VulkanFence> in_flight_fences;
+    static DescriptorPool descriptor_pool;
+    std::vector<DescriptorSet> descriptor_sets;
 
     void _start(EngineState &state);
 

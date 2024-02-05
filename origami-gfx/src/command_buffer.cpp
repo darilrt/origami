@@ -18,6 +18,9 @@ CommandBuffer::CommandBuffer(const Parameters &parameters)
     {
         throw std::runtime_error("gfx::CommandBuffer::CommandBuffer(): failed to allocate command buffers!");
     }
+
+    command_pool = parameters.command_pool;
+    device = parameters.device;
 }
 
 void CommandBuffer::begin()
@@ -33,6 +36,11 @@ void CommandBuffer::begin()
 void CommandBuffer::end()
 {
     vkEndCommandBuffer((VkCommandBuffer)id);
+}
+
+void CommandBuffer::destroy()
+{
+    vkFreeCommandBuffers((VkDevice)device, (VkCommandPool)command_pool, 1, (VkCommandBuffer *)&id);
 }
 
 void CommandBuffer::reset()
@@ -83,6 +91,19 @@ void CommandBuffer::bind_pipeline(const Pipeline &pipeline)
     vkCmdBindPipeline((VkCommandBuffer)id, (VkPipelineBindPoint)pipeline.bind_point, (VkPipeline)pipeline.id);
 }
 
+void CommandBuffer::bind_descriptor_sets(const DescriptorSetInfo &info)
+{
+    vkCmdBindDescriptorSets(
+        (VkCommandBuffer)id,
+        (VkPipelineBindPoint)info.pipeline_bind_point,
+        (VkPipelineLayout)info.pipeline_layout,
+        info.first_set,
+        1,
+        (VkDescriptorSet *)info.descriptor_sets.data(),
+        0,
+        nullptr);
+}
+
 void CommandBuffer::draw(const DrawInfo &info)
 {
     vkCmdDraw((VkCommandBuffer)id, info.vertex_count, info.instance_count, info.first_vertex, info.first_instance);
@@ -91,4 +112,15 @@ void CommandBuffer::draw(const DrawInfo &info)
 void CommandBuffer::bind_vertex_buffers(const std::vector<void *> &buffers, const std::vector<uint64_t> &offsets)
 {
     vkCmdBindVertexBuffers((VkCommandBuffer)id, 0, (uint32_t)buffers.size(), (VkBuffer *)buffers.data(), (VkDeviceSize *)offsets.data());
+}
+
+void CommandBuffer::copy_buffer(void *src, void *dst, uint64_t size)
+{
+    VkBufferCopy copy_region = {
+        .srcOffset = 0,
+        .dstOffset = 0,
+        .size = size,
+    };
+
+    vkCmdCopyBuffer((VkCommandBuffer)id, (VkBuffer)src, (VkBuffer)dst, 1, &copy_region);
 }

@@ -7,7 +7,7 @@
 class UUID
 {
 public:
-    UUID()
+    static std::string generate()
     {
         std::random_device rd;
         std::mt19937 gen(rd());
@@ -24,14 +24,6 @@ public:
             ss << std::hex << random;
         }
 
-        uuid = ss.str();
+        return ss.str();
     }
-
-    std::string get_uuid() const
-    {
-        return uuid;
-    }
-
-private:
-    std::string uuid;
 };

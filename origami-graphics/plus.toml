@@ -40,5 +40,5 @@ git = "https://github.com/nothings/stb.git"
 includes = ["./"]
 
 [deps.tomlplusplus]
-git = "https://github.com/ToruNiina/toml11.git"
-includes = ["./"]
+git = "https://github.com/marzer/tomlplusplus.git"
+includes = ["include"]

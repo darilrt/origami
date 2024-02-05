@@ -20,3 +20,4 @@
 #include "origami/gfx/shader_module.hpp"
 #include "origami/gfx/buffer.hpp"
 #include "origami/gfx/pipeline.hpp"
+#include "origami/gfx/descriptor_pool.hpp"

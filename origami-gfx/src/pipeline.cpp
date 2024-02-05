@@ -130,15 +130,45 @@ Pipeline Pipeline::create(const PipelineInfo &parameters)
         .blendConstants = {0.0f, 0.0f, 0.0f, 0.0f},
     };
 
+    std::vector<VkDescriptorSetLayoutBinding> layouts;
+
+    for (size_t i = 0; i < parameters.descriptor_set_layout_bindings.size(); i++)
+    {
+        layouts.push_back({
+            .binding = parameters.descriptor_set_layout_bindings[i].binding,
+            .descriptorType = (VkDescriptorType)parameters.descriptor_set_layout_bindings[i].descriptor_type,
+            .descriptorCount = parameters.descriptor_set_layout_bindings[i].descriptor_count,
+            .stageFlags = (VkShaderStageFlags)parameters.descriptor_set_layout_bindings[i].stage_flags,
+            .pImmutableSamplers = (VkSampler *)parameters.descriptor_set_layout_bindings[i].immutable_samplers,
+        });
+    }
+
+    VkDescriptorSetLayoutCreateInfo layout_info{
+        .sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO,
+        .bindingCount = static_cast<uint32_t>(layouts.size()),
+        .pBindings = layouts.data(),
+    };
+
+    VkResult result = vkCreateDescriptorSetLayout(
+        (VkDevice)parameters.device,
+        &layout_info,
+        nullptr,
+        (VkDescriptorSetLayout *)&pipeline.descriptor_set_layout);
+
+    if (result != VK_SUCCESS)
+    {
+        throw std::runtime_error("gfx::Pipeline::create: failed to create descriptor set layout");
+    }
+
     VkPipelineLayoutCreateInfo pipeline_layout_info{
         .sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,
-        .setLayoutCount = 0,
-        .pSetLayouts = nullptr,
+        .setLayoutCount = 1,
+        .pSetLayouts = (VkDescriptorSetLayout *)&pipeline.descriptor_set_layout,
         .pushConstantRangeCount = 0,
         .pPushConstantRanges = nullptr,
     };
 
-    VkResult result = vkCreatePipelineLayout(
+    result = vkCreatePipelineLayout(
         (VkDevice)parameters.device,
         &pipeline_layout_info,
         nullptr,
@@ -177,7 +207,7 @@ Pipeline Pipeline::create(const PipelineInfo &parameters)
 
     if (result != VK_SUCCESS)
     {
-        throw std::runtime_error("Failed to create graphics pipeline");
+        throw std::runtime_error("gfx::Pipeline::create: failed to create graphics pipeline");
     }
 
     pipeline.device = parameters.device;

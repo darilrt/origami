@@ -2,14 +2,16 @@
 
 #include <cstdint>
 
+#include "origami/gfx/type.hpp"
 #include "origami/gfx/vk_device.hpp"
 
 class Buffer
 {
 public:
-    void *id = 0;
-    void *memory = 0;
-    void *device = 0;
+    vkid_t id = 0;
+    vkid_t memory = 0;
+    vkid_t device = 0;
+    void *mapped = nullptr;
 
     struct BufferInfo
     {
@@ -18,6 +20,7 @@ public:
         uint32_t memory_properties = 6;
         size_t size = 0;
         void *data = 0;
+        bool mappable = false;
     };
 
     Buffer() = default;
@@ -25,4 +28,8 @@ public:
     static Buffer create(const BufferInfo &parameters);
 
     void destroy();
+
+    void map_memory();
+
+    void unmap_memory();
 };

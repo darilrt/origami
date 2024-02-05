@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <vector>
 
+#include "origami/gfx/type.hpp"
 #include "origami/gfx/vk_semaphore.hpp"
 #include "origami/gfx/vk_fence.hpp"
 #include "origami/gfx/command_buffer.hpp"
@@ -11,11 +12,11 @@
 class VulkanQueue
 {
 public:
-    void *id;
+    vkid_t id;
 
     struct CreateInfo
     {
-        void *device;
+        vkid_t device;
         uint32_t queue_family_index;
         uint32_t queue_index;
     };
@@ -26,7 +27,7 @@ public:
 
     struct SubmitInfo
     {
-        std::vector<CommandBuffer> command_buffers;
+        std::vector<vkid_t> command_buffers;
         std::vector<VulkanSemaphore> wait_semaphores;
         std::vector<uint32_t> wait_stages;
         std::vector<VulkanSemaphore> signal_semaphores;

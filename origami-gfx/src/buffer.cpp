@@ -58,11 +58,13 @@ Buffer Buffer::create(const BufferInfo &parameters)
 
     if (parameters.data)
     {
-        void *data;
-        vkMapMemory((VkDevice)parameters.device.device, (VkDeviceMemory)buffer.memory, 0, parameters.size, 0, &data);
-        memcpy(data, parameters.data, parameters.size);
+        vkMapMemory((VkDevice)parameters.device.device, (VkDeviceMemory)buffer.memory, 0, parameters.size, 0, &buffer.mapped);
+        memcpy(buffer.mapped, parameters.data, parameters.size);
         vkUnmapMemory((VkDevice)parameters.device.device, (VkDeviceMemory)buffer.memory);
+        buffer.mapped = nullptr;
     }
+
+    buffer.device = parameters.device.device;
 
     return buffer;
 }
@@ -71,4 +73,15 @@ void Buffer::destroy()
 {
     vkDestroyBuffer((VkDevice)device, (VkBuffer)id, nullptr);
     vkFreeMemory((VkDevice)device, (VkDeviceMemory)memory, nullptr);
+}
+
+void Buffer::map_memory()
+{
+    vkMapMemory((VkDevice)device, (VkDeviceMemory)memory, 0, VK_WHOLE_SIZE, 0, &mapped);
+}
+
+void Buffer::unmap_memory()
+{
+    vkUnmapMemory((VkDevice)device, (VkDeviceMemory)memory);
+    mapped = nullptr;
 }
