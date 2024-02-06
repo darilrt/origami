@@ -1,4 +1,4 @@
-require = [ "sdl2", "tomlplusplus",]
+require = [ "sdl2", "tomlplusplus", "stb-image",]
 
 [project]
 name = "origami"
@@ -70,6 +70,10 @@ defines = [ "SDL_MAIN_HANDLED",]
 
 [deps.tomlplusplus]
 git = "https://github.com/ToruNiina/toml11.git"
+includes = [ "./",]
+
+[deps.stb-image]
+git = "https://github.com/nothings/stb.git"
 includes = [ "./",]
 
 [deps.sdl2.windows]

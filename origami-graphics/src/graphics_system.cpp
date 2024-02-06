@@ -206,18 +206,6 @@ void GraphicsSystem::_start(EngineState &state)
 void GraphicsSystem::_render(EngineState &state)
 {
     static auto &wm = state.get_resource<Window>();
-    static auto &assets = state.get_resource<AssetManager>();
-    static Shared<Material> mat = assets.get<Material>("1a68269c-821e-916d-f76f-e005015ba175");
-    static Mesh *mesh = nullptr;
-
-    if (mesh == nullptr)
-    {
-        mesh = new Mesh({
-            {{0.0f, -0.5f, 0.0f}, {1.0, 0.0f, 0.0f}, {0.0f, 0.0f}},
-            {{0.5f, 0.5f, 0.0f}, {0.0f, 1.0f, 0.0f}, {0.0f, 0.0f}},
-            {{-0.5f, 0.5f, 0.0f}, {0.0f, 0.0f, 1.0f}, {0.0f, 0.0f}},
-        });
-    }
 
     VulkanFence fence = in_flight_fences[current_frame];
     fence.wait();
@@ -225,13 +213,6 @@ void GraphicsSystem::_render(EngineState &state)
     fence.reset();
     FrameBuffer fb = swap_chain_framebuffers[image_index];
     CommandBuffer cmd = command_buffers[current_frame];
-
-    static float timer = 0;
-    timer += 0.002f;
-    mat->set_uniform("time", timer);
-    mat->set_uniform("color", 0.5f);
-
-    // ((float *)mat->uniform_buffer.mapped)[3] = 0.5f;
 
     cmd.reset();
     cmd.begin();
@@ -248,45 +229,64 @@ void GraphicsSystem::_render(EngineState &state)
         .clear_values = {{0, 0, 0, 0}},
     });
 
-    cmd.bind_pipeline(mat->shader->pipeline);
+    for (auto &entity : entities)
+    {
+        const auto &mesh = entity->mesh;
+        const auto &material = entity->material;
 
-    mat->shader->descriptor_set[current_frame].update({
+        material->set_uniform("model", entity->model);
+
+        if (current_render_pass)
         {
-            .buffer = mat->uniform_buffer.id,
-            .binding = 0,
-            .array_element = 0,
-        },
-    });
+            material->set_uniform("view", current_render_pass->view);
+            material->set_uniform("projection", current_render_pass->projection);
+        }
+        else
+        {
+            material->set_uniform("view", Mat4::identity());
+            material->set_uniform("projection", Mat4::identity());
+        }
 
-    cmd.bind_descriptor_sets({
-        .pipeline_bind_point = VK_PIPELINE_BIND_POINT_GRAPHICS,
-        .pipeline_layout = mat->shader->pipeline.layout,
-        .first_set = 0,
-        .descriptor_sets = {mat->shader->descriptor_set[current_frame].id},
-    });
+        cmd.bind_pipeline(material->shader->pipeline);
 
-    cmd.bind_vertex_buffers({mesh->buffer.id}, {0ULL});
+        material->shader->descriptor_set[current_frame].update({
+            {
+                .buffer = material->uniform_buffer.id,
+                .binding = 0,
+                .array_element = 0,
+            },
+        });
 
-    cmd.set_viewport({
-        .x = 0.0f,
-        .y = 0.0f,
-        .width = static_cast<float>(wm.get_size().x),
-        .height = static_cast<float>(wm.get_size().y),
-    });
+        cmd.bind_descriptor_sets({
+            .pipeline_bind_point = VK_PIPELINE_BIND_POINT_GRAPHICS,
+            .pipeline_layout = material->shader->pipeline.layout,
+            .first_set = 0,
+            .descriptor_sets = {material->shader->descriptor_set[current_frame].id},
+        });
 
-    cmd.set_scissor({
-        .x = 0,
-        .y = 0,
-        .width = static_cast<uint32_t>(wm.get_size().x),
-        .height = static_cast<uint32_t>(wm.get_size().y),
-    });
+        cmd.bind_vertex_buffers({mesh->buffer.id}, {0ULL});
 
-    cmd.draw({
-        .vertex_count = mesh->vertices_count,
-        .instance_count = 1,
-        .first_vertex = 0,
-        .first_instance = 0,
-    });
+        cmd.set_viewport({
+            .x = 0.0f,
+            .y = 0.0f,
+            .width = static_cast<float>(wm.get_size().x),
+            .height = static_cast<float>(wm.get_size().y),
+        });
+
+        cmd.set_scissor({
+            .x = 0,
+            .y = 0,
+            .width = static_cast<uint32_t>(wm.get_size().x),
+            .height = static_cast<uint32_t>(wm.get_size().y),
+        });
+
+        cmd.draw({
+            .vertex_count = mesh->vertices_count,
+            .instance_count = 1,
+            .first_vertex = 0,
+            .first_instance = 0,
+        });
+    }
 
     cmd.end_render_pass();
 

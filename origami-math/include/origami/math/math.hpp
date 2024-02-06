@@ -191,10 +191,10 @@ namespace math
     // float radians = math::rad(90.0f);
     // radians == 1.57079632679f // true
     // ```
-    template <typename T>
-    T rad(T value)
+    // template <typename T>
+    inline double rad(double value)
     {
-        return value * (T)0.01745329251;
+        return (value * pi) / 180.0f;
     }
 
     // Takes a value in degrees and returns a value in radians

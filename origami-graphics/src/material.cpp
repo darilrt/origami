@@ -52,10 +52,16 @@ Material *Material::load_asset(const std::string &path, AssetManager &asset_mana
 
 void Material::set_uniform(const std::string &name, const void *data, size_t size)
 {
-    uint32_t offset = shader->offsets[name];
+    if (!shader->offsets.contains(name))
+    {
+        std::cerr << "Material does not contain a uniform named " << name << std::endl;
+        return;
+    }
+
+    uint32_t offset = shader->offsets.at(name);
 
     memcpy(
-        uniform_buffer.mapped + (shader->uniform_size - offset),
+        &((float *)uniform_buffer.mapped)[offset / 4],
         data,
         size);
 }

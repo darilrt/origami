@@ -7,14 +7,14 @@ layout(location = 2) in vec2 uv;
 layout(location = 0) out vec3 fragNormal;
 
 layout(binding = 0) uniform UniformBufferObject {
+    mat4 model;
+    mat4 view;
+    mat4 proj;
     float time;
-    vec3 color;
 };
 
 void main() {
     fragNormal = normal;
 
-    vec3 position2 = vec3(position.x, position.y, position.z) * (1.0 + 0.1 * sin(time));
-    
-    gl_Position = vec4(position2, 1.0);
+    gl_Position = proj * view * model * vec4(position, 1.0);
 }

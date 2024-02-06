@@ -11,32 +11,33 @@
 
 std::string Shader::asset_type = "Graphics/Shader";
 
-std::unordered_map<std::string, std::pair<VkFormat, int>> format_map = {
-    {"int", {VK_FORMAT_R32_SINT, 4}},
-    {"ivec2", {VK_FORMAT_R32G32_SINT, 8}},
-    {"ivec3", {VK_FORMAT_R32G32B32_SINT, 12}},
-    {"ivec4", {VK_FORMAT_R32G32B32A32_SINT, 16}},
-    {"uint", {VK_FORMAT_R32_UINT, 4}},
-    {"uvec2", {VK_FORMAT_R32G32_UINT, 8}},
-    {"uvec3", {VK_FORMAT_R32G32B32_UINT, 12}},
-    {"uvec4", {VK_FORMAT_R32G32B32A32_UINT, 16}},
-    {"float", {VK_FORMAT_R32_SFLOAT, 4}},
-    {"vec2", {VK_FORMAT_R32G32_SFLOAT, 8}},
-    {"vec3", {VK_FORMAT_R32G32B32_SFLOAT, 12}},
-    {"vec4", {VK_FORMAT_R32G32B32A32_SFLOAT, 16}},
-    {"double", {VK_FORMAT_R64_SFLOAT, 8}},
-    {"dvec2", {VK_FORMAT_R64G64_SFLOAT, 16}},
-    {"dvec3", {VK_FORMAT_R64G64B64_SFLOAT, 24}},
-    {"dvec4", {VK_FORMAT_R64G64B64A64_SFLOAT, 32}},
-    {"mat2", {VK_FORMAT_R32G32_SFLOAT, 16}},
-    {"mat3", {VK_FORMAT_R32G32B32_SFLOAT, 36}},
-    {"mat4", {VK_FORMAT_R32G32B32A32_SFLOAT, 64}},
-    {"mat2x3", {VK_FORMAT_R32G32B32_SFLOAT, 24}},
-    {"mat2x4", {VK_FORMAT_R32G32B32A32_SFLOAT, 32}},
-    {"mat3x2", {VK_FORMAT_R32G32B32_SFLOAT, 24}},
-    {"mat3x4", {VK_FORMAT_R32G32B32A32_SFLOAT, 48}},
-    {"mat4x2", {VK_FORMAT_R32G32B32_SFLOAT, 32}},
-    {"mat4x3", {VK_FORMAT_R32G32B32A32_SFLOAT, 48}},
+// type, format, size, alignment
+std::unordered_map<std::string, std::tuple<VkFormat, int, int>> format_map = {
+    {"int", {VK_FORMAT_R32_SINT, 4, 4}},
+    {"ivec2", {VK_FORMAT_R32G32_SINT, 8, 8}},
+    {"ivec3", {VK_FORMAT_R32G32B32_SINT, 12, 16}},
+    {"ivec4", {VK_FORMAT_R32G32B32A32_SINT, 16, 16}},
+    {"uint", {VK_FORMAT_R32_UINT, 4, 4}},
+    {"uvec2", {VK_FORMAT_R32G32_UINT, 8, 8}},
+    {"uvec3", {VK_FORMAT_R32G32B32_UINT, 12, 16}},
+    {"uvec4", {VK_FORMAT_R32G32B32A32_UINT, 16, 16}},
+    {"float", {VK_FORMAT_R32_SFLOAT, 4, 4}},
+    {"vec2", {VK_FORMAT_R32G32_SFLOAT, 8, 8}},
+    {"vec3", {VK_FORMAT_R32G32B32_SFLOAT, 12, 16}},
+    {"vec4", {VK_FORMAT_R32G32B32A32_SFLOAT, 16, 16}},
+    {"double", {VK_FORMAT_R64_SFLOAT, 8, 8}},
+    {"dvec2", {VK_FORMAT_R64G64_SFLOAT, 16, 16}},
+    {"dvec3", {VK_FORMAT_R64G64B64_SFLOAT, 24, 16}},
+    {"dvec4", {VK_FORMAT_R64G64B64A64_SFLOAT, 32, 16}},
+    {"mat2", {VK_FORMAT_R32G32_SFLOAT, 16, 16}},
+    {"mat3", {VK_FORMAT_R32G32B32_SFLOAT, 36, 16}},
+    {"mat4", {VK_FORMAT_R32G32B32A32_SFLOAT, 64, 16}},
+    {"mat2x3", {VK_FORMAT_R32G32B32_SFLOAT, 24, 16}},
+    {"mat2x4", {VK_FORMAT_R32G32B32A32_SFLOAT, 32, 16}},
+    {"mat3x2", {VK_FORMAT_R32G32B32_SFLOAT, 24, 16}},
+    {"mat3x4", {VK_FORMAT_R32G32B32A32_SFLOAT, 48, 16}},
+    {"mat4x2", {VK_FORMAT_R32G32B32_SFLOAT, 32, 16}},
+    {"mat4x3", {VK_FORMAT_R32G32B32A32_SFLOAT, 48, 16}},
 };
 
 Shader *Shader::load_asset(const std::string &path, AssetManager &asset_manager)
@@ -108,12 +109,12 @@ Shader *Shader::load_asset(const std::string &path, AssetManager &asset_manager)
             uint32_t binding = (uint32_t)attr["binding"].as_integer()->get();
             auto format = format_map[attr["format"].as_string()->get()];
 
-            binding_descriptions[binding].stride += format.second;
+            binding_descriptions[binding].stride += std::get<1>(format);
 
             AttributeDescription desc = {
                 .location = (uint32_t)attr["location"].as_integer()->get(),
                 .binding = binding,
-                .format = format.first,
+                .format = std::get<0>(format),
                 .offset = (uint32_t)attr["offset"].as_integer()->get(),
             };
 
@@ -128,15 +129,34 @@ Shader *Shader::load_asset(const std::string &path, AssetManager &asset_manager)
     if (data.contains("uniforms"))
     {
         toml::table &uniforms = *data["uniforms"].as_table();
+        // name, position, size, alignment
+        std::vector<std::tuple<std::string, uint32_t, uint32_t, uint32_t>> uniform_list;
 
         uint32_t total_size = 0;
+        uint32_t byte_alignment = 16;
         for (const auto &uniform : uniforms)
         {
             std::string name = std::string(uniform.first.str());
-            uint32_t size = format_map[uniform.second.as_string()->get()].second;
 
-            total_size += size;
-            shader->offsets[name] = total_size;
+            toml::table &uniform_data = *uniform.second.as_table();
+            uint32_t size = std::get<1>(format_map[uniform_data["type"].as_string()->get()]);
+            uniform_list.push_back({name,
+                                    uniform_data["position"].as_integer()->get(),
+                                    size,
+                                    std::get<2>(format_map[uniform_data["type"].as_string()->get()])});
+        }
+
+        std::sort(uniform_list.begin(), uniform_list.end(), [](auto &a, auto &b)
+                  { return std::get<1>(a) < std::get<1>(b); });
+
+        for (const auto &uniform : uniform_list)
+        {
+            auto [name, position, size, alignment] = uniform;
+
+            int pos = round((float)total_size / (float)alignment + 0.4999f) * alignment;
+
+            total_size = pos + size;
+            shader->offsets[name] = pos;
         }
 
         descriptor_set_layout_bindings.push_back({

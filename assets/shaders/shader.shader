@@ -13,8 +13,10 @@ normal = { format = "vec3", location = 1, binding = 0, offset = 12 }
 uv = { format = "vec2", location = 2, binding = 0, offset = 24 }
 
 [uniforms]
-time = "float"
-color = "float"
+model = { position = 0, type = "mat4" }
+view = { position = 1, type = "mat4" }
+projection = { position = 2, type = "mat4" }
+time = { position = 3, type = "float" }
 
 [properties]
 render_pass = "lit"

@@ -1,4 +1,4 @@
-require = ["stb", "tomlplusplus"]
+require = ["stb", "tomlplusplus", "stb-image"]
 
 [subprojects]
 origami-core = { path = "../origami-core" }
@@ -42,3 +42,7 @@ includes = ["./"]
 [deps.tomlplusplus]
 git = "https://github.com/marzer/tomlplusplus.git"
 includes = ["include"]
+
+[deps.stb-image]
+git = "https://github.com/nothings/stb.git"
+includes = ["./"]
