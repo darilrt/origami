@@ -31,6 +31,7 @@ private:
 
     bool mouse_buttons_down[8];
     bool mouse_buttons_up[8];
+    bool mouse_buttons_pressed[8];
 
     Vec2 mouse_position;
     Vec2 mouse_delta;

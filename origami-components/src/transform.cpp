@@ -1,3 +1,5 @@
+
+#include <origami/math.hpp>
 #include "origami/components/transform.hpp"
 
 Mat4 Transform::get_matrix() const
@@ -15,15 +17,7 @@ Mat4 Transform::get_matrix() const
 
 Mat4 Transform::get_inverse_matrix() const
 {
-    Mat4 matrix = Mat4::identity();
-    matrix.translate(-position);
-    matrix.rotate(rotation.inverse());
-    matrix.scale(Vec3(1.0f / scale.x, 1.0f / scale.y, 1.0f / scale.z));
-
-    if (parent)
-        matrix = matrix * parent->get_inverse_matrix();
-
-    return matrix;
+    return get_matrix().inverse();
 }
 
 Mat4 Transform2D::get_matrix() const
@@ -42,4 +36,19 @@ Mat4 Transform2D::get_matrix() const
 void Transform::look_at(const Vec3 &target, const Vec3 &up)
 {
     rotation = Quat::look_at(position, target, up);
+}
+
+Vec3 Transform::forward()
+{
+    return rotation * Vec3(0, 0, 1);
+}
+
+Vec3 Transform::right()
+{
+    return rotation * Vec3(1, 0, 0);
+}
+
+Vec3 Transform::up()
+{
+    return rotation * Vec3(0, 1, 0);
 }

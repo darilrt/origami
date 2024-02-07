@@ -7,7 +7,7 @@
 class Transform
 {
 public:
-    Unique<Transform> parent;
+    Shared<Transform> parent;
     Vec3 position;
     Quat rotation = Quat();
     Vec3 scale = Vec3(1.0f);
@@ -18,6 +18,13 @@ public:
 
     // rotation methods
     void look_at(const Vec3 &target, const Vec3 &up = Vec3(0, 1, 0));
+
+    // vector methods
+    Vec3 forward();
+
+    Vec3 right();
+
+    Vec3 up();
 };
 
 class Transform2D

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cmath>
+#include <string>
 
 #include "origami/vec/vec3.hpp"
 #include "origami/vec/vec4.hpp"
@@ -52,6 +53,11 @@ public:
     Vec2 normalize() const
     {
         return *this / length();
+    }
+
+    std::string to_string() const
+    {
+        return "Vec2(" + std::to_string(x) + ", " + std::to_string(y) + ")";
     }
 
     Vec2 operator+(const Vec2 &other) const

@@ -24,13 +24,6 @@ void Window::init(EngineState &state)
         std::cerr << "Window could not be created! SDL_Error: " << SDL_GetError() << std::endl;
         return;
     }
-
-    // context = SDL_GL_CreateContext((SDL_Window *)window);
-    // if (context == nullptr)
-    // {
-    //     std::cerr << "OpenGL context could not be created! SDL_Error: " << SDL_GetError() << std::endl;
-    //     return;
-    // }
 }
 
 void Window::run(EngineState &state)

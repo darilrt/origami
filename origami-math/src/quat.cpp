@@ -48,5 +48,15 @@ Quat Quat::from_axis_angle(const Vec3 &axis, float angle)
 
 Quat Quat::look_at(const Vec3 &from, const Vec3 &to, const Vec3 &up)
 {
-    return Quat::identity();
+    Vec3 forward = (to - from).normalize();
+    Vec3 right = forward.cross(up).normalize();
+    Vec3 new_up = right.cross(forward).normalize();
+
+    float w = sqrt(1.0f + right.x + new_up.y + forward.z) / 2.0f;
+    float w4_recip = 1.0f / (4.0f * w);
+    return Quat(
+        (new_up.z - forward.y) * w4_recip,
+        (forward.x - right.z) * w4_recip,
+        (right.y - new_up.x) * w4_recip,
+        w);
 }

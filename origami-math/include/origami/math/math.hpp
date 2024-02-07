@@ -3,6 +3,7 @@
 #include "origami/vec/vec.hpp"
 #include "origami/quat/quat.hpp"
 #include "origami/mat/mat4.hpp"
+#include "origami/math/const.hpp"
 
 #include <cmath>
 
