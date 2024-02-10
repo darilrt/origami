@@ -85,3 +85,10 @@ void Buffer::unmap_memory()
     vkUnmapMemory((VkDevice)device, (VkDeviceMemory)memory);
     mapped = nullptr;
 }
+
+void Buffer::copy_to(void *data, size_t size)
+{
+    map_memory();
+    memcpy(mapped, data, size);
+    unmap_memory();
+}

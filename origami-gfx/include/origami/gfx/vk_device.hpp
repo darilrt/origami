@@ -4,20 +4,22 @@
 #include <tuple>
 #include <vector>
 
+#include "origami/gfx/type.hpp"
+
 class VulkanDevice
 {
 public:
-    void *id;
-    void *surface;
-    void *device;
+    vkid_t id;      // VkPhysicalDevice
+    vkid_t surface; // VkSurfaceKHR
+    vkid_t device;  // VkDevice
 
     std::optional<uint32_t> graphics_family;
     std::optional<uint32_t> present_family;
 
     struct DeviceInfo
     {
-        void *id;
-        void *surface;
+        vkid_t id;
+        vkid_t surface;
         std::vector<const char *> extensions;
     };
 

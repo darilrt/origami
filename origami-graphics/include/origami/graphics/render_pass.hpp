@@ -10,11 +10,11 @@ public:
     Vec4 clear_color = {0.1f, 0.1f, 0.1f, 1.0f};
     Mat4 view;
     Mat4 projection;
-    Shared<ImageOld> albedo_attachment;
-    Shared<ImageOld> normal_ao_attachment;
-    Shared<ImageOld> position_roughness_attachment;
-    Shared<ImageOld> emissive_metallic_attachment;
-    Shared<ImageOld> depth_attachment;
+    Shared<Image> albedo_attachment;
+    Shared<Image> normal_ao_attachment;
+    Shared<Image> position_roughness_attachment;
+    Shared<Image> emissive_metallic_attachment;
+    Shared<Image> depth_attachment;
 
     RenderPassOld(int width, int height);
 

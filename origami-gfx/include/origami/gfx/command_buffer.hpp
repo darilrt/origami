@@ -5,6 +5,7 @@
 #include "origami/gfx/pipeline.hpp"
 #include "origami/gfx/framebuffer.hpp"
 #include "origami/gfx/render_pass.hpp"
+#include "origami/gfx/type.hpp"
 
 struct Viewport
 {
@@ -19,14 +20,14 @@ struct Viewport
 class CommandBuffer
 {
 public:
-    void *id = 0;
-    void *device = 0;
-    void *command_pool = 0;
+    vkid_t id = 0;
+    vkid_t device = 0;
+    vkid_t command_pool = 0;
 
     struct Parameters
     {
-        void *device = 0;
-        void *command_pool = 0;
+        vkid_t device = 0;
+        vkid_t command_pool = 0;
         uint32_t level = 0;
     };
 
@@ -38,7 +39,7 @@ public:
 
     void reset();
 
-    void begin();
+    void begin(uint32_t flags = 1);
 
     void end();
 
@@ -104,5 +105,7 @@ public:
 
     void bind_vertex_buffers(const std::vector<void *> &buffers, const std::vector<uint64_t> &offsets);
 
-    void copy_buffer(void *src, void *dst, uint64_t size);
+    void copy_buffer(vkid_t src, vkid_t dst, uint64_t size);
+
+    void copy_buffer_to_image(vkid_t src, vkid_t dst, uint32_t width, uint32_t height, uint32_t depth);
 };

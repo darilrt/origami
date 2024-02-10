@@ -32,4 +32,6 @@ public:
     void map_memory();
 
     void unmap_memory();
+
+    void copy_to(void *data, size_t size);
 };

@@ -23,11 +23,11 @@ CommandBuffer::CommandBuffer(const Parameters &parameters)
     device = parameters.device;
 }
 
-void CommandBuffer::begin()
+void CommandBuffer::begin(uint32_t flags)
 {
     const VkCommandBufferBeginInfo begin_info = {
         .sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
-        .flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT,
+        .flags = flags,
     };
 
     vkBeginCommandBuffer((VkCommandBuffer)id, &begin_info);
@@ -114,7 +114,7 @@ void CommandBuffer::bind_vertex_buffers(const std::vector<void *> &buffers, cons
     vkCmdBindVertexBuffers((VkCommandBuffer)id, 0, (uint32_t)buffers.size(), (VkBuffer *)buffers.data(), (VkDeviceSize *)offsets.data());
 }
 
-void CommandBuffer::copy_buffer(void *src, void *dst, uint64_t size)
+void CommandBuffer::copy_buffer(vkid_t src, vkid_t dst, uint64_t size)
 {
     VkBufferCopy copy_region = {
         .srcOffset = 0,
@@ -123,4 +123,23 @@ void CommandBuffer::copy_buffer(void *src, void *dst, uint64_t size)
     };
 
     vkCmdCopyBuffer((VkCommandBuffer)id, (VkBuffer)src, (VkBuffer)dst, 1, &copy_region);
+}
+
+void CommandBuffer::copy_buffer_to_image(vkid_t src, vkid_t dst, uint32_t width, uint32_t height, uint32_t depth)
+{
+    VkBufferImageCopy region = {
+        .bufferOffset = 0,
+        .bufferRowLength = 0,
+        .bufferImageHeight = 0,
+        .imageSubresource = {
+            .aspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
+            .mipLevel = 0,
+            .baseArrayLayer = 0,
+            .layerCount = 1,
+        },
+        .imageOffset = {0, 0, 0},
+        .imageExtent = {width, height, depth},
+    };
+
+    vkCmdCopyBufferToImage((VkCommandBuffer)id, (VkBuffer)src, (VkImage)dst, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
 }

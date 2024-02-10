@@ -69,6 +69,8 @@ public:
         entity->mesh = Shared<Mesh>(primitive::torus());
         entity->material = assets.get<Material>("1a68269c-821e-916d-f76f-e005015ba175");
 
+        auto tex = assets.get<Texture>("6b723201-7dbf-3501-fae6-d2262c72e598");
+
         camera->start(state);
         camera->set_perspective(math::rad(45), 0.1f, 100.0f);
         camera->set_resolution(window.get_size());
