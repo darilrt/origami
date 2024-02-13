@@ -5,18 +5,26 @@ vertex = "97d64cf5-0df3-4ad7-725f-093edc66292e"
 
 [[bindings]]
 binding = 0
-input_rate = "vertex"
+name = "Transform"
+uniforms = [
+    { name = "model", type = "mat4", order = 0 },
+    { name = "view", type = "mat4", order = 1 },
+    { name = "proj", type = "mat4", order = 2 }
+]
 
-[attributes]
-position = { format = "vec3", location = 0, binding = 0, offset = 0 }
-normal = { format = "vec3", location = 1, binding = 0, offset = 12 } 
-uv = { format = "vec2", location = 2, binding = 0, offset = 24 }
+[[bindings]]
+binding = 1
+name = "Environment"
+uniforms = [
+    { name = "camera", type = "vec3", order = 0 },
+    { name = "time", type = "float", order = 1 },
+]
 
-[uniforms]
-model = { position = 0, type = "mat4" }
-view = { position = 1, type = "mat4" }
-projection = { position = 2, type = "mat4" }
-time = { position = 3, type = "float" }
+[[bindings]]
+binding = 2
+name = "Material"
+uniforms = [
+]
 
 [properties]
 render_pass = "lit"

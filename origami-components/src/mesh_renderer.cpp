@@ -9,7 +9,7 @@ void MeshRenderer::start(EngineState &state)
         entity->mesh = Shared<Mesh>(new Mesh({}));
 
     if (!entity->material)
-        entity->material = new_shared<LitMaterial>();
+        entity->material = new_shared<Material>();
 
     entity->model = transform.get_matrix();
 }

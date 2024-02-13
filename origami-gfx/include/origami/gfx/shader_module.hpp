@@ -1,22 +1,25 @@
 #pragma once
 
-#include <string>
+#include "origami/gfx/gfx_defs.hpp"
+
+enum class ShaderType
+{
+    Vertex = 0x8B31,
+    Fragment = 0x8B30,
+    Geometry = 0x8DD9,
+    TessControl = 0x8E88,
+    TessEvaluation = 0x8E87,
+    Compute = 0x91B9
+};
 
 class ShaderModule
 {
 public:
-    void *id = 0;
-    void *device = 0;
+    glid_t _id;
 
-    struct Parameters
-    {
-        void *device = 0;
-        std::string file_path = "";
-    };
+    ShaderModule(ShaderType type);
+    ~ShaderModule();
 
-    ShaderModule() = default;
-
-    static ShaderModule create(const Parameters &parameters);
-
-    void destroy();
+    void set_source(const char *source);
+    void compile();
 };

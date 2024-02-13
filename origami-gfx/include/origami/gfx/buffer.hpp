@@ -1,37 +1,34 @@
 #pragma once
 
-#include <cstdint>
+#include "origami/gfx/gfx_defs.hpp"
 
-#include "origami/gfx/type.hpp"
-#include "origami/gfx/vk_device.hpp"
+enum class BufferType
+{
+    Array = 0x8892,
+    ElementArray = 0x8893,
+    Uniform = 0x8A11,
+    ShaderStorage = 0x90D2
+};
+
+enum class BufferUsage
+{
+    Static = 0x88E4,
+    Dynamic = 0x88E8,
+    Stream = 0x88E0
+};
 
 class Buffer
 {
 public:
-    vkid_t id = 0;
-    vkid_t memory = 0;
-    vkid_t device = 0;
-    void *mapped = nullptr;
+    glid_t _id;
+    BufferType type;
 
-    struct BufferInfo
-    {
-        VulkanDevice device;
-        uint32_t usage = 0;
-        uint32_t memory_properties = 6;
-        size_t size = 0;
-        void *data = 0;
-        bool mappable = false;
-    };
+    Buffer(BufferType type);
+    ~Buffer();
 
-    Buffer() = default;
+    void bind();
+    void unbind();
 
-    static Buffer create(const BufferInfo &parameters);
-
-    void destroy();
-
-    void map_memory();
-
-    void unmap_memory();
-
-    void copy_to(void *data, size_t size);
+    void set_data(const void *data, size_t size, BufferUsage usage);
+    void set_sub_data(const void *data, size_t size, size_t offset);
 };

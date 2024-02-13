@@ -1,9 +1,14 @@
+#include <GL/glew.hpp>
+#include <GL/gl.h>
+
 #include <iostream>
 #include <filesystem>
 #include <fstream>
+#include <string>
+#include <unordered_map>
+#include <stdexcept>
 #include <origami/assets.hpp>
 #include <origami/gfx.hpp>
-#include <vulkan/vulkan.h>
 #include <toml++/toml.hpp>
 
 #include "origami/graphics/graphics_system.hpp"
@@ -12,33 +17,21 @@
 std::string Shader::asset_type = "Graphics/Shader";
 
 // type, format, size, alignment
-std::unordered_map<std::string, std::tuple<VkFormat, int, int>> format_map = {
-    {"int", {VK_FORMAT_R32_SINT, 4, 4}},
-    {"ivec2", {VK_FORMAT_R32G32_SINT, 8, 8}},
-    {"ivec3", {VK_FORMAT_R32G32B32_SINT, 12, 16}},
-    {"ivec4", {VK_FORMAT_R32G32B32A32_SINT, 16, 16}},
-    {"uint", {VK_FORMAT_R32_UINT, 4, 4}},
-    {"uvec2", {VK_FORMAT_R32G32_UINT, 8, 8}},
-    {"uvec3", {VK_FORMAT_R32G32B32_UINT, 12, 16}},
-    {"uvec4", {VK_FORMAT_R32G32B32A32_UINT, 16, 16}},
-    {"float", {VK_FORMAT_R32_SFLOAT, 4, 4}},
-    {"vec2", {VK_FORMAT_R32G32_SFLOAT, 8, 8}},
-    {"vec3", {VK_FORMAT_R32G32B32_SFLOAT, 12, 16}},
-    {"vec4", {VK_FORMAT_R32G32B32A32_SFLOAT, 16, 16}},
-    {"double", {VK_FORMAT_R64_SFLOAT, 8, 8}},
-    {"dvec2", {VK_FORMAT_R64G64_SFLOAT, 16, 16}},
-    {"dvec3", {VK_FORMAT_R64G64B64_SFLOAT, 24, 16}},
-    {"dvec4", {VK_FORMAT_R64G64B64A64_SFLOAT, 32, 16}},
-    {"mat2", {VK_FORMAT_R32G32_SFLOAT, 16, 16}},
-    {"mat3", {VK_FORMAT_R32G32B32_SFLOAT, 36, 16}},
-    {"mat4", {VK_FORMAT_R32G32B32A32_SFLOAT, 64, 16}},
-    {"mat2x3", {VK_FORMAT_R32G32B32_SFLOAT, 24, 16}},
-    {"mat2x4", {VK_FORMAT_R32G32B32A32_SFLOAT, 32, 16}},
-    {"mat3x2", {VK_FORMAT_R32G32B32_SFLOAT, 24, 16}},
-    {"mat3x4", {VK_FORMAT_R32G32B32A32_SFLOAT, 48, 16}},
-    {"mat4x2", {VK_FORMAT_R32G32B32_SFLOAT, 32, 16}},
-    {"mat4x3", {VK_FORMAT_R32G32B32A32_SFLOAT, 48, 16}},
+std::unordered_map<std::string, std::tuple<glid_t, int, int>> format_map = {
+    {"int", {GL_INT, 4, 4}},
+    {"float", {GL_FLOAT, 4, 4}},
+    {"vec2", {GL_FLOAT_VEC2, 8, 8}},
+    {"vec3", {GL_FLOAT_VEC3, 12, 16}},
+    {"vec4", {GL_FLOAT_VEC4, 16, 16}},
+    {"mat4", {GL_FLOAT_MAT4, 64, 64}},
+    {"sampler2D", {GL_SAMPLER_2D, 4, 4}},
+    {"samplerCube", {GL_SAMPLER_CUBE, 4, 4}},
 };
+
+void Shader::use()
+{
+    glUseProgram(_id);
+}
 
 Shader *Shader::load_asset(const std::string &path, AssetManager &asset_manager)
 {
@@ -67,18 +60,39 @@ Shader *Shader::load_asset(const std::string &path, AssetManager &asset_manager)
         return nullptr;
     }
 
-    ShaderModule vertex_module = ShaderModule::create({
-        .device = GraphicsSystem::vk_device.device,
-        .file_path = asset_manager.assets[vertex_uuid].first + ".spv",
-    });
+    std::string vertex_path = asset_manager.assets[vertex_uuid].first;
+    std::string fragment_path = asset_manager.assets[fragment_uuid].first;
 
-    ShaderModule fragment_module = ShaderModule::create({
-        .device = GraphicsSystem::vk_device.device,
-        .file_path = asset_manager.assets[fragment_uuid].first + ".spv",
-    });
+    std::ifstream vertex_file(vertex_path);
+    std::string vertex_source((std::istreambuf_iterator<char>(vertex_file)), std::istreambuf_iterator<char>());
 
-    std::vector<BindingDescription> binding_descriptions;
-    std::vector<AttributeDescription> attribute_descriptions;
+    std::ifstream fragment_file(fragment_path);
+    std::string fragment_source((std::istreambuf_iterator<char>(fragment_file)), std::istreambuf_iterator<char>());
+
+    Shader *shader = new Shader();
+
+    ShaderModule *vertex_module = new ShaderModule(ShaderType::Vertex);
+    vertex_module->set_source(vertex_source.c_str());
+    vertex_module->compile();
+
+    ShaderModule *fragment_module = new ShaderModule(ShaderType::Fragment);
+    fragment_module->set_source(fragment_source.c_str());
+    fragment_module->compile();
+
+    shader->_id = glCreateProgram();
+    glAttachShader(shader->_id, vertex_module->_id);
+    glAttachShader(shader->_id, fragment_module->_id);
+    glLinkProgram(shader->_id);
+
+    int success;
+
+    glGetProgramiv(shader->_id, GL_LINK_STATUS, &success);
+    if (!success)
+    {
+        char infoLog[512];
+        glGetProgramInfoLog(shader->_id, 512, NULL, infoLog);
+        std::cerr << "Shader linking failed: " << infoLog << std::endl;
+    }
 
     if (data.contains("bindings"))
     {
@@ -86,106 +100,34 @@ Shader *Shader::load_asset(const std::string &path, AssetManager &asset_manager)
 
         for (const auto &binding : bindings)
         {
-            const toml::table &bind = *binding.as_table();
+            const toml::table &uniform_table = *binding.as_table();
 
-            BindingDescription desc = {
-                .binding = static_cast<uint32_t>(bind["binding"].as_integer()->get()),
-                .stride = 0,
-                .input_rate = bind["input_rate"].as_string()->get() == "vertex" ? VK_VERTEX_INPUT_RATE_VERTEX : VK_VERTEX_INPUT_RATE_INSTANCE,
-            };
+            UnifrormBuffers buffer;
+            buffer.name = uniform_table["name"].as_string()->get();
+            buffer.binding = uniform_table["binding"].as_integer()->get();
+            buffer.index = glGetUniformBlockIndex(shader->_id, buffer.name.c_str());
+            buffer.size = 0;
 
-            binding_descriptions.push_back(desc);
+            const toml::array &uniforms = *uniform_table["uniforms"].as_array();
+
+            for (const auto &uniform : uniforms)
+            {
+                const toml::table &uniform_table = *uniform.as_table();
+
+                std::string type = uniform_table["type"].as_string()->get();
+                std::string name = uniform_table["name"].as_string()->get();
+
+                auto [gl_type, size, alignment] = format_map[type];
+
+                int pos = round((float)buffer.size / (float)alignment + 0.4999f) * alignment;
+
+                buffer.size = pos + size;
+                buffer.offsets[name] = pos;
+            }
+
+            shader->_uniform_buffers[buffer.name] = buffer;
         }
     }
-
-    if (data.contains("attributes") && binding_descriptions.size() > 0)
-    {
-        toml::table &attributes = *data["attributes"].as_table();
-
-        for (const auto &attribute : attributes)
-        {
-            const toml::table &attr = *attribute.second.as_table();
-
-            uint32_t binding = (uint32_t)attr["binding"].as_integer()->get();
-            auto format = format_map[attr["format"].as_string()->get()];
-
-            binding_descriptions[binding].stride += std::get<1>(format);
-
-            AttributeDescription desc = {
-                .location = (uint32_t)attr["location"].as_integer()->get(),
-                .binding = binding,
-                .format = std::get<0>(format),
-                .offset = (uint32_t)attr["offset"].as_integer()->get(),
-            };
-
-            attribute_descriptions.push_back(desc);
-        }
-    }
-
-    std::vector<DescriptorSetLayoutBinding> descriptor_set_layout_bindings;
-
-    Shader *shader = new Shader();
-
-    if (data.contains("uniforms"))
-    {
-        toml::table &uniforms = *data["uniforms"].as_table();
-        // name, position, size, alignment
-        std::vector<std::tuple<std::string, uint32_t, uint32_t, uint32_t>> uniform_list;
-
-        uint32_t total_size = 0;
-        uint32_t byte_alignment = 16;
-        for (const auto &uniform : uniforms)
-        {
-            std::string name = std::string(uniform.first.str());
-
-            toml::table &uniform_data = *uniform.second.as_table();
-            uint32_t size = std::get<1>(format_map[uniform_data["type"].as_string()->get()]);
-            uniform_list.push_back({name,
-                                    uniform_data["position"].as_integer()->get(),
-                                    size,
-                                    std::get<2>(format_map[uniform_data["type"].as_string()->get()])});
-        }
-
-        std::sort(uniform_list.begin(), uniform_list.end(), [](auto &a, auto &b)
-                  { return std::get<1>(a) < std::get<1>(b); });
-
-        for (const auto &uniform : uniform_list)
-        {
-            auto [name, position, size, alignment] = uniform;
-
-            int pos = round((float)total_size / (float)alignment + 0.4999f) * alignment;
-
-            total_size = pos + size;
-            shader->offsets[name] = pos;
-        }
-
-        descriptor_set_layout_bindings.push_back({
-            .binding = 0,
-            .descriptor_type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
-            .descriptor_count = 1,
-            .stage_flags = VK_SHADER_STAGE_ALL_GRAPHICS,
-            .immutable_samplers = nullptr,
-        });
-
-        shader->uniform_size = total_size;
-    }
-
-    shader->pipeline = Pipeline::create({
-        .device = GraphicsSystem::vk_device.device,
-        .vs_module = vertex_module,
-        .fs_module = fragment_module,
-        .render_pass = GraphicsSystem::render_pass,
-        .binding_descriptions = binding_descriptions,
-        .attribute_descriptions = attribute_descriptions,
-        .descriptor_set_layout_bindings = descriptor_set_layout_bindings,
-    });
-
-    shader->descriptor_set = GraphicsSystem::descriptor_pool.allocate_descriptor_sets(
-        shader->pipeline.descriptor_set_layout,
-        GraphicsSystem::frames_in_flight);
-
-    vertex_module.destroy();
-    fragment_module.destroy();
 
     return shader;
 }

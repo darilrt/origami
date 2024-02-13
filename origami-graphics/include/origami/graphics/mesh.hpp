@@ -2,7 +2,7 @@
 
 #include <origami/core.hpp>
 #include <origami/math.hpp>
-#include <origami/gfx/buffer.hpp>
+#include <origami/gfx.hpp>
 #include <vector>
 
 class GraphicEntity;
@@ -19,7 +19,6 @@ class Mesh
     friend class GraphicsSystem;
 
 public:
-    Buffer buffer;
     enum Type
     {
         Static,
@@ -27,7 +26,9 @@ public:
         Stream,
     } type;
 
-    uint32_t vertices_count;
+    VertexArray _vao;
+    Buffer _vbo;
+    uint32_t _vertices_count;
 
     Mesh(Type type = Static);
 
@@ -36,6 +37,4 @@ public:
     ~Mesh();
 
     void set_vertices(const std::vector<Vertex> &vertices);
-
-    inline uint32_t get_vertex_count() { return (uint32_t)vertices_count; }
 };

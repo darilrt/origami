@@ -1,3 +1,6 @@
+#include <GL/glew.hpp>
+#include <GL/gl.h>
+
 #include <origami/core.hpp>
 #include <origami/gfx.hpp>
 #include <vulkan/vulkan.h>
@@ -10,6 +13,31 @@
 
 const std::string Texture::asset_type = "Graphics/Texture";
 
+Texture::Texture(int width, int height, TextureFormat format, TextureFilter filter, TextureWrap wrap, const void *data)
+    : width(width), height(height), format(format), filter(filter), wrap(wrap)
+{
+    GL_CALL(glGenTextures(1, &_id));
+    GL_CALL(glBindTexture(GL_TEXTURE_2D, _id));
+
+    GL_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, static_cast<GLenum>(wrap)));
+    GL_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, static_cast<GLenum>(wrap)));
+    GL_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, static_cast<GLenum>(filter)));
+    GL_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, static_cast<GLenum>(filter)));
+
+    GL_CALL(glTexImage2D(GL_TEXTURE_2D, 0, static_cast<GLenum>(format), width, height, 0, static_cast<GLenum>(format), GL_UNSIGNED_BYTE, data));
+}
+
+Texture::~Texture()
+{
+    GL_CALL(glDeleteTextures(1, &_id));
+}
+
+void Texture::bind(int slot)
+{
+    GL_CALL(glActiveTexture(GL_TEXTURE0 + slot));
+    GL_CALL(glBindTexture(GL_TEXTURE_2D, _id));
+}
+
 Texture *Texture::load_asset(const std::string &path, AssetManager &assets)
 {
     int tex_width, tex_height, tex_channels;
@@ -21,50 +49,14 @@ Texture *Texture::load_asset(const std::string &path, AssetManager &assets)
         throw std::runtime_error("Failed to load texture image " + path);
     }
 
-    VkDeviceSize image_size = tex_width * tex_height * 4;
-
-    Buffer staging_buffer = Buffer::create({
-        .device = GraphicsSystem::vk_device,
-        .usage = VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-        .memory_properties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-        .size = image_size,
-        .data = pixels,
-    });
+    Texture *texture = new Texture(
+        tex_width, tex_height,
+        TextureFormat::RGBA,
+        TextureFilter::Linear,
+        TextureWrap::Repeat,
+        pixels);
 
     stbi_image_free(pixels);
-
-    std::cout << "Texture loaded: " << path << std::endl;
-
-    auto *texture = new Texture();
-
-    texture->image = new_unique<Image>();
-    *texture->image = Image::create({
-        .device = GraphicsSystem::vk_device,
-        .width = (uint32_t)tex_width,
-        .height = (uint32_t)tex_height,
-        .depth = 1,
-        .mip_levels = 1,
-        .array_layers = 1,
-        .samples = VK_SAMPLE_COUNT_1_BIT,
-        .format = VK_FORMAT_R8G8B8A8_SRGB,
-        .tiling = VK_IMAGE_TILING_OPTIMAL,
-        .usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT,
-        .sharing_mode = VK_SHARING_MODE_EXCLUSIVE,
-        .memory_properties = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
-    });
-
-    CommandBuffer cmd = GraphicsSystem::command_pool.allocate_command_buffer();
-
-    cmd.begin(VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
-    cmd.copy_buffer_to_image(staging_buffer.id, texture->image->id, (uint32_t)tex_width, (uint32_t)tex_height, 1);
-    cmd.end();
-
-    GraphicsSystem::vk_graphic_queue.submit({
-        .command_buffers = {cmd.id},
-    });
-    GraphicsSystem::vk_graphic_queue.wait_idle();
-    staging_buffer.destroy();
-    cmd.destroy();
 
     return texture;
 }

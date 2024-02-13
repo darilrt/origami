@@ -11,6 +11,7 @@ class Window : public Resource
 {
 public:
     void *window;
+    void *context;
 
     void init(EngineState &state);
 

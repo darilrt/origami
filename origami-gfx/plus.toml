@@ -17,15 +17,12 @@ cxx = "g++"
 standard = "c++20"
 flags = []
 includes = ["include"]
-defines = []
+defines = ["GLEW_STATIC"]
 warnings = []
 debug = true
-
-[compiler.windows]
-includes = ["C:/VulkanSDK/1.3.275.0/Include"]
 
 [linker]
 type = "static-lib"
 flags = []
-libdirs = ["C:/VulkanSDK/1.3.275.0/Lib"]
-libs = ["vulkan-1"]
+libdirs = []
+libs = ["opengl32", "glu32"]

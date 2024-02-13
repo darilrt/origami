@@ -16,6 +16,11 @@ public:
 
     inline bool key_pressed(KeyCode key) { return keys_pressed[(uint16_t)key]; }
 
+    inline float key_axis(KeyCode negative, KeyCode positive)
+    {
+        return key_pressed(positive) - key_pressed(negative);
+    }
+
     inline bool mouse_button_down(MouseButton button) { return mouse_buttons_down[(uint8_t)button]; }
 
     inline bool mouse_button_up(MouseButton button) { return mouse_buttons_up[(uint8_t)button]; }

@@ -18,7 +18,9 @@ void Window::init(EngineState &state)
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
     SDL_GL_SetSwapInterval(1);
 
-    window = SDL_CreateWindow("Origami", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, size.x, size.y, SDL_WINDOW_VULKAN | SDL_WINDOW_SHOWN);
+    window = SDL_CreateWindow("Origami", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, size.x, size.y, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+
+    context = SDL_GL_CreateContext((SDL_Window *)window);
     if (window == nullptr)
     {
         std::cerr << "Window could not be created! SDL_Error: " << SDL_GetError() << std::endl;

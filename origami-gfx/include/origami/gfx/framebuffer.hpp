@@ -1,30 +1,37 @@
 #pragma once
 
-#include <vector>
-#include <cstdint>
+#include <origami/core.hpp>
+#include <origami/gfx/gfx_defs.hpp>
 
-#include "origami/gfx/render_pass.hpp"
-#include "origami/gfx/image_view.hpp"
+enum class FramebufferAttachment : uint32_t
+{
+    COLOR0 = 0x8CE0,
+    COLOR1 = 0x8CE1,
+    COLOR2 = 0x8CE2,
+    COLOR3 = 0x8CE3,
+    COLOR4 = 0x8CE4,
+    COLOR5 = 0x8CE5,
+    COLOR6 = 0x8CE6,
+    COLOR7 = 0x8CE7,
+    DEPTH = 0x8D00,
+    STENCIL = 0x8D20,
+    DEPTH_STENCIL = 0x821A
+};
 
-class FrameBuffer
+class Framebuffer
 {
 public:
-    void *id = 0;
-    void *device = 0;
+    glid_t _id;
+    int _width;
+    int _height;
 
-    struct Parameters
-    {
-        void *device;
-        RenderPass render_pass;
-        uint32_t width;
-        uint32_t height;
-        uint32_t layers = 1;
-        std::vector<ImageView> attachments;
-    };
+    Framebuffer(int width, int height);
 
-    FrameBuffer() = default;
+    ~Framebuffer();
 
-    static FrameBuffer create(const Parameters &parameters);
+    void bind();
 
-    void destroy();
+    void unbind();
+
+    void attach_texture(glid_t texture, FramebufferAttachment attachment);
 };

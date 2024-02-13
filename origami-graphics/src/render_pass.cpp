@@ -2,28 +2,34 @@
 
 #include "origami/graphics/render_pass.hpp"
 
-RenderPassOld::RenderPassOld(int width, int height)
+RenderPass::RenderPass(int width, int height)
 {
+    _framebuffer = std::make_unique<Framebuffer>(width, height);
     resize(width, height);
 }
 
-RenderPassOld::~RenderPassOld()
+RenderPass::~RenderPass()
 {
 }
 
-void RenderPassOld::resize(int width, int height)
+void RenderPass::resize(int width, int height)
 {
+    color_texture = std::make_shared<Texture>(width, height, TextureFormat::RGBA);
+    depth_texture = std::make_shared<Texture>(width, height, TextureFormat::Depth24Stencil8);
+
+    _framebuffer->attach_texture(color_texture->_id, FramebufferAttachment::COLOR0);
+    _framebuffer->attach_texture(depth_texture->_id, FramebufferAttachment::DEPTH);
 }
 
-void RenderPassOld::set_clear_color(Vec4 color)
+void RenderPass::set_clear_color(Vec4 color)
 {
     this->clear_color = color;
 }
 
-void RenderPassOld::begin()
+void RenderPass::begin()
 {
 }
 
-void RenderPassOld::end()
+void RenderPass::end()
 {
 }

@@ -26,6 +26,7 @@ std::string get_type_from_extension(const std::string &ext)
 void AssetManager::init(EngineState &state)
 {
     scan("assets");
+    // scan("built-in");
 }
 
 void AssetManager::scan(const std::string &path)

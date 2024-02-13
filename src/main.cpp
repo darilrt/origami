@@ -54,6 +54,8 @@ public:
     void start(EngineState &state) override
     {
         auto &window = state.get_resource<Window>();
+        window.set_size({1280, 720});
+
         auto &assets = state.get_resource<AssetManager>();
         auto &gs = state.get_resource<GraphicsSystem>();
 
@@ -66,27 +68,27 @@ public:
             {{f, -0.25f, 0.0f}, {0.0f, 1.0f, 0.0f}, {0.0f, 0.0f}},
             {{-f, -0.25f, 0.0f}, {0.0f, 0.0f, 1.0f}, {0.0f, 0.0f}},
         }));
-        entity->mesh = Shared<Mesh>(primitive::torus());
+        entity->mesh = Shared<Mesh>(primitive::sphere());
         entity->material = assets.get<Material>("1a68269c-821e-916d-f76f-e005015ba175");
-
-        auto tex = assets.get<Texture>("6b723201-7dbf-3501-fae6-d2262c72e598");
 
         camera->start(state);
         camera->set_perspective(math::rad(45), 0.1f, 100.0f);
         camera->set_resolution(window.get_size());
         camera->set_active(state);
-        camera->transform.position = {0, 0, 5.0f};
+        camera->transform.position = {0, 0, 3.0f};
     }
 
     void update(EngineState &state, const Update &time) override
     {
-        static float timer = 0;
-        timer += time.delta_time;
+        static auto &input = state.get_resource<Input>();
 
-        entity->material->set_uniform("time", timer);
+        transform->rotation = Quat::from_euler({input.key_axis(KeyCode::A, KeyCode::D) * time.delta_time,
+                                                input.key_axis(KeyCode::S, KeyCode::W) * time.delta_time,
+                                                input.key_axis(KeyCode::E, KeyCode::Q) * time.delta_time}) *
+                              transform->rotation;
 
-        transform->rotation = Quat::from_euler({0, 0, time.delta_time}) * transform->rotation;
-        transform->scale = Vec3{1, 1, 1} * (0.5f + (std::sin(timer) + 1) * 0.25f);
+        entity->material->set_uniform("Environment", "camera", &camera->transform.position, sizeof(Vec3));
+
         entity->model = transform->get_matrix();
 
         controller.update(state, time);
