@@ -28,10 +28,10 @@ void Sprite::update(EngineState &state, const Update &time)
 
 void Sprite::set_visible(bool visible)
 {
-    entity->is_visible = visible;
+    entity->enabled = visible;
 }
 
 bool Sprite::is_visible()
 {
-    return entity->is_visible;
+    return entity->enabled;
 }

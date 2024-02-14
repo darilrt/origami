@@ -73,6 +73,9 @@ void GraphicsSystem::_render(EngineState &state)
 
     for (auto &render_pass : render_passes)
     {
+        if (!render_pass->enabled)
+            continue;
+
         render_pass->begin();
         gfx::clear_color(
             render_pass->clear_color.x,
@@ -88,6 +91,9 @@ void GraphicsSystem::_render(EngineState &state)
 
         for (auto &_entity : entities)
         {
+            if (!_entity->enabled)
+                continue;
+
             _render_entity(*_entity);
         }
 
@@ -95,7 +101,7 @@ void GraphicsSystem::_render(EngineState &state)
     }
 
     static auto &assets = state.get_resource<AssetManager>();
-    static auto def_mat = assets.get<Material>("d06585ed-d6bc-04e9-efad-35e9f50987bb");
+    static auto def_mat = assets.get<Material>("built-in/default_pass");
     static auto mesh = primitive::quad();
 
     gfx::unbind_framebuffer();
@@ -105,7 +111,7 @@ void GraphicsSystem::_render(EngineState &state)
     def_mat->set_texture("depth", current_render_pass->depth_texture);
 
     mesh->_vao.bind();
-    gfx::draw(6);
+    gfx::draw(mesh->_vertices_count);
 }
 
 void GraphicsSystem::_render_entity(GraphicEntity &entity)

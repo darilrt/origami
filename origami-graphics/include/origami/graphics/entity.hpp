@@ -9,7 +9,7 @@
 class GraphicEntity
 {
 public:
-    bool is_visible = true;
+    bool enabled = true;
     Mat4 model = Mat4::identity();
     Shared<Mesh> mesh;
     Shared<Material> material;

@@ -10,6 +10,7 @@ public:
     Vec4 clear_color = {0.1f, 0.1f, 0.1f, 1.0f};
     Mat4 view;
     Mat4 projection;
+    bool enabled = true;
 
     Unique<Framebuffer> _framebuffer;
     Shared<Texture> color_texture;

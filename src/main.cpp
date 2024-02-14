@@ -55,6 +55,7 @@ public:
     void start(EngineState &state) override
     {
         auto &window = state.get_resource<Window>();
+        window.set_vsync(true);
         window.set_size({1280, 720});
 
         auto &assets = state.get_resource<AssetManager>();
