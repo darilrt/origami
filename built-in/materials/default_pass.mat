@@ -1,10 +1,2 @@
 [properties]
-shader = "e0abedff-06a1-52ae-ccc1-981081b47488"
-
-[attributes]
-position = [0.0, 0.0, 0.0]
-normal = [0.0, 0.0, 0.0]
-uv = [0.0, 0.0]
-
-[uniforms]
-color = [0.75, 0.38, 0.75, 1.0]
+shader = "f085ca83-50c1-f763-589a-91424d64c234"

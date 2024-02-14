@@ -27,13 +27,13 @@ warnings = []
 debug = true
 
 [compiler.windows]
-includes = ["C:/VulkanSDK/1.3.275.0/Include"]
+includes = []
 
 [linker]
 type = "static-lib"
 flags = []
-libdirs = ["C:/VulkanSDK/1.3.275.0/Lib"]
-libs = ["vulkan-1"]
+libdirs = []
+libs = []
 
 [deps.stb]
 git = "https://github.com/nothings/stb.git"

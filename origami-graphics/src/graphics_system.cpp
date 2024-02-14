@@ -1,3 +1,5 @@
+#include <GL/glew.hpp>
+#include <GL/gl.h>
 #include <origami/event.hpp>
 #include <origami/window.hpp>
 #include <origami/gfx.hpp>
@@ -67,21 +69,43 @@ void GraphicsSystem::_render(EngineState &state)
 {
     static auto &window = state.get_resource<Window>();
     viewport = {0, 0, window.get_size().x, window.get_size().y};
+    gfx::set_viewport(viewport.x, viewport.y, viewport.z, viewport.w);
+
+    for (auto &render_pass : render_passes)
+    {
+        render_pass->begin();
+        gfx::clear_color(
+            render_pass->clear_color.x,
+            render_pass->clear_color.y,
+            render_pass->clear_color.z,
+            render_pass->clear_color.w);
+        gfx::clear();
+        gfx::enable_backface_culling(true);
+        gfx::enable_depth_test(true);
+
+        view = render_pass->view;
+        projection = render_pass->projection;
+
+        for (auto &_entity : entities)
+        {
+            _render_entity(*_entity);
+        }
+
+        render_pass->end();
+    }
+
+    static auto &assets = state.get_resource<AssetManager>();
+    static auto def_mat = assets.get<Material>("d06585ed-d6bc-04e9-efad-35e9f50987bb");
+    static auto mesh = primitive::quad();
 
     gfx::unbind_framebuffer();
-    gfx::set_viewport(viewport.x, viewport.y, viewport.z, viewport.w);
-    gfx::clear_color(0.05, 0.05, 0.06, 1.0);
     gfx::clear();
-    gfx::enable_backface_culling(true);
-    gfx::enable_depth_test(true);
+    def_mat->bind();
+    def_mat->set_texture("albedo", current_render_pass->color_texture);
+    def_mat->set_texture("depth", current_render_pass->depth_texture);
 
-    view = current_render_pass->view;
-    projection = current_render_pass->projection;
-
-    for (auto &_entity : entities)
-    {
-        _render_entity(*_entity);
-    }
+    mesh->_vao.bind();
+    gfx::draw(6);
 }
 
 void GraphicsSystem::_render_entity(GraphicEntity &entity)

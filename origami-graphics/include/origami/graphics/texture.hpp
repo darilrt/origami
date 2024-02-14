@@ -9,8 +9,7 @@ enum class TextureFormat : uint32_t
 {
     RGB = 6407,
     RGBA = 6408,
-    Depth24Stencil8 = 0x88F0,
-    Depth32FStencil8 = 0x8CAD,
+    Depth = 0x1902,
 };
 
 enum class TextureFilter : uint32_t
@@ -48,6 +47,8 @@ public:
     ~Texture();
 
     void bind(int slot = 0);
+
+    void generate_mipmaps();
 
     static Texture *load_asset(const std::string &path, AssetManager &assets);
 };

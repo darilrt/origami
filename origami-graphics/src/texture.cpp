@@ -3,7 +3,6 @@
 
 #include <origami/core.hpp>
 #include <origami/gfx.hpp>
-#include <vulkan/vulkan.h>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
@@ -24,7 +23,16 @@ Texture::Texture(int width, int height, TextureFormat format, TextureFilter filt
     GL_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, static_cast<GLenum>(filter)));
     GL_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, static_cast<GLenum>(filter)));
 
-    GL_CALL(glTexImage2D(GL_TEXTURE_2D, 0, static_cast<GLenum>(format), width, height, 0, static_cast<GLenum>(format), GL_UNSIGNED_BYTE, data));
+    GLuint type = GL_UNSIGNED_BYTE;
+    GLuint internal_format = static_cast<GLenum>(format);
+
+    if (format == TextureFormat::Depth)
+    {
+        type = GL_FLOAT;
+        internal_format = GL_DEPTH_COMPONENT32F;
+    }
+
+    GL_CALL(glTexImage2D(GL_TEXTURE_2D, 0, static_cast<GLenum>(internal_format), width, height, 0, static_cast<GLenum>(format), type, data));
 }
 
 Texture::~Texture()
@@ -36,6 +44,12 @@ void Texture::bind(int slot)
 {
     GL_CALL(glActiveTexture(GL_TEXTURE0 + slot));
     GL_CALL(glBindTexture(GL_TEXTURE_2D, _id));
+}
+
+void Texture::generate_mipmaps()
+{
+    GL_CALL(glBindTexture(GL_TEXTURE_2D, _id));
+    GL_CALL(glGenerateMipmap(GL_TEXTURE_2D));
 }
 
 Texture *Texture::load_asset(const std::string &path, AssetManager &assets)
@@ -55,6 +69,8 @@ Texture *Texture::load_asset(const std::string &path, AssetManager &assets)
         TextureFilter::Linear,
         TextureWrap::Repeat,
         pixels);
+
+    texture->generate_mipmaps();
 
     stbi_image_free(pixels);
 

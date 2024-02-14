@@ -1,5 +1,6 @@
 #include <origami.hpp>
 #include <origami/gfx.hpp>
+#include <string>
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_vulkan.h>
@@ -68,7 +69,7 @@ public:
             {{f, -0.25f, 0.0f}, {0.0f, 1.0f, 0.0f}, {0.0f, 0.0f}},
             {{-f, -0.25f, 0.0f}, {0.0f, 0.0f, 1.0f}, {0.0f, 0.0f}},
         }));
-        entity->mesh = Shared<Mesh>(primitive::sphere());
+        entity->mesh = Shared<Mesh>(primitive::torus());
         entity->material = assets.get<Material>("1a68269c-821e-916d-f76f-e005015ba175");
 
         camera->start(state);
@@ -80,6 +81,19 @@ public:
 
     void update(EngineState &state, const Update &time) override
     {
+        static auto &window = state.get_resource<Window>();
+        static float timer = 0;
+        timer += time.delta_time;
+        static int fps = 0;
+        fps++;
+
+        if (timer >= 1.0)
+        {
+            window.set_title("fps: " + std::to_string(fps));
+            fps = 0;
+            timer = 0;
+        }
+
         static auto &input = state.get_resource<Input>();
 
         transform->rotation = Quat::from_euler({input.key_axis(KeyCode::A, KeyCode::D) * time.delta_time,
