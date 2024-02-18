@@ -1,13 +1,4 @@
 require = []
-
-[subprojects]
-origami-core = { path = "../origami-core" }
-origami-math = { path = "../origami-math" }
-origami-graphics = { path = "../origami-graphics" }
-origami-window = { path = "../origami-window" }
-origami-event = { path = "../origami-event" }
-
-[project]
 name = "origami-debug"
 version = "0.1.0"
 description = ""
@@ -15,6 +6,15 @@ author = ""
 email = ""
 url = ""
 license = ""
+
+[subprojects]
+origami-core = { path = "../origami-core" }
+origami-math = { path = "../origami-math" }
+origami-gfx = { path = "../origami-gfx" }
+origami-assets = { path = "../origami-assets" }
+origami-graphics = { path = "../origami-graphics" }
+origami-window = { path = "../origami-window" }
+origami-event = { path = "../origami-event" }
 
 [compiler]
 cxx = "g++"
@@ -26,7 +26,6 @@ warnings = []
 debug = true
 
 [linker]
-type = "static-lib"
 flags = []
 libdirs = []
 libs = []

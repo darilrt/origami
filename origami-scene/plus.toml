@@ -1,12 +1,4 @@
 require = []
-
-[subprojects]
-origami-core = { path = "../origami-core" }
-origami-event = { path = "../origami-event" }
-origami-window = { path = "../origami-window" }
-origami-math = { path = "../origami-math" }
-
-[project]
 name = "origami-scene"
 version = "0.1.0"
 description = ""
@@ -14,6 +6,12 @@ author = ""
 email = ""
 url = ""
 license = ""
+
+[subprojects]
+origami-core = { path = "../origami-core" }
+origami-event = { path = "../origami-event" }
+origami-window = { path = "../origami-window" }
+origami-math = { path = "../origami-math" }
 
 [compiler]
 cxx = "g++"

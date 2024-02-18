@@ -1,3 +1,10 @@
+name = "origami-physics"
+version = "0.1.0"
+description = ""
+author = ""
+email = ""
+url = ""
+license = ""
 require = []
 
 [subprojects]
@@ -7,15 +14,6 @@ origami-math = { path = "../origami-math" }
 origami-event = { path = "../origami-event" }
 origami-window = { path = "../origami-window" }
 origami-debug = { path = "../origami-debug" }
-
-[project]
-name = "origami-physics"
-version = "0.1.0"
-description = ""
-author = ""
-email = ""
-url = ""
-license = ""
 
 [compiler]
 cxx = "g++"

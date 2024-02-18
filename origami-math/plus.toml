@@ -1,6 +1,5 @@
 require = []
 
-[project]
 name = "origami-math"
 version = "0.1.0"
 description = ""

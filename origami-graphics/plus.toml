@@ -1,4 +1,11 @@
-require = ["stb", "tomlplusplus", "stb-image"]
+requires = ["stb", "tomlplusplus", "stb-image"]
+name = "origami-graphics"
+version = "0.1.0"
+description = ""
+author = ""
+email = ""
+url = ""
+license = ""
 
 [subprojects]
 origami-core = { path = "../origami-core" }
@@ -7,15 +14,6 @@ origami-window = { path = "../origami-window" }
 origami-math = { path = "../origami-math" }
 origami-assets = { path = "../origami-assets" }
 origami-gfx = { path = "../origami-gfx" }
-
-[project]
-name = "origami-graphics"
-version = "0.1.0"
-description = ""
-author = ""
-email = ""
-url = ""
-license = ""
 
 [compiler]
 cxx = "g++"
