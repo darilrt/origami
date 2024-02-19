@@ -60,7 +60,7 @@ void Camera::set_active(EngineState &state)
         throw std::runtime_error("Camera not initialized, call Camera::start() first");
 
     static auto &graphics = state.get_resource<GraphicsSystem>();
-    graphics.set_render_pass(render_pass);
+    graphics.set_render_pass(render_pass, 4);
 }
 
 Vec2 Camera::screen_to_world2d(Vec2 pos, Vec2 window_resolution)

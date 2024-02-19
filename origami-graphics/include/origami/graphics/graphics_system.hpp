@@ -20,7 +20,7 @@ public:
 
     void set_projection(Mat4 projection) { this->projection = projection; }
 
-    void set_render_pass(Shared<RenderPass> render_pass) { this->current_render_pass = render_pass; }
+    void set_render_pass(Shared<RenderPass> render_pass, int index) { render_pass_stack[index] = render_pass; }
 
     Shared<GraphicEntity> create_entity();
 
@@ -28,7 +28,7 @@ public:
 
     std::vector<Shared<GraphicEntity>> entities;
     std::vector<Shared<RenderPass>> render_passes;
-    Shared<RenderPass> current_render_pass;
+    std::vector<Shared<RenderPass>> render_pass_stack;
     EngineState *state;
     Vec4 viewport;
     Mat4 view = Mat4::identity();

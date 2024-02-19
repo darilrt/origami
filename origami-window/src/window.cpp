@@ -41,6 +41,9 @@ void Window::run(EngineState &state)
 
     es.emit<PreStart>();
     es.emit<Start>();
+
+    SDL_SetWindowPosition((SDL_Window *)window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
+
     while (is_running)
     {
         LAST = NOW;

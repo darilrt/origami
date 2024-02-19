@@ -121,6 +121,7 @@ int main()
     state->init_resource<EventSystem>();
     state->init_resource<Input>();
     state->init_resource<SceneSystem>();
+    state->init_resource<UI>();
     state->init_resource<Window>();
     state->start();
 

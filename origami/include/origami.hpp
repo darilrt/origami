@@ -9,6 +9,7 @@
 #include <origami/scene.hpp>
 #include <origami/components.hpp>
 #include <origami/utils.hpp>
+#include <origami/ui.hpp>
 // #include <origami/debug.hpp>
 
 #define ENTRY_POINT(T)  \

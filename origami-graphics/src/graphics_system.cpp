@@ -58,6 +58,7 @@ GraphicsSystem::~GraphicsSystem()
 
 void GraphicsSystem::_start(EngineState &state)
 {
+    render_pass_stack.resize(5);
 }
 
 void GraphicsSystem::_update(EngineState &state, const Update &time)
@@ -106,12 +107,21 @@ void GraphicsSystem::_render(EngineState &state)
 
     gfx::unbind_framebuffer();
     gfx::clear();
-    def_mat->bind();
-    def_mat->set_texture("albedo", current_render_pass->color_texture);
-    def_mat->set_texture("depth", current_render_pass->depth_texture);
+    gfx::enable_depth_test(false);
 
     mesh->_vao.bind();
-    gfx::draw(mesh->_vertices_count);
+
+    for (auto &render_pass : render_pass_stack)
+    {
+        if (!render_pass)
+            continue;
+
+        def_mat->bind();
+        def_mat->set_texture("albedo", render_pass->color_texture);
+        def_mat->set_texture("depth", render_pass->depth_texture);
+
+        gfx::draw(mesh->_vertices_count);
+    }
 }
 
 void GraphicsSystem::_render_entity(GraphicEntity &entity)

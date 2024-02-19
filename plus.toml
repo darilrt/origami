@@ -62,6 +62,9 @@ path = "origami-assets"
 [subprojects.origami-gfx]
 path = "origami-gfx"
 
+[subprojects.origami-ui]
+path = "origami-ui"
+
 [deps.sdl2]
 libs = [ "SDL2", "SDL2main",]
 defines = [ "SDL_MAIN_HANDLED",]

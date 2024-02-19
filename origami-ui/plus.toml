@@ -1,0 +1,33 @@
+name = "origami-ui"
+version = "0.1.0"
+description = ""
+author = ""
+email = ""
+url = ""
+license = ""
+requires = []
+
+[compiler]
+cxx = "g++"
+c = "gcc"
+standard = "c++20"
+flags = []
+includes = ["include"]
+defines = []
+warnings = []
+debug = true
+
+[linker]
+type = "static-lib"
+flags = []
+libdirs = []
+libs = []
+
+[subprojects]
+origami-core = { path = "../origami-core" }
+origami-event = { path = "../origami-event" }
+origami-assets = { path = "../origami-assets" }
+origami-math = { path = "../origami-math" }
+origami-window = { path = "../origami-window" }
+origami-gfx = { path = "../origami-gfx" }
+origami-graphics = { path = "../origami-graphics" }

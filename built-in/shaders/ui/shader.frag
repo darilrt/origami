@@ -8,11 +8,7 @@ uniform sampler2D depth;
 
 void main() {
     vec2 uv = vec2(fragUV.x, 1.0 - fragUV.y);
-    vec4 color = texture(albedo, uv).rgba;
+    vec3 color = texture(albedo, uv).rgb;
 
-    if (color.a < 0.1) {
-        discard;
-    }
-
-    outColor = color;
+    outColor = vec4(color, 1.0);
 }
