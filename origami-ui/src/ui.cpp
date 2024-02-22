@@ -36,8 +36,8 @@ void UI::_start(EngineState &state)
     };
 
     auto mesh = Shared<Mesh>(new Mesh(vertices));
-    auto mat = assets.get<Material>("built-in/ui");
-    auto tex = assets.get<Texture>("7cf928de-75f2-08d9-7b7e-daf760ae8ebd");
+    auto mat = assets.get<Material>("built-in/material/ui");
+    auto tex = assets.get<Texture>("built-in/texture/gridbox");
 
     auto view = Mat4::ortho(0.0f, (float)window.get_size().x, (float)window.get_size().y, 0.0f, -1.0f, 1.0f);
 
@@ -50,7 +50,7 @@ void UI::_start(EngineState &state)
     mat->bind();
     mat->set_texture("albedo", tex);
     mat->set_uniform("Camera", "proj", &view, sizeof(view));
-    gfx::draw(mesh->_vertices_count);
+    // gfx::draw(mesh->_vertices_count);
 
     render_pass->end();
 }

@@ -1,0 +1,5 @@
+[properties]
+shader = "a593f9de-b3b1-0f26-fdc0-a86a3344dd5b"
+
+[textures]
+albedo = 'built-in/texture/gridbox'

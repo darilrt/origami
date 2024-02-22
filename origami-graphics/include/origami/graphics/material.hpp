@@ -17,6 +17,11 @@ public:
 
     static Material *load_asset(const std::string &path, AssetManager &asset_manager);
 
+    bool exists_uniform(const std::string &uniform)
+    {
+        return shader->_uniform_buffers.find(uniform) != shader->_uniform_buffers.end();
+    }
+
     void set_uniform(const std::string &uniform, const std::string &name, const void *data, size_t size);
 
     template <typename T>

@@ -8,21 +8,23 @@
 
 void Sprite::start(EngineState &state)
 {
-    if (!sprite)
-    {
-        throw std::runtime_error("Sprite::sampler is nullptr");
-    }
-
     auto &graphics = state.get_resource<GraphicsSystem>();
+    auto &assets = state.get_resource<AssetManager>();
 
     entity = graphics.create_entity();
     entity->model = transform.get_matrix();
     entity->mesh = Shared<Mesh>(primitive::quad());
-    entity->material = new_shared<SpriteMaterial>();
+    entity->material = assets.get<Material>("built-in/material/sprite");
 }
 
 void Sprite::update(EngineState &state, const Update &time)
 {
+    if (attached_to_pixel)
+    {
+        transform.position = {
+            std::round(transform.position.x),
+            std::round(transform.position.y)};
+    }
     entity->model = transform.get_matrix();
 }
 
