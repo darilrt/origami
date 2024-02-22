@@ -50,7 +50,7 @@ void UI::_start(EngineState &state)
     mat->bind();
     mat->set_texture("albedo", tex);
     mat->set_uniform("Camera", "proj", &view, sizeof(view));
-    // gfx::draw(mesh->_vertices_count);
+    gfx::draw(mesh->_vertices_count);
 
     render_pass->end();
 }

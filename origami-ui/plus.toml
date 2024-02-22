@@ -31,3 +31,13 @@ origami-math = { path = "../origami-math" }
 origami-window = { path = "../origami-window" }
 origami-gfx = { path = "../origami-gfx" }
 origami-graphics = { path = "../origami-graphics" }
+
+[deps.sdl-ttf.window]
+pre-build = [
+    "wget https://github.com/libsdl-org/SDL_ttf/releases/download/release-2.22.0/SDL2_ttf-devel-2.22.0-mingw.zip -o sdl2_ttf.zip",
+    "unzip sdl2_ttf.zip -d ./",
+    "cp sdl2_ttf/x86_64-w64-mingw32/include/SDL2/SDL_ttf.h include/SDL2/",
+    "cp sdl2_ttf/x86_64-w64-mingw32/lib/libSDL2_ttf.a lib/",
+    "rm -rf sdl2_ttf",
+    "rm sdl2_ttf.zip",
+]
