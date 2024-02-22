@@ -20,6 +20,7 @@ public:
         .rotation = 0.0f,
         .scale = Vec2(1.0f),
     };
+    bool attached_to_pixel = true;
     Shared<GraphicEntity> entity;
 
     void start(EngineState &state);

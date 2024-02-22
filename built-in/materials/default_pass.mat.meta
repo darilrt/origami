@@ -1,2 +1,2 @@
 type = 'Graphics/Material'
-uuid = 'built-in/default_pass'
+uuid = 'built-in/material/default_pass'

@@ -102,7 +102,7 @@ void GraphicsSystem::_render(EngineState &state)
     }
 
     static auto &assets = state.get_resource<AssetManager>();
-    static auto def_mat = assets.get<Material>("built-in/default_pass");
+    static auto def_mat = assets.get<Material>("built-in/material/default_pass");
     static auto mesh = primitive::quad();
 
     gfx::unbind_framebuffer();
@@ -131,6 +131,7 @@ void GraphicsSystem::_render_entity(GraphicEntity &entity)
     entity.material->set_uniform("Transform", "model", &entity.model, sizeof(Mat4));
     entity.material->set_uniform("Transform", "view", &view, sizeof(Mat4));
     entity.material->set_uniform("Transform", "proj", &projection, sizeof(Mat4));
+
     entity.material->set_uniform("Environment", "time", &time, sizeof(float));
 
     entity.mesh->_vao.bind();
