@@ -1,4 +1,11 @@
-require = []
+name = "origami-components"
+version = "0.1.0"
+description = ""
+author = ""
+email = ""
+url = ""
+license = ""
+requires = []
 
 [subprojects.origami]
 path = "../origami"
@@ -26,15 +33,6 @@ path = "../origami-scene"
 
 [subprojects.origami-gfx]
 path = "../origami-gfx"
-
-[project]
-name = "origami-components"
-version = "0.1.0"
-description = ""
-author = ""
-email = ""
-url = ""
-license = ""
 
 [compiler]
 cxx = "g++"

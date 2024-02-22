@@ -1,9 +1,3 @@
-require = []
-
-[subprojects.origami-core]
-path = "../origami-core"
-
-[project]
 name = "origami-event"
 version = "0.1.0"
 description = ""
@@ -11,6 +5,10 @@ author = ""
 email = ""
 url = ""
 license = ""
+requires = []
+
+[subprojects.origami-core]
+path = "../origami-core"
 
 [compiler]
 cxx = "g++"

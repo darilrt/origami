@@ -1,10 +1,3 @@
-require = ["tomlplusplus"]
-
-[subprojects]
-origami-core = { path = "../origami-core" }
-origami-utils = { path = "../origami-utils" }
-
-[project]
 name = "origami-assets"
 version = "0.1.0"
 description = ""
@@ -12,6 +5,11 @@ author = ""
 email = ""
 url = ""
 license = ""
+requires = ["tomlplusplus"]
+
+[subprojects]
+origami-core = { path = "../origami-core" }
+origami-utils = { path = "../origami-utils" }
 
 [compiler]
 cxx = "g++"
